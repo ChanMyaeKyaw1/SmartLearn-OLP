@@ -37,17 +37,32 @@ def register_view(request):
 
 @login_required(login_url='login')
 def dashboard_view(request):
-    print(request.user.username)
-
+    # 1. Created classes (Teacher Mode)
     my_classes = Classroom.objects.filter(
         owner=request.user,
         created_from_site=True
     )
-    all_system_classes = Classroom.objects.all().select_related('owner')
+    
+    # 2. Joined classes (where user enrollment is approved)
+    joined_classrooms = Classroom.objects.filter(
+        enrollments__student=request.user,
+        enrollments__status='approved'
+    ).select_related('owner')
+
+    # 3. All system classes (excluding classes owned or already joined)
+    available_classes = Classroom.objects.exclude(
+        owner=request.user
+    ).exclude(
+        enrollments__student=request.user,
+        enrollments__status='approved'
+    ).select_related('owner')
+
     return render(request, 'dashboard.html', {
         'my_classes': my_classes,
-        'all_system_classes': all_system_classes,
+        'joined_classrooms': joined_classrooms,
+        'available_classes': available_classes,
     })
+
 @login_required(login_url='login')
 def my_classes(request):
     classes = Classroom.objects.filter(owner=request.user)
@@ -133,46 +148,48 @@ def get_accessible_classrooms(user):
 def browse_classes(request):
     current_user = get_mock_user(request)
 
-    # Start with all classrooms
-    classrooms = Classroom.objects.all()
+    classrooms = Classroom.objects.all().select_related('owner')
 
-    # 1. Search Query Handling - Filtering matching your model's 'title' field
     search_query = request.GET.get('search', '')
     if search_query:
         classrooms = classrooms.filter(title__istartswith=search_query)
 
-    # 2. Public / Private Visibility Filters - Matching model choices ('public'/'private')
     visibility = request.GET.get('visibility', '')
     if visibility == 'public':
         classrooms = classrooms.filter(class_type='public')
     elif visibility == 'private':
         classrooms = classrooms.filter(class_type='private')
 
-    # 3. Alphabetical Sorting Filters - Sorting by 'title'
     sorting = request.GET.get('sorting', '')
     if sorting == 'az':
         classrooms = classrooms.order_by('title')
     elif sorting == 'za':
         classrooms = classrooms.order_by('-title')
 
-    # Gather system relations for UI button matching
+    # Query enrollments
     user_enrollments = Enrollment.objects.filter(student=current_user)
-    joined_class_ids = user_enrollments.filter(classroom_id__in=classrooms, status='approved').values_list(
-        'classroom_id', flat=True)
-    pending_class_ids = user_enrollments.filter(classroom_id__in=classrooms, status='pending').values_list(
-        'classroom_id', flat=True)
+    joined_class_ids = list(
+        user_enrollments.filter(status='approved').values_list('classroom_id', flat=True)
+    )
+    pending_class_ids = list(
+        user_enrollments.filter(status='pending').values_list('classroom_id', flat=True)
+    )
+
+    # Separate into joined vs available
+    joined_classes = classrooms.filter(class_id__in=joined_class_ids)
+    available_classes = classrooms.exclude(class_id__in=joined_class_ids)
 
     context = {
-        'classrooms': classrooms,
+        'joined_classes': joined_classes,
+        'available_classes': available_classes,
         'search_query': search_query,
         'visibility': visibility,
         'sorting': sorting,
-        'joined_class_ids': list(joined_class_ids),
-        'pending_class_ids': list(pending_class_ids),
+        'joined_class_ids': joined_class_ids,
+        'pending_class_ids': pending_class_ids,
         'current_user_name': current_user.username,
     }
     return render(request, 'browserClass.html', context)
-
 
 
 @login_required(login_url='login')

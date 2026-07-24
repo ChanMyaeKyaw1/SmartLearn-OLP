@@ -1156,3 +1156,22 @@ textarea.form-control {
         top: 14px;
     }
 }
+/* Card micro-interactions */
+.custom-hover-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+}
+
+.custom-hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+}
+
+/* Button animation */
+.custom-btn-hover {
+    transition: transform 0.2s ease;
+}
+
+.custom-btn-hover:hover {
+    transform: scale(1.05);
+}
