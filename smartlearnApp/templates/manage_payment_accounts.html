@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Manage Payment Accounts - SmartLearn{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 800px;">
+    <div class="styled-card p-4 bg-white rounded shadow-sm border">
+        <h2 class="mb-4" style="color: #2b4c3f;"><i class="fa-solid fa-wallet me-2"></i>Manage Payment Accounts</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Add New Account Form -->
+        <form method="POST" class="mb-5 p-3 rounded" style="background-color: #f8faf9; border: 1px solid #e4ebc6;">
+            {% csrf_token %}
+            <h5 class="mb-3 text-dark fw-bold">Add New Payment Method</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold">Payment Type</label>
+                    <select name="payment_type" class="form-select" required>
+                        <option value="">Select Type</option>
+                        <option value="KBZPay">KBZPay</option>
+                        <option value="Wave Money">Wave Money</option>
+                        <option value="CB Pay">CB Pay</option>
+                        <option value="AYA Pay">AYA Pay</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold">Account Name</label>
+                    <input type="text" name="account_name" class="form-control" placeholder="e.g. Aye Aye" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold">Account / Phone Number</label>
+                    <input type="text" name="account_number" class="form-control" placeholder="e.g. 09123456789" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-matcha-primary mt-3"><i class="fa-solid fa-plus me-1"></i> Add Payment Account</button>
+        </form>
+
+        <!-- Current Accounts List -->
+        <h5 class="fw-bold mb-3">Your Saved Payment Methods</h5>
+        {% if accounts %}
+            <div class="list-group">
+                {% for account in accounts %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                        <div>
+                            <span class="badge bg-success me-2">{{ account.payment_type }}</span>
+                            <strong>{{ account.account_name }}</strong>
+                            <span class="text-muted ms-2">({{ account.account_number }})</span>
+                        </div>
+                        <a href="{% url 'delete_payment_account' account.account_id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this payment method?');">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted italic">No payment accounts added yet. Add one above so students can transfer payment for your private classes.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

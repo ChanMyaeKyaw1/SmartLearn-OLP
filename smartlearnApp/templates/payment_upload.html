@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <!-- Messages / Alerts -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-4 p-md-5">
+                    <h3 class="fw-bold mb-4 text-success">Complete Enrollment Payment</h3>
+
+                    <div class="row g-4">
+                        <!-- Left Column: Dynamic Teacher Payment Methods -->
+                        <div class="col-md-5 border-end-md pe-md-4">
+                            <h5 class="fw-bold mb-1 text-secondary">Payment Methods</h5>
+                            <p class="text-muted small mb-3">Teacher: <b>{{ classroom.owner.username }}</b></p>
+                            <p class="text-muted small">Transfer the exact amount to one of the teacher's accounts below and upload your payment slip screenshot.</p>
+
+                            <div class="payment-accounts-list">
+                                {% for account in payment_accounts %}
+                                    <div class="p-3 mb-3 bg-light rounded-3 border-start border-4 border-success">
+                                        <div class="fw-bold text-dark">
+                                            <i class="fa-solid fa-wallet me-2 text-success"></i> {{ account.payment_type }}
+                                        </div>
+                                        <div class="text-muted small">Account Name: <b>{{ account.account_name }}</b></div>
+                                        <div class="fw-semibold text-dark mt-1">{{ account.account_number }}</div>
+                                    </div>
+                                {% empty %}
+                                    <div class="p-3 bg-light rounded-3 text-muted small">
+                                        <i class="fa-solid fa-circle-info me-1 text-warning"></i>
+                                        This teacher hasn't configured specific payment methods yet. Please contact <b>{{ classroom.owner.username }}</b> for transfer details.
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Enrollment & Payslip Upload Form -->
+                        <div class="col-md-7 ps-md-4">
+                            <div class="card border-0 bg-light rounded-4 p-3 p-md-4">
+                                <h5 class="fw-bold mb-3">Upload Payment Slip</h5>
+
+                                <form method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+
+                                    <!-- Student Name & Phone -->
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-bold">Student Name</label>
+                                            <input type="text" class="form-control bg-white" value="{{ request.user.username }}" readonly>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-bold">Phone Number</label>
+                                            <input type="text" name="phone" class="form-control" placeholder="09xxxxxxxxx" required>
+                                        </div>
+                                    </div>
+
+                                    <!-- Selected Class Details -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Enrolling Class</label>
+                                        <input type="text" class="form-control bg-white" value="{{ classroom.title }} (${{ classroom.price }})" readonly>
+                                    </div>
+
+                                    <!-- Dynamic Payment Type Selection -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Payment Method Used</label>
+                                        <select name="payment_type" class="form-select" required>
+                                            <option value="">-- Select Payment Method --</option>
+                                            {% for account in payment_accounts %}
+                                                <option value="{{ account.payment_type }}">{{ account.payment_type }} - {{ account.account_number }}</option>
+                                            {% empty %}
+                                                <option value="KPay">KPay</option>
+                                                <option value="Wave Pay">Wave Pay</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <!-- Payslip Image File Input -->
+                                    <div class="mb-4">
+                                        <label class="form-label small fw-bold">Upload Payslip Image</label>
+                                        <input type="file" name="payslip" accept="image/*" class="form-control" required>
+                                    </div>
+
+                                    <!-- Action Button -->
+                                    <button type="submit" class="btn btn-success w-100 py-3 fw-bold rounded-3">
+                                        <i class="fa-solid fa-paper-plane me-2"></i> Submit for Review
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

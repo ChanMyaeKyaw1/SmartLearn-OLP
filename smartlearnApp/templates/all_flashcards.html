@@ -10,8 +10,16 @@
         </div>
 
         <div class="d-flex align-items-center gap-3">
-            {% if can_create or request.user.is_authenticated %}
-                <a href="{% url 'create_topic_global' 'flashcards' %}" class="btn-primary">+ Create New Flashcards</a>
+            <!-- TEACHER MODE TOGGLE -->
+            <div class="teacher-toggle d-flex align-items-center gap-2">
+                <span><i class="fa-solid fa-chalkboard-user"></i> Teacher Mode</span>
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" role="switch" id="teacherModeToggle" style="cursor: pointer; width: 45px; height: 22px;">
+                </div>
+            </div>
+
+            {% if can_create %}
+                <a href="{% url 'create_flashcard_topic' %}" class="btn-primary">+ Create New Topic</a>
             {% endif %}
         </div>
     </div>

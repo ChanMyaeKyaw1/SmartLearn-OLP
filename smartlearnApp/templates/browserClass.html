@@ -101,7 +101,8 @@
                         {% elif classroom.class_type == 'public' %}
                             <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Join Class</a>
                         {% else %}
-                            <a href="{% url 'request_join_class' classroom.class_id %}" class="btn-primary card-action-btn-small">Request Entry (${{ classroom.price }})</a>
+                            <!-- 🟢 Updated URL to redirect to payment upload view -->
+                            <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">Request Entry (${{ classroom.price }})</a>
                         {% endif %}
                     </div>
                 </div>

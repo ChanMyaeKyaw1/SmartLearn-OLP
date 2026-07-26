@@ -29,7 +29,12 @@ urlpatterns = [
     path('flashcards/', views.all_flashcards_view, name='all_flashcards'),
     path('mcqs/', views.all_mcqs_view, name='all_mcqs'),
     path('classroom/<int:class_id>/student-results/', views.teacher_student_results, name='teacher_student_results'),
-    path('create/<str:item_type>/', views.create_topic_global, name='create_topic_global'),
+
+    path('classes/<int:class_id>/payment/', views.payment_upload_view, name='payment_upload'),
+
+    path('payments/manage/', views.manage_payment_accounts, name='manage_payment_accounts'),
+    path('payments/delete/<int:account_id>/', views.delete_payment_account, name='delete_payment_account'),
+
 ]
 
 

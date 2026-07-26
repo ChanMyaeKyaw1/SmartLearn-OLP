@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # ==========================================
-# 1. CLASSES MODEL
+# 1. CLASSES MODEL (Phase 1)
 # ==========================================
 class Classes(models.Model):
     CLASS_TYPES = [
@@ -21,9 +21,8 @@ class Classes(models.Model):
         return self.title
 
 # ==========================================
-# Phase 1 done here by Chan
+# Phase 2 (Classroom, Payment, Enrollment)
 # ==========================================
-
 
 class Classroom(models.Model):
     SUBJECT_CHOICES = [
@@ -51,7 +50,7 @@ class Classroom(models.Model):
         return self.title if self.title else "Unnamed Classroom"
 
 
-
+# Updated Enrollment model to track payslips & payment details
 class Enrollment(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending Approval'),
@@ -61,21 +60,22 @@ class Enrollment(models.Model):
     enrollment_id = models.AutoField(primary_key=True)
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name='enrollments', null=True, blank=True)
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrollments')
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    payment_type = models.CharField(max_length=50, null=True, blank=True)
+    payslip = models.ImageField(upload_to='payslips/', null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     requested_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        # Prevents a student from requesting the same class more than once
         unique_together = ('classroom', 'student')
 
     def __str__(self):
         return f"{self.student.username} -> {self.classroom.title if self.classroom else 'No Classroom'} ({self.status})"
 
 
-    # ==========================================
-    # Phase 2 done here by yoon
-    # ==========================================
-
+# ==========================================
+# Flashcards, MCQs & Quiz Attempts
+# ==========================================
 
 class Flashcard(models.Model):
     flashcard_id = models.AutoField(primary_key=True)
@@ -153,3 +153,16 @@ class QuizAttempt(models.Model):
 
     def __str__(self):
         return f"{self.student.username} - {self.classroom.title} ({self.score}/{self.total_questions})"
+
+
+# Teacher Payment Accounts model (KPay, WavePay, etc.)
+class PaymentAccount(models.Model):
+    account_id = models.AutoField(primary_key=True)
+    # 🟢 Add owner field linking to User
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payment_accounts', null=True, blank=True)
+    payment_type = models.CharField(max_length=50)  # e.g. KPay, Wave Money
+    account_name = models.CharField(max_length=100)
+    account_number = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.owner.username if self.owner else 'Admin'} - {self.payment_type} ({self.account_number})"

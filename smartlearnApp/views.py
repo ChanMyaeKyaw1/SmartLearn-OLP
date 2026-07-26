@@ -1,103 +1,34 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from collections import OrderedDict
+
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db.models import Count
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
+
 from .models import Classroom, Enrollment, Flashcard, FlashcardTopicReaction, MCQQuestion, QuizAttempt
 
-def get_mock_user(request=None):
-    username = "TestUser"
-    if request:
-        username = request.GET.get('user', request.POST.get('user', 'TestUser'))
-    user, created = User.objects.get_or_create(username=username)
-    return user
 
-def home_view(request):
-    return render(request, 'home.html')
-
-def login_view(request):
-    if request.user.is_authenticated: return redirect('dashboard')
-    if request.method == 'POST':
-        user = authenticate(request, username=request.POST.get('username'), password=request.POST.get('password'))
-        if user:
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            return redirect('dashboard')
-    return render(request, 'login.html')
-
-def register_view(request):
-    if request.method == 'POST':
-        user = User.objects.create_user(username=request.POST.get('username'), password=request.POST.get('password1'))
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return redirect('dashboard')
-    return render(request, 'register.html')
-
-
-@login_required(login_url='login')
-def dashboard_view(request):
-    # 1. Created classes (Teacher Mode)
-    my_classes = Classroom.objects.filter(
-        owner=request.user,
-        created_from_site=True
-    )
-    
-    # 2. Joined classes (where user enrollment is approved)
-    joined_classrooms = Classroom.objects.filter(
-        enrollments__student=request.user,
-        enrollments__status='approved'
-    ).select_related('owner')
-
-    # 3. All system classes (excluding classes owned or already joined)
-    available_classes = Classroom.objects.exclude(
-        owner=request.user
-    ).exclude(
-        enrollments__student=request.user,
-        enrollments__status='approved'
-    ).select_related('owner')
-
-    return render(request, 'dashboard.html', {
-        'my_classes': my_classes,
-        'joined_classrooms': joined_classrooms,
-        'available_classes': available_classes,
-    })
-
-@login_required(login_url='login')
-def my_classes(request):
-    classes = Classroom.objects.filter(owner=request.user)
-
-    return render(request, 'my_classes.html', {
-        'classes': classes
-    })
-
-
-
-
-def logout_view(request):
-    logout(request)
-    return redirect('home')
-
-
-import django.contrib.messages as django_alerts
-
-from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
-from .models import Classroom, Enrollment
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import PaymentAccount
 
+# ==========================================
+# HELPER FUNCTIONS & ACCESS CONTROL
+# ==========================================
 
 def get_mock_user(request=None):
-    """ 
-    ONE UNIFIED HELPER: Dynamically switch test users by checking POST body, 
-    GET parameters, or falling back to 'TestUser'.
+    """
+    Unified helper to get or simulate the logged-in user.
     """
     if request and request.user.is_authenticated:
         return request.user
 
     username = "TestUser"
     if request:
-        # Check POST payload first (important for forms), then query string strings
         username = request.POST.get('user') or request.GET.get('user') or 'TestUser'
 
     user, created = User.objects.get_or_create(username=username)
@@ -143,6 +74,111 @@ def get_accessible_classrooms(user):
             accessible.append(classroom)
 
     return accessible
+
+
+# ==========================================
+# AUTHENTICATION & LANDING
+# ==========================================
+
+def home_view(request):
+    total_classes = Classroom.objects.count()
+    total_flashcards = Flashcard.objects.count()
+    total_mcqs = MCQQuestion.objects.count()
+
+    context = {
+        'total_classes': total_classes,
+        'total_flashcards': total_flashcards,
+        'total_mcqs': total_mcqs,
+    }
+    return render(request, 'home.html', context)
+
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    if request.method == 'POST':
+        user = authenticate(request, username=request.POST.get('username'), password=request.POST.get('password'))
+        if user:
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            return redirect('dashboard')
+    return render(request, 'login.html')
+
+
+def register_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return render(request, 'register.html')
+
+        if User.objects.filter(username__iexact=username).exists():
+            messages.error(request, "A user with that username already exists. Please choose a different one.")
+            return render(request, 'register.html')
+
+        # 1. Create the user
+        user = User.objects.create_user(username=username, email=email, password=password)
+
+        # 2. 🟢 Authenticate the user immediately
+        # This automatically attaches user.backend = 'django.contrib.auth.backends.ModelBackend'
+        authenticated_user = authenticate(request, username=username, password=password)
+
+        if authenticated_user is not None:
+            login(request, authenticated_user)
+
+        messages.success(request, f"Welcome to SmartLearn, {user.username}!")
+        return redirect('dashboard')
+
+    return render(request, 'register.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
+
+
+# ==========================================
+# DASHBOARD & CLASSROOM MANAGEMENT
+# ==========================================
+
+@login_required(login_url='login')
+def dashboard_view(request):
+    # 1. Created classes (Teacher Mode)
+    my_classes = Classroom.objects.filter(
+        owner=request.user,
+        created_from_site=True
+    )
+
+    # 2. Joined classes (where user enrollment is approved)
+    joined_classrooms = Classroom.objects.filter(
+        enrollments__student=request.user,
+        enrollments__status='approved'
+    ).select_related('owner')
+
+    # 3. All system classes (excluding classes owned or already joined)
+    available_classes = Classroom.objects.exclude(
+        owner=request.user
+    ).exclude(
+        enrollments__student=request.user,
+        enrollments__status='approved'
+    ).select_related('owner')
+
+    return render(request, 'dashboard.html', {
+        'my_classes': my_classes,
+        'joined_classrooms': joined_classrooms,
+        'available_classes': available_classes,
+    })
+
+
+@login_required(login_url='login')
+def my_classes(request):
+    classes = Classroom.objects.filter(owner=request.user)
+
+    return render(request, 'my_classes.html', {
+        'classes': classes
+    })
 
 
 def browse_classes(request):
@@ -210,14 +246,13 @@ def create_class(request):
             description=description if description else "No description provided.",
             class_type=class_type2,
             price=price,
-            owner=request.user ,  # ဒီနေရာကိုပြောင်း
+            owner=request.user,
             created_from_site=True
         )
 
         return redirect('dashboard')
 
     return render(request, 'createClass.html')
-
 
 
 def delete_class(request, class_id):
@@ -229,10 +264,35 @@ def delete_class(request, class_id):
     return redirect(f"/classes/browse/?user={current_user.username}")
 
 
+def classroom_detail(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+    current_user, blocked_response = require_classroom_access(request, classroom)
+    if blocked_response:
+        return blocked_response
+
+    return render(
+        request,
+        "classroom_detail.html",
+        {
+            "classroom": classroom
+        }
+    )
 
 
+def serve_dashboard_page(request):
+    user = get_mock_user(request)
+    return render(request, 'dashboard.html', {
+        'current_user_name': user.username
+    })
 
 
+def profile_edit(request):
+    return render(request, 'profile_edit.html')
+
+
+# ==========================================
+# ENROLLMENTS & PAYMENTS
+# ==========================================
 
 def request_join_class(request, class_id):
     current_user = get_mock_user(request)
@@ -253,9 +313,6 @@ def request_join_class(request, class_id):
         )
 
     return redirect('browse_classes')
-
-
-
 
 
 def manage_enrollments(request, class_id):
@@ -292,41 +349,34 @@ def update_enrollment_status(request, enrollment_id, action):
     return redirect('manage_enrollments', class_id=enrollment.classroom.class_id)
 
 
-def serve_dashboard_page(request):
-    user = get_mock_user(request)
-    return render(request, 'dashboard.html', {
-        'current_user_name': user.username
-    })
+@login_required(login_url='login')
+def payment_upload_view(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
 
+    if request.method == 'POST':
+        phone = request.POST.get('phone')
+        payment_type = request.POST.get('payment_type')
+        payslip = request.FILES.get('payslip')
 
-def profile_edit():
-    return None
+        # Create pending enrollment request with payment details
+        Enrollment.objects.create(
+            student=request.user,
+            classroom=classroom,
+            phone=phone,
+            payment_type=payment_type,
+            payslip=payslip,
+            status='pending'
+        )
+
+        messages.success(request, "Your payment slip has been uploaded successfully! Your enrollment status is now pending review.")
+        return redirect('browse_classes')
+
+    return render(request, 'payment_upload.html', {'classroom': classroom})
+
 
 # ==========================================
-# Phase 1 done here by yoon
+# FLASHCARDS
 # ==========================================
-def classroom_detail(request, class_id):
-
-    classroom = get_object_or_404(
-        Classroom,
-        class_id=class_id
-    )
-    current_user, blocked_response = require_classroom_access(request, classroom)
-    if blocked_response:
-        return blocked_response
-
-    return render(
-        request,
-        "classroom_detail.html",
-        {
-            "classroom": classroom
-        }
-    )
-
-# ==========================================
-# Phase 5 done here by MHK
-# ==========================================
-
 
 def flashcards_view(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
@@ -460,7 +510,7 @@ def flashcards_view(request, class_id):
 
 
 def all_flashcards_view(request):
-    current_user =request.user 
+    current_user = request.user
     accessible_classrooms = get_accessible_classrooms(current_user)
 
     flashcard_groups = []
@@ -516,61 +566,6 @@ def all_flashcards_view(request):
     })
 
 
-def all_mcqs_view(request):
-    current_user = request.user
-    accessible_classrooms = get_accessible_classrooms(current_user)
-    can_create = request.user.is_authenticated
-
-    mcq_groups = []
-    for classroom in accessible_classrooms:
-        classroom_questions = list(
-            MCQQuestion.objects.filter(classroom=classroom)
-            .select_related('created_by')
-            .order_by('topic', '-created_at')
-        )
-
-        classroom_topic_map = OrderedDict()
-        for question_item in classroom_questions:
-            group_key = question_item.topic
-            group = classroom_topic_map.get(group_key)
-            if not group:
-                group = {
-                    'classroom_id': classroom.class_id,
-                    'classroom_title': classroom.title,
-                    'class_type': classroom.class_type,
-                    'topic': question_item.topic,
-                    'topic_slug': slugify(question_item.topic) or 'mcq-topic',
-                    'preview_question': question_item.question,
-                    'questions': [],
-                    'contributors': [],
-                    'primary_creator': question_item.created_by.username,
-                }
-                classroom_topic_map[group_key] = group
-
-            group['questions'].append(question_item)
-            if question_item.created_by.username not in group['contributors']:
-                group['contributors'].append(question_item.created_by.username)
-
-        for group in classroom_topic_map.values():
-            contributor_count = len(group['contributors'])
-            if contributor_count == 1:
-                contributor_summary = group['contributors'][0]
-            else:
-                contributor_summary = f"{group['contributors'][0]} + {contributor_count - 1} more"
-
-            group['total_questions'] = len(group['questions'])
-            group['contributor_summary'] = contributor_summary
-            mcq_groups.append(group)
-
-    return render(request, 'all_mcqs.html', {
-        'current_user': current_user,
-        'mcq_groups': mcq_groups,
-        'total_questions': sum(group['total_questions'] for group in mcq_groups),
-        'total_topics': len(mcq_groups),
-        'can_create': can_create,
-    })
-
-
 def toggle_flashcard_topic_reaction(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
     current_user, blocked_response = require_classroom_access(request, classroom)
@@ -608,6 +603,10 @@ def toggle_flashcard_topic_reaction(request, class_id):
 
     return redirect('flashcards', class_id=classroom.class_id)
 
+
+# ==========================================
+# MCQS & QUIZZES
+# ==========================================
 
 def mcqs_view(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
@@ -730,6 +729,59 @@ def mcqs_view(request, class_id):
     })
 
 
+def all_mcqs_view(request):
+    current_user = request.user
+    accessible_classrooms = get_accessible_classrooms(current_user)
+
+    mcq_groups = []
+    for classroom in accessible_classrooms:
+        classroom_questions = list(
+            MCQQuestion.objects.filter(classroom=classroom)
+            .select_related('created_by')
+            .order_by('topic', '-created_at')
+        )
+
+        classroom_topic_map = OrderedDict()
+        for question_item in classroom_questions:
+            group_key = question_item.topic
+            group = classroom_topic_map.get(group_key)
+            if not group:
+                group = {
+                    'classroom_id': classroom.class_id,
+                    'classroom_title': classroom.title,
+                    'class_type': classroom.class_type,
+                    'topic': question_item.topic,
+                    'topic_slug': slugify(question_item.topic) or 'mcq-topic',
+                    'preview_question': question_item.question,
+                    'questions': [],
+                    'contributors': [],
+                    'primary_creator': question_item.created_by.username,
+                }
+                classroom_topic_map[group_key] = group
+
+            group['questions'].append(question_item)
+            if question_item.created_by.username not in group['contributors']:
+                group['contributors'].append(question_item.created_by.username)
+
+        for group in classroom_topic_map.values():
+            contributor_count = len(group['contributors'])
+            if contributor_count == 1:
+                contributor_summary = group['contributors'][0]
+            else:
+                contributor_summary = f"{group['contributors'][0]} + {contributor_count - 1} more"
+
+            group['total_questions'] = len(group['questions'])
+            group['contributor_summary'] = contributor_summary
+            mcq_groups.append(group)
+
+    return render(request, 'all_mcqs.html', {
+        'current_user': current_user,
+        'mcq_groups': mcq_groups,
+        'total_questions': sum(group['total_questions'] for group in mcq_groups),
+        'total_topics': len(mcq_groups),
+    })
+
+
 def take_quiz_view(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
     current_user, blocked_response = require_classroom_access(request, classroom)
@@ -839,33 +891,15 @@ def quiz_result(request, attempt_id):
         'percentage': percentage,
     })
 
-# views.py
-from django.shortcuts import render
-from .models import Classroom, Flashcard, MCQQuestion  
-
-def home_view(request):
-    # Query database counts
-    total_classes = Classroom.objects.count()
-    total_flashcards = Flashcard.objects.count()
-    total_mcqs = MCQQuestion.objects.count()
-
-    context = {
-        'total_classes': total_classes,
-        'total_flashcards': total_flashcards,
-        'total_mcqs': total_mcqs,
-    }
-    return render(request, 'home.html', context)
 
 @login_required(login_url='login')
 def teacher_student_results(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
-    
-    # Restrict access to classroom owner/teacher
+
     if classroom.owner != request.user:
         messages.error(request, "Only the class instructor can access student quiz scores.")
         return redirect('classroom_detail', class_id=classroom.class_id)
 
-    # Fetch all student quiz attempts for this classroom
     attempts = QuizAttempt.objects.filter(classroom=classroom).select_related('student').order_by('-taken_at')
 
     return render(request, 'teacher_student_results.html', {
@@ -873,76 +907,65 @@ def teacher_student_results(request, class_id):
         'attempts': attempts
     })
 
-@login_required
-def create_topic_global(request, item_type):
-    """
-    Handles global creation of Flashcards or MCQs with Classroom selection/creation.
-    item_type is either 'flashcards' or 'mcqs'
-    """
+
+
+
+
+@login_required(login_url='login')
+def payment_upload_view(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+
+    # 🟢 Fetch the payment accounts created by the owner (teacher) of this classroom
+    payment_accounts = PaymentAccount.objects.filter(owner=classroom.owner)
+
     if request.method == 'POST':
-        class_mode = request.POST.get('class_mode')
-        topic = request.POST.get('topic')
-        
-        # 1. Resolve Classroom (Existing or New)
-        if class_mode == 'new':
-            new_title = request.POST.get('new_class_title')
-            classroom = Classroom.objects.create(
-                title=new_title,
+        phone = request.POST.get('phone')
+        payment_type = request.POST.get('payment_type')
+        payslip = request.FILES.get('payslip')
+
+        # Record pending enrollment
+        Enrollment.objects.update_or_create(
+            student=request.user,
+            classroom=classroom,
+            defaults={
+                'phone': phone,
+                'payment_type': payment_type,
+                'payslip': payslip,
+                'status': 'pending',
+            }
+        )
+
+        messages.success(request, "Your payment slip has been uploaded successfully! Your request is pending review.")
+        return redirect('browse_classes')
+
+    return render(request, 'payment_upload.html', {
+        'classroom': classroom,
+        'payment_accounts': payment_accounts,  # 🟢 Pass to template
+    })
+
+@login_required(login_url='login')
+def manage_payment_accounts(request):
+    if request.method == 'POST':
+        payment_type = request.POST.get('payment_type')
+        account_name = request.POST.get('account_name')
+        account_number = request.POST.get('account_number')
+
+        if payment_type and account_name and account_number:
+            PaymentAccount.objects.create(
                 owner=request.user,
-                class_type='public' # default type
+                payment_type=payment_type,
+                account_name=account_name,
+                account_number=account_number
             )
-        else:
-            classroom_id = request.POST.get('classroom_id')
-            classroom = get_object_or_404(Classroom, class_id=classroom_id)
+            messages.success(request, "Payment method added successfully!")
+            return redirect('manage_payment_accounts')
 
-        # 2. Handle Flashcards POST
-        if item_type == 'flashcards':
-            fronts = request.POST.getlist('front')
-            backs = request.POST.getlist('back')
+    accounts = PaymentAccount.objects.filter(owner=request.user)
+    return render(request, 'manage_payment_accounts.html', {'accounts': accounts})
 
-            for front, back in zip(fronts, backs):
-                if front.strip() and back.strip():
-                    Flashcard.objects.create(
-                        classroom=classroom,
-                        topic=topic,
-                        front=front,
-                        back=back,
-                        created_by=request.user
-                    )
-            return redirect('all_flashcards')
-
-        # 3. Handle MCQs POST
-        elif item_type == 'mcqs':
-            questions = request.POST.getlist('question')
-            opts_a = request.POST.getlist('option_a')
-            opts_b = request.POST.getlist('option_b')
-            opts_c = request.POST.getlist('option_c')
-            opts_d = request.POST.getlist('option_d')
-            corrects = request.POST.getlist('correct_option')
-            explanations = request.POST.getlist('explanation')
-
-            for i in range(len(questions)):
-                if questions[i].strip():
-                    MCQQuestion.objects.create(
-                        classroom=classroom,
-                        topic=topic,
-                        question=questions[i],
-                        option_a=opts_a[i],
-                        option_b=opts_b[i],
-                        option_c=opts_c[i],
-                        option_d=opts_d[i],
-                        correct_option=corrects[i],
-                        explanation=explanations[i] if i < len(explanations) else '',
-                        created_by=request.user
-                    )
-            return redirect('all_mcqs')
-
-    # GET Request: Fetch available user classes
-    # Fetch classes where user is owner or enrolled
-    classrooms = Classroom.objects.filter(owner=request.user) # adjust query based on your enrollment logic
-    
-    context = {
-        'item_type': item_type,
-        'classrooms': classrooms
-    }
-    return render(request, 'create_topic.html', context)
+@login_required(login_url='login')
+def delete_payment_account(request, account_id):
+    account = get_object_or_404(PaymentAccount, account_id=account_id, owner=request.user)
+    account.delete()
+    messages.success(request, "Payment method removed successfully.")
+    return redirect('manage_payment_accounts')
