@@ -519,6 +519,7 @@ def all_flashcards_view(request):
 def all_mcqs_view(request):
     current_user = request.user
     accessible_classrooms = get_accessible_classrooms(current_user)
+    can_create = request.user.is_authenticated
 
     mcq_groups = []
     for classroom in accessible_classrooms:
@@ -566,6 +567,7 @@ def all_mcqs_view(request):
         'mcq_groups': mcq_groups,
         'total_questions': sum(group['total_questions'] for group in mcq_groups),
         'total_topics': len(mcq_groups),
+        'can_create': can_create,
     })
 
 
@@ -870,3 +872,77 @@ def teacher_student_results(request, class_id):
         'classroom': classroom,
         'attempts': attempts
     })
+
+@login_required
+def create_topic_global(request, item_type):
+    """
+    Handles global creation of Flashcards or MCQs with Classroom selection/creation.
+    item_type is either 'flashcards' or 'mcqs'
+    """
+    if request.method == 'POST':
+        class_mode = request.POST.get('class_mode')
+        topic = request.POST.get('topic')
+        
+        # 1. Resolve Classroom (Existing or New)
+        if class_mode == 'new':
+            new_title = request.POST.get('new_class_title')
+            classroom = Classroom.objects.create(
+                title=new_title,
+                owner=request.user,
+                class_type='public' # default type
+            )
+        else:
+            classroom_id = request.POST.get('classroom_id')
+            classroom = get_object_or_404(Classroom, class_id=classroom_id)
+
+        # 2. Handle Flashcards POST
+        if item_type == 'flashcards':
+            fronts = request.POST.getlist('front')
+            backs = request.POST.getlist('back')
+
+            for front, back in zip(fronts, backs):
+                if front.strip() and back.strip():
+                    Flashcard.objects.create(
+                        classroom=classroom,
+                        topic=topic,
+                        front=front,
+                        back=back,
+                        created_by=request.user
+                    )
+            return redirect('all_flashcards')
+
+        # 3. Handle MCQs POST
+        elif item_type == 'mcqs':
+            questions = request.POST.getlist('question')
+            opts_a = request.POST.getlist('option_a')
+            opts_b = request.POST.getlist('option_b')
+            opts_c = request.POST.getlist('option_c')
+            opts_d = request.POST.getlist('option_d')
+            corrects = request.POST.getlist('correct_option')
+            explanations = request.POST.getlist('explanation')
+
+            for i in range(len(questions)):
+                if questions[i].strip():
+                    MCQQuestion.objects.create(
+                        classroom=classroom,
+                        topic=topic,
+                        question=questions[i],
+                        option_a=opts_a[i],
+                        option_b=opts_b[i],
+                        option_c=opts_c[i],
+                        option_d=opts_d[i],
+                        correct_option=corrects[i],
+                        explanation=explanations[i] if i < len(explanations) else '',
+                        created_by=request.user
+                    )
+            return redirect('all_mcqs')
+
+    # GET Request: Fetch available user classes
+    # Fetch classes where user is owner or enrolled
+    classrooms = Classroom.objects.filter(owner=request.user) # adjust query based on your enrollment logic
+    
+    context = {
+        'item_type': item_type,
+        'classrooms': classrooms
+    }
+    return render(request, 'create_topic.html', context)

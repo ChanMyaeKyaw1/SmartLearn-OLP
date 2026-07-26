@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% block title %}Create {{ item_type|title }} - SmartLearn{% endblock %}
+
+{% block content %}
+<div class="learning-page-header">
+    <a href="javascript:history.back()" class="back-link">← Back</a>
+    <div class="learning-title-row">
+        <div>
+            <h2 class="page-heading-large">Create New {{ item_type|title }} Set</h2>
+            <p class="subtext-muted">Add a new topic set under an existing class or create a new classroom on the fly.</p>
+        </div>
+    </div>
+</div>
+
+<div class="styled-card max-width-800 mx-auto p-4">
+    <form method="POST" id="create-topic-form">
+        {% csrf_token %}
+
+        <!-- CLASSROOM SELECTION / CREATION SWITCH -->
+        <div class="card p-3 mb-4 bg-light border-0 rounded-3">
+            <h5 class="fw-bold mb-3"><i class="fa-solid fa-chalkboard me-2"></i>Classroom Assignment</h5>
+            
+            <div class="mb-3">
+                <label class="label-bold">Choose Destination:</label>
+                <div class="d-flex gap-4 mt-1">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="class_mode" id="mode_existing" value="existing" checked onclick="toggleClassMode('existing')">
+                        <label class="form-check-label fw-semibold" for="mode_existing">
+                            Select Existing Class
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="class_mode" id="mode_new" value="new" onclick="toggleClassMode('new')">
+                        <label class="form-check-label fw-semibold" for="mode_new">
+                            + Create New Class
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing Class Dropdown -->
+            <div id="existing-class-group" class="mb-2">
+                <label class="label-bold">Select Class</label>
+                <select name="classroom_id" id="classroom_select" class="form-control" required>
+                    <option value="" disabled selected>-- Choose an enrolled/owned class --</option>
+                    {% for classroom in classrooms %}
+                        <option value="{{ classroom.class_id }}">{{ classroom.title }} ({% if classroom.owner == request.user %}Owner{% else %}Enrolled{% endif %})</option>
+                    {% empty %}
+                        <option value="" disabled>No existing classes available. Choose "Create New Class".</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- New Class Field (Hidden by default) -->
+            <div id="new-class-group" class="mb-2" style="display: none;">
+                <label class="label-bold">New Class Name</label>
+                <input type="text" name="new_class_title" id="new_class_input" class="form-control" placeholder="e.g. Web Development 101">
+            </div>
+        </div>
+
+        <!-- TOPIC NAME -->
+        <div class="mb-4">
+            <label class="label-bold">Topic Name</label>
+            <input type="text" name="topic" class="form-control" placeholder="e.g. Database Keys / Python Functions" required>
+        </div>
+
+        <hr class="my-4">
+
+        <!-- DYNAMIC CONTENT (FLASHCARDS OR MCQS) -->
+        {% if item_type == 'flashcards' %}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="section-heading m-0">Flashcard Entries</h4>
+                <button type="button" class="btn-secondary" id="add-card-btn">+ Add More Flashcards</button>
+            </div>
+
+            <div id="entry-list">
+                <article class="flashcard-entry-card card p-3 mb-3">
+                    <span class="topic-card-count fw-bold mb-2 d-block">Card 1</span>
+                    <label class="label-bold">Front</label>
+                    <textarea name="front" class="form-control mb-2" rows="2" placeholder="Question or term" required></textarea>
+
+                    <label class="label-bold">Back</label>
+                    <textarea name="back" class="form-control" rows="3" placeholder="Answer or explanation" required></textarea>
+                </article>
+            </div>
+
+        {% elif item_type == 'mcqs' %}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="section-heading m-0">MCQ Questions</h4>
+                <button type="button" class="btn-secondary" id="add-mcq-btn">+ Add More Questions</button>
+            </div>
+
+            <div id="entry-list">
+                <article class="flashcard-entry-card card p-3 mb-3">
+                    <span class="topic-card-count fw-bold mb-2 d-block">Question 1</span>
+
+                    <label class="label-bold">Question</label>
+                    <textarea name="question" class="form-control mb-2" rows="2" required></textarea>
+
+                    <label class="label-bold">Options</label>
+                    <input type="text" name="option_a" class="form-control compact-input mb-1" placeholder="Option A" required>
+                    <input type="text" name="option_b" class="form-control compact-input mb-1" placeholder="Option B" required>
+                    <input type="text" name="option_c" class="form-control compact-input mb-1" placeholder="Option C" required>
+                    <input type="text" name="option_d" class="form-control compact-input mb-2" placeholder="Option D" required>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="label-bold">Correct Answer</label>
+                            <select name="correct_option" class="form-control mb-2" required>
+                                <option value="A">Option A</option>
+                                <option value="B">Option B</option>
+                                <option value="C">Option C</option>
+                                <option value="D">Option D</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="label-bold">Explanation (Optional)</label>
+                    <textarea name="explanation" class="form-control" rows="2" placeholder="Optional explanation"></textarea>
+                </article>
+            </div>
+        {% endif %}
+
+        <button type="submit" class="btn-primary full-width-btn mt-4 py-3 fw-bold">
+            Create {{ item_type|title }} Topic
+        </button>
+    </form>
+</div>
+
+<!-- TOGGLE AND DYNAMIC ROW SCRIPT -->
+<script>
+    function toggleClassMode(mode) {
+        const existingGroup = document.getElementById('existing-class-group');
+        const newGroup = document.getElementById('new-class-group');
+        const classSelect = document.getElementById('classroom_select');
+        const classInput = document.getElementById('new_class_input');
+
+        if (mode === 'existing') {
+            existingGroup.style.display = 'block';
+            newGroup.style.display = 'none';
+            classSelect.required = true;
+            classInput.required = false;
+        } else {
+            existingGroup.style.display = 'none';
+            newGroup.style.display = 'block';
+            classSelect.required = false;
+            classInput.required = true;
+        }
+    }
+
+    // Dynamic row addition for flashcards
+    const addCardBtn = document.getElementById('add-card-btn');
+    if (addCardBtn) {
+        let cardCount = 1;
+        addCardBtn.addEventListener('click', () => {
+            cardCount++;
+            const entryList = document.getElementById('entry-list');
+            const cardHTML = `
+                <article class="flashcard-entry-card card p-3 mb-3 position-relative">
+                    <span class="topic-card-count fw-bold mb-2 d-block">Card ${cardCount}</span>
+                    <label class="label-bold">Front</label>
+                    <textarea name="front" class="form-control mb-2" rows="2" placeholder="Question or term" required></textarea>
+
+                    <label class="label-bold">Back</label>
+                    <textarea name="back" class="form-control" rows="3" placeholder="Answer or explanation" required></textarea>
+                </article>`;
+            entryList.insertAdjacentHTML('beforeend', cardHTML);
+        });
+    }
+
+    // Dynamic row addition for MCQs
+    const addMcqBtn = document.getElementById('add-mcq-btn');
+    if (addMcqBtn) {
+        let mcqCount = 1;
+        addMcqBtn.addEventListener('click', () => {
+            mcqCount++;
+            const entryList = document.getElementById('entry-list');
+            const mcqHTML = `
+                <article class="flashcard-entry-card card p-3 mb-3">
+                    <span class="topic-card-count fw-bold mb-2 d-block">Question ${mcqCount}</span>
+                    <label class="label-bold">Question</label>
+                    <textarea name="question" class="form-control mb-2" rows="2" required></textarea>
+
+                    <label class="label-bold">Options</label>
+                    <input type="text" name="option_a" class="form-control compact-input mb-1" placeholder="Option A" required>
+                    <input type="text" name="option_b" class="form-control compact-input mb-1" placeholder="Option B" required>
+                    <input type="text" name="option_c" class="form-control compact-input mb-1" placeholder="Option C" required>
+                    <input type="text" name="option_d" class="form-control compact-input mb-2" placeholder="Option D" required>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="label-bold">Correct Answer</label>
+                            <select name="correct_option" class="form-control mb-2" required>
+                                <option value="A">Option A</option>
+                                <option value="B">Option B</option>
+                                <option value="C">Option C</option>
+                                <option value="D">Option D</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="label-bold">Explanation (Optional)</label>
+                    <textarea name="explanation" class="form-control" rows="2" placeholder="Optional explanation"></textarea>
+                </article>`;
+            entryList.insertAdjacentHTML('beforeend', mcqHTML);
+        });
+    }
+</script>
+{% endblock %}
