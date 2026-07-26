@@ -34,7 +34,7 @@ urlpatterns = [
 
     path('payments/manage/', views.manage_payment_accounts, name='manage_payment_accounts'),
     path('payments/delete/<int:account_id>/', views.delete_payment_account, name='delete_payment_account'),
-
+    path('create/<str:item_type>/', views.create_topic_global, name='create_topic_global'),
 ]
 
 
