@@ -972,29 +972,30 @@ def delete_payment_account(request, account_id):
     messages.success(request, "Payment method removed successfully.")
     return redirect('manage_payment_accounts')
 
+from django.db.models import Q
+
 @login_required
 def create_topic_global(request, item_type):
     """
-    Handles global creation of Flashcards or MCQs with Classroom selection/creation.
-    item_type is either 'flashcards' or 'mcqs'
+    Handles global creation of Flashcards or MCQs with dynamic classroom filtering.
     """
     if request.method == 'POST':
         class_mode = request.POST.get('class_mode')
         topic = request.POST.get('topic')
         
-        # 1. Resolve Classroom (Existing or New)
+        # 1. Resolve Classroom
         if class_mode == 'new':
             new_title = request.POST.get('new_class_title')
             classroom = Classroom.objects.create(
                 title=new_title,
                 owner=request.user,
-                class_type='public' # default type
+                class_type='public'
             )
         else:
             classroom_id = request.POST.get('classroom_id')
             classroom = get_object_or_404(Classroom, class_id=classroom_id)
 
-        # 2. Handle Flashcards POST
+        # 2. Save Flashcards
         if item_type == 'flashcards':
             fronts = request.POST.getlist('front')
             backs = request.POST.getlist('back')
@@ -1010,7 +1011,7 @@ def create_topic_global(request, item_type):
                     )
             return redirect('all_flashcards')
 
-        # 3. Handle MCQs POST
+        # 3. Save MCQs
         elif item_type == 'mcqs':
             questions = request.POST.getlist('question')
             opts_a = request.POST.getlist('option_a')
@@ -1036,12 +1037,13 @@ def create_topic_global(request, item_type):
                     )
             return redirect('all_mcqs')
 
-    # GET Request: Fetch available user classes
-    # Fetch classes where user is owner or enrolled
-    classrooms = Classroom.objects.filter(owner=request.user) # adjust query based on your enrollment logic
-    
+    # GET Request: Fetch owned vs public classes separately or mark them
+    all_classes = Classroom.objects.filter(
+        Q(class_type='public') | Q(owner=request.user)
+    ).distinct()
+
     context = {
         'item_type': item_type,
-        'classrooms': classrooms
+        'classrooms': all_classes,
     }
     return render(request, 'create_topic.html', context)

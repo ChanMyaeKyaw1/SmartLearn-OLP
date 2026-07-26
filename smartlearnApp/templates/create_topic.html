@@ -4,11 +4,14 @@
 {% block content %}
 <div class="learning-page-header">
     <a href="javascript:history.back()" class="back-link">← Back</a>
-    <div class="learning-title-row">
+    <div class="learning-title-row d-flex justify-content-between align-items-center">
         <div>
             <h2 class="page-heading-large">Create New {{ item_type|title }} Set</h2>
-            <p class="subtext-muted">Add a new topic set under an existing class or create a new classroom on the fly.</p>
+            <p class="subtext-muted">Add content to your classes or public classrooms.</p>
         </div>
+        
+        <!-- Mode Indicator Badge -->
+        <span id="mode-status-badge" class="badge rounded-pill px-3 py-2 fw-semibold"></span>
     </div>
 </div>
 
@@ -16,7 +19,7 @@
     <form method="POST" id="create-topic-form">
         {% csrf_token %}
 
-        <!-- CLASSROOM SELECTION / CREATION SWITCH -->
+        <!-- CLASSROOM SELECTION / CREATION -->
         <div class="card p-3 mb-4 bg-light border-0 rounded-3">
             <h5 class="fw-bold mb-3"><i class="fa-solid fa-chalkboard me-2"></i>Classroom Assignment</h5>
             
@@ -26,7 +29,7 @@
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="class_mode" id="mode_existing" value="existing" checked onclick="toggleClassMode('existing')">
                         <label class="form-check-label fw-semibold" for="mode_existing">
-                            Select Existing Class
+                            Select Class
                         </label>
                     </div>
                     <div class="form-check">
@@ -42,13 +45,17 @@
             <div id="existing-class-group" class="mb-2">
                 <label class="label-bold">Select Class</label>
                 <select name="classroom_id" id="classroom_select" class="form-control" required>
-                    <option value="" disabled selected>-- Choose an enrolled/owned class --</option>
+                    <option value="" disabled selected>-- Choose a class --</option>
                     {% for classroom in classrooms %}
-                        <option value="{{ classroom.class_id }}">{{ classroom.title }} ({% if classroom.owner == request.user %}Owner{% else %}Enrolled{% endif %})</option>
-                    {% empty %}
-                        <option value="" disabled>No existing classes available. Choose "Create New Class".</option>
+                        <option 
+                            value="{{ classroom.class_id }}" 
+                            data-is-owner="{% if classroom.owner == request.user %}true{% else %}false{% endif %}"
+                            data-is-public="{% if classroom.class_type == 'public' %}true{% else %}false{% endif %}">
+                            {{ classroom.title }} {% if classroom.owner == request.user %}(Created by You){% else %}(Public Class){% endif %}
+                        </option>
                     {% endfor %}
                 </select>
+                <small id="class-filter-hint" class="text-muted d-block mt-1"></small>
             </div>
 
             <!-- New Class Field (Hidden by default) -->
@@ -127,8 +134,54 @@
     </form>
 </div>
 
-<!-- TOGGLE AND DYNAMIC ROW SCRIPT -->
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const isTeacherMode = localStorage.getItem("teacherMode") === "true";
+        const selectElement = document.getElementById("classroom_select");
+        const options = selectElement.querySelectorAll("option");
+        const hintText = document.getElementById("class-filter-hint");
+        const badge = document.getElementById("mode-status-badge");
+
+        // 1. Apply Filtering based on Teacher Mode
+        let visibleOptions = 0;
+
+        options.forEach(option => {
+            if (!option.value) return; // Skip placeholder option
+
+            const isOwner = option.getAttribute("data-is-owner") === "true";
+            const isPublic = option.getAttribute("data-is-public") === "true";
+
+            if (isTeacherMode) {
+                // Teacher Mode ON: Only show classes created by user
+                if (isOwner) {
+                    option.style.display = "";
+                    visibleOptions++;
+                } else {
+                    option.style.display = "none";
+                }
+            } else {
+                // Teacher Mode OFF: Show all public classes
+                if (isPublic) {
+                    option.style.display = "";
+                    visibleOptions++;
+                } else {
+                    option.style.display = "none";
+                }
+            }
+        });
+
+        // 2. Update status UI text
+        if (isTeacherMode) {
+            badge.className = "badge bg-warning text-dark px-3 py-2";
+            badge.textContent = "Teacher Mode";
+            hintText.textContent = "Showing classes created by you.";
+        } else {
+            badge.className = "badge bg-info text-dark px-3 py-2";
+            badge.textContent = "Student/Public Mode";
+            hintText.textContent = "Showing all public classes.";
+        }
+    });
+
     function toggleClassMode(mode) {
         const existingGroup = document.getElementById('existing-class-group');
         const newGroup = document.getElementById('new-class-group');
@@ -146,64 +199,6 @@
             classSelect.required = false;
             classInput.required = true;
         }
-    }
-
-    // Dynamic row addition for flashcards
-    const addCardBtn = document.getElementById('add-card-btn');
-    if (addCardBtn) {
-        let cardCount = 1;
-        addCardBtn.addEventListener('click', () => {
-            cardCount++;
-            const entryList = document.getElementById('entry-list');
-            const cardHTML = `
-                <article class="flashcard-entry-card card p-3 mb-3 position-relative">
-                    <span class="topic-card-count fw-bold mb-2 d-block">Card ${cardCount}</span>
-                    <label class="label-bold">Front</label>
-                    <textarea name="front" class="form-control mb-2" rows="2" placeholder="Question or term" required></textarea>
-
-                    <label class="label-bold">Back</label>
-                    <textarea name="back" class="form-control" rows="3" placeholder="Answer or explanation" required></textarea>
-                </article>`;
-            entryList.insertAdjacentHTML('beforeend', cardHTML);
-        });
-    }
-
-    // Dynamic row addition for MCQs
-    const addMcqBtn = document.getElementById('add-mcq-btn');
-    if (addMcqBtn) {
-        let mcqCount = 1;
-        addMcqBtn.addEventListener('click', () => {
-            mcqCount++;
-            const entryList = document.getElementById('entry-list');
-            const mcqHTML = `
-                <article class="flashcard-entry-card card p-3 mb-3">
-                    <span class="topic-card-count fw-bold mb-2 d-block">Question ${mcqCount}</span>
-                    <label class="label-bold">Question</label>
-                    <textarea name="question" class="form-control mb-2" rows="2" required></textarea>
-
-                    <label class="label-bold">Options</label>
-                    <input type="text" name="option_a" class="form-control compact-input mb-1" placeholder="Option A" required>
-                    <input type="text" name="option_b" class="form-control compact-input mb-1" placeholder="Option B" required>
-                    <input type="text" name="option_c" class="form-control compact-input mb-1" placeholder="Option C" required>
-                    <input type="text" name="option_d" class="form-control compact-input mb-2" placeholder="Option D" required>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="label-bold">Correct Answer</label>
-                            <select name="correct_option" class="form-control mb-2" required>
-                                <option value="A">Option A</option>
-                                <option value="B">Option B</option>
-                                <option value="C">Option C</option>
-                                <option value="D">Option D</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <label class="label-bold">Explanation (Optional)</label>
-                    <textarea name="explanation" class="form-control" rows="2" placeholder="Optional explanation"></textarea>
-                </article>`;
-            entryList.insertAdjacentHTML('beforeend', mcqHTML);
-        });
     }
 </script>
 {% endblock %}
