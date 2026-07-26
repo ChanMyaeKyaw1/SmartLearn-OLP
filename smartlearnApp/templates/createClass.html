@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Create Classroom - EduSage{% endblock %}
+
+{% block content %}
+<div class="centered-form-wrapper">
+    <a href="{% url 'browse_classes' %}?user={{ request.GET.user|default:'TestUser' }}" class="back-link">← Back to Browser</a>
+    <h2 class="page-heading-large">Create New Class</h2>
+    <p class="subtext-muted">Fill out the class info to publish it instantly.</p>
+
+    <div class="styled-card">
+        <form method="POST" action="{% url 'create_class' %}">
+            {% csrf_token %}
+
+            <label class="label-bold">Class Title</label>
+            <input type="text" name="title" class="form-control" placeholder="e.g. Advanced Python BootCamp" required>
+
+
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <label class="label-bold">Subject Category</label>
+                    <select name="subject" class="form-control">
+                        <option value="math">Mathematics</option>
+                        <option value="science">Science</option>
+                        <option value="coding">Coding/IT</option>
+                        <option value="languages">Languages</option>
+                        <option value="arts">Arts & Design</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <label class="label-bold">Description</label>
+            <textarea name="description" class="form-control" rows="4" placeholder="Provide a brief summary..."></textarea>
+
+            <label class="label-bold">Class Access</label>
+            <div class="access-choice-row">
+                <label class="access-choice">
+                    <input type="radio" name="class_type" value="public" checked>
+                    <span>
+                        <strong>Public</strong>
+                        <small>Anyone can open and join this class.</small>
+                    </span>
+                </label>
+
+                <label class="access-choice">
+                    <input type="radio" name="class_type" value="private">
+                    <span>
+                        <strong>Private</strong>
+                        <small>Students must request approval before entering.</small>
+                    </span>
+                </label>
+            </div>
+
+            <div id="priceWrapper" class="price-wrapper" style="display: none;">
+                <label class="label-bold">Private Class Price</label>
+                <input type="number" name="price" class="form-control" min="0" step="0.01" value="0.00">
+            </div>
+
+            <div class="form-actions-row">
+                <button type="submit" class="btn-primary">Publish Classroom</button>
+                <a href="{% url 'browse_classes' %}" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<script>
+    const priceWrapper = document.getElementById('priceWrapper');
+    const accessChoices = document.querySelectorAll('input[name="class_type"]');
+
+    accessChoices.forEach((choice) => {
+        choice.addEventListener('change', function() {
+            priceWrapper.style.display = this.value === 'private' ? 'block' : 'none';
+        });
+    });
+</script>
+{% endblock %}

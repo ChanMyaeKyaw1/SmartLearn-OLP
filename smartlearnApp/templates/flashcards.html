@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block title %}Flashcards - {{ classroom.title }}{% endblock %}
+
+{% block content %}
+<div class="learning-page-header">
+    <a href="{% url 'classroom_detail' classroom.class_id %}" class="back-link">Back to Classroom</a>
+    <div class="learning-title-row">
+        <div>
+            <h2 class="page-heading-large">Flashcards</h2>
+            <p class="subtext-muted">{{ classroom.title }} study cards grouped by topic and ready for popup learning.</p>
+        </div>
+        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+            {{ classroom.class_type|title }} Class
+        </span>
+    </div>
+
+    <div class="learning-stats">
+        <span class="stat-chip">{{ total_topics }} topics</span>
+        <span class="stat-chip">{{ total_flashcards }} flashcards</span>
+        <span class="stat-chip">Created by {{ classroom.owner.username }}</span>
+    </div>
+</div>
+
+{% if messages %}
+    <div class="message-stack">
+        {% for message in messages %}
+            <div class="message-card">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="learning-layout">
+    <section class="styled-card">
+        <div class="learning-section-head">
+            <div>
+                <h3 class="section-heading">Study Topics</h3>
+                <p class="subtext-muted">Open a topic in popup mode to learn its flashcards without leaving the page.</p>
+            </div>
+        </div>
+
+        <div class="topic-collection-grid">
+            {% for group in topic_groups %}
+                <article class="topic-collection-card">
+                    <div class="topic-collection-topline">
+                        <span class="topic-label">{{ group.topic }}</span>
+                        <span class="topic-card-count">{{ group.total_cards }} cards</span>
+                    </div>
+
+                    <h4>{{ group.topic }}</h4>
+                    <p class="topic-preview">{{ group.preview_front }}</p>
+                    <p class="topic-meta">Created by {{ group.primary_creator }}</p>
+                    <p class="topic-meta muted">Contributors: {{ group.contributor_summary }}</p>
+
+                    <div class="topic-collection-actions">
+                        <button type="button" class="btn-primary learn-topic-btn" data-learn-topic="{{ group.topic_slug }}">Learn Topic</button>
+
+                        <form method="POST" action="{% url 'toggle_flashcard_topic_reaction' classroom.class_id %}" class="reaction-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="topic" value="{{ group.topic }}">
+                            <input type="hidden" name="reaction_type" value="like">
+                            <button type="submit" class="reaction-button {% if group.user_liked %}is-active{% endif %}">
+                                <i class="fa-solid fa-heart"></i>
+                                <span>{{ group.like_count }}</span>
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{% url 'toggle_flashcard_topic_reaction' classroom.class_id %}" class="reaction-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="topic" value="{{ group.topic }}">
+                            <input type="hidden" name="reaction_type" value="save">
+                            <button type="submit" class="reaction-button {% if group.user_saved %}is-active{% endif %}">
+                                <i class="fa-solid fa-bookmark"></i>
+                                <span>{{ group.save_count }}</span>
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-study-state">
+                    No flashcards yet. Create the first topic card and then open it in learning mode.
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <aside class="styled-card create-panel">
+        {% if can_create %}
+            <div class="create-panel__header">
+                <div>
+                    <h3 class="section-heading">Create Flashcards</h3>
+                    <p class="subtext-muted">Add one card or build a whole topic set in one go.</p>
+                </div>
+                <button type="button" class="btn-secondary create-more-btn" data-add-flashcard-row>Add more flashcards</button>
+            </div>
+            <form method="POST" id="flashcard-create-form" class="flashcard-create-form">
+                {% csrf_token %}
+                <label class="label-bold">Topic</label>
+                <input type="text" name="topic" class="form-control" placeholder="e.g. Database Keys" required>
+
+                <div class="flashcard-creator-list" data-flashcard-creator-list>
+                    <article class="flashcard-entry-card">
+                        <div class="flashcard-entry-card__topline">
+                            <span class="topic-card-count">Card 1</span>
+                        </div>
+
+                        <label class="label-bold">Front</label>
+                        <textarea name="front" class="form-control" rows="3" placeholder="Question or term" required></textarea>
+
+                        <label class="label-bold">Back</label>
+                        <textarea name="back" class="form-control" rows="4" placeholder="Answer or explanation" required></textarea>
+                    </article>
+                </div>
+
+                <button type="submit" class="btn-primary full-width-btn">Share Flashcard</button>
+            </form>
+        {% else %}
+            <h3 class="section-heading">Create Flashcard</h3>
+            <p class="subtext-muted">This private class only allows the owner to create shared flashcards. Approved participants can study everything here.</p>
+        {% endif %}
+    </aside>
+</div>
+
+<div class="flashcard-modal" id="flashcard-learn-modal" aria-hidden="true" hidden>
+    <div class="flashcard-modal__overlay" data-close-learn-modal></div>
+    <div class="flashcard-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="flashcard-learn-title">
+        <button type="button" class="flashcard-modal__close" data-close-learn-modal aria-label="Close learning popup">&times;</button>
+
+        <div class="flashcard-modal__header">
+            <span class="topic-label" id="flashcard-learn-topic"></span>
+            <h3 id="flashcard-learn-title">Learn Topic</h3>
+        </div>
+
+        <div class="study-flip-card study-flip-card--modal" id="flashcard-modal-card">
+            <div class="study-flip-card-inner">
+                <div class="study-flip-face study-flip-front">
+                    <span class="topic-label" id="flashcard-modal-front-topic"></span>
+                    <h4 id="flashcard-modal-front-text"></h4>
+                </div>
+                <div class="study-flip-face study-flip-back">
+                    <span class="topic-label" id="flashcard-modal-back-topic"></span>
+                    <p id="flashcard-modal-back-text"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flashcard-modal__controls">
+            <button type="button" class="btn-secondary" data-learn-prev>Previous</button>
+            <button type="button" class="btn-primary" data-learn-flip>Flip Card</button>
+            <button type="button" class="btn-secondary" data-learn-next>Next</button>
+        </div>
+
+        <div class="flashcard-modal__footer">
+            <button type="button" class="btn-secondary" data-close-learn-modal>Close</button>
+        </div>
+    </div>
+</div>
+
+{{ topic_groups_payload|json_script:"flashcards-topic-data" }}
+{% endblock %}

@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% block title %}Browse Classes - SmartLearn{% endblock %}
+
+{% block content %}
+<div class="styled-card content-header-box">
+    <div class="page-title-row d-flex justify-content-between align-items-center">
+        <h2 class="page-heading-large mb-0">Explore Classes</h2>
+        <a href="{% url 'create_class' %}" class="btn-primary">+ Create New Class</a>
+    </div>
+</div>
+
+<div class="styled-card filter-panel">
+    <form method="GET" id="filterForm" action="{% url 'browse_classes' %}" class="filter-form">
+        <div class="filter-row">
+            <input
+                type="text"
+                name="search"
+                id="searchInput"
+                class="form-control search-input-width"
+                placeholder="Search by class name..."
+                value="{{ search_query }}"
+                oninput="triggerInstantSearch()"
+                autocomplete="off"
+            >
+
+            <select name="visibility" class="form-control select-input-width" onchange="document.getElementById('filterForm').submit()">
+                <option value="">All Access Types</option>
+                <option value="public" {% if visibility == 'public' %}selected{% endif %}>Public Only</option>
+                <option value="private" {% if visibility == 'private' %}selected{% endif %}>Private Only</option>
+            </select>
+
+            <select name="sorting" class="form-control select-input-width" onchange="document.getElementById('filterForm').submit()">
+                <option value="">Default Order</option>
+                <option value="az" {% if sorting == 'az' %}selected{% endif %}>Name: A to Z</option>
+                <option value="za" {% if sorting == 'za' %}selected{% endif %}>Name: Z to A</option>
+            </select>
+        </div>
+    </form>
+</div>
+
+<!-- SECTION 1: JOINED CLASSES (Hidden in Teacher Mode) -->
+<div id="joinedClassesSection">
+    <div class="styled-card content-header-box mt-4 mb-3">
+        <h3 class="page-heading-large" style="font-size: 22px;">My Joined Classes</h3>
+    </div>
+
+    <div class="cards-grid">
+        {% for classroom in joined_classes %}
+            <article class="styled-card class-card class-item-card" data-owner="{{ classroom.owner.username }}">
+                <div class="class-card-header">
+                    <h3 class="class-card-title">{{ classroom.title }}</h3>
+                    <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+                        {{ classroom.class_type|title }}
+                    </span>
+                </div>
+                <p class="class-card-desc">{{ classroom.description|truncatewords:20 }}</p>
+                <div class="class-card-footer">
+                    <div class="teacher-info">
+                        <span class="footer-text-small">Teacher</span>
+                        <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open Class</a>
+                    </div>
+                </div>
+            </article>
+        {% empty %}
+            <p class="empty-text-centered">You haven't joined any classes yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- SECTION 2: AVAILABLE / OTHER CLASSES -->
+<div id="availableClassesSection">
+    <div class="styled-card content-header-box mt-5 mb-3">
+        <h3 class="page-heading-large" style="font-size: 22px;" id="availableSectionTitle">Available Classes</h3>
+    </div>
+
+    <div class="cards-grid">
+        {% for classroom in available_classes %}
+            <article class="styled-card class-card class-item-card" data-owner="{{ classroom.owner.username }}">
+                <div class="class-card-header">
+                    <h3 class="class-card-title">{{ classroom.title }}</h3>
+                    <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+                        {{ classroom.class_type|title }}
+                    </span>
+                </div>
+                <p class="class-card-desc">{{ classroom.description|truncatewords:20 }}</p>
+                <div class="class-card-footer">
+                    <div class="teacher-info">
+                        <span class="footer-text-small">Teacher</span>
+                        <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
+                    </div>
+                    <div class="card-actions">
+                        {% if classroom.owner.username == current_user_name %}
+                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
+                            <a href="{% url 'manage_enrollments' classroom.class_id %}" class="btn-secondary card-action-btn-small">Manage</a>
+                            <a href="{% url 'delete_class' classroom.class_id %}" class="delete-link" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
+                        {% elif classroom.class_id in pending_class_ids %}
+                            <span class="status-text-pending"><i class="fa-solid fa-clock"></i> Pending Review</span>
+                        {% elif classroom.class_type == 'public' %}
+                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Join Class</a>
+                        {% else %}
+                            <!-- 🟢 Updated URL to redirect to payment upload view -->
+                            <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">Request Entry (${{ classroom.price }})</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+        {% empty %}
+            <p class="empty-text-centered">No available classrooms match your criteria.</p>
+        {% endfor %}
+
+        <p id="noTeacherClassesMsg" class="empty-text-centered" style="display: none;">You haven't created any classrooms yet.</p>
+    </div>
+</div>
+
+<script>
+    let searchTimeout = null;
+
+    function triggerInstantSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            document.getElementById('filterForm').submit();
+        }, 400);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        // Handle search input focus
+        const input = document.getElementById('searchInput');
+        if (input && input.value) {
+            input.focus();
+            const val = input.value;
+            input.value = '';
+            input.value = val;
+        }
+
+        // --- TEACHER MODE TOGGLE LOGIC ---
+        const toggle = document.getElementById('teacherModeToggle');
+        const joinedSection = document.getElementById('joinedClassesSection');
+        const availableTitle = document.getElementById('availableSectionTitle');
+        const classCards = document.querySelectorAll('.class-item-card');
+        const noTeacherClassesMsg = document.getElementById('noTeacherClassesMsg');
+        const currentUser = "{{ current_user_name }}";
+
+        function applyTeacherMode(isTeacherMode) {
+            let visibleCount = 0;
+
+            if (isTeacherMode) {
+                // Hide Joined Classes section when in Teacher Mode
+                if (joinedSection) joinedSection.style.display = 'none';
+                if (availableTitle) availableTitle.textContent = "My Created Classes";
+
+                // Filter cards: display only cards owned by current user
+                classCards.forEach(card => {
+                    const owner = card.getAttribute('data-owner');
+                    if (owner === currentUser) {
+                        card.style.display = '';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                if (noTeacherClassesMsg) {
+                    noTeacherClassesMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+                }
+            } else {
+                // Show Joined Classes section when Teacher Mode is OFF
+                if (joinedSection) joinedSection.style.display = '';
+                if (availableTitle) availableTitle.textContent = "Available Classes";
+
+                // Show all cards
+                classCards.forEach(card => card.style.display = '');
+
+                if (noTeacherClassesMsg) {
+                    noTeacherClassesMsg.style.display = 'none';
+                }
+            }
+        }
+
+        // Check toggle state from localStorage
+        const savedMode = localStorage.getItem('teacherMode') === 'true';
+
+        // Apply immediately
+        applyTeacherMode(savedMode);
+
+        if (toggle) {
+            toggle.checked = savedMode;
+            toggle.addEventListener('change', (e) => {
+                const isChecked = e.target.checked;
+                localStorage.setItem('teacherMode', isChecked);
+                applyTeacherMode(isChecked);
+            });
+        }
+    });
+</script>
+{% endblock %}

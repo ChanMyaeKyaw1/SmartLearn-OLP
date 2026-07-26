@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}MCQs - {{ classroom.title }}{% endblock %}
+
+{% block content %}
+<div class="learning-page-header">
+    <a href="{% url 'classroom_detail' classroom.class_id %}" class="back-link">Back to Classroom</a>
+    <div class="learning-title-row">
+        <div>
+            <h2 class="page-heading-large">MCQ Practice</h2>
+            <p class="subtext-muted">{{ classroom.title }} questions grouped by topic for quiz practice.</p>
+        </div>
+        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+            {{ classroom.class_type|title }} Class
+        </span>
+    </div>
+
+    <div class="learning-stats">
+        <span class="stat-chip">{{ total_topics }} topics</span>
+        <span class="stat-chip">{{ total_questions }} questions</span>
+        <span class="stat-chip">Created by {{ classroom.owner.username }}</span>
+    </div>
+</div>
+
+{% if messages %}
+    <div class="message-stack">
+        {% for message in messages %}
+            <div class="message-card">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="learning-layout">
+    <section class="styled-card">
+        <div class="learning-section-head">
+            <div>
+                <h3 class="section-heading">Quiz Topics</h3>
+                <p class="subtext-muted">Pick a topic and jump into the quiz when you are ready.</p>
+            </div>
+        </div>
+
+        <div class="topic-collection-grid">
+            {% for group in topic_groups %}
+                <article class="topic-collection-card">
+                    <div class="topic-collection-topline">
+                        <span class="topic-label">{{ group.topic }}</span>
+                        <span class="topic-card-count">{{ group.questions|length }} questions</span>
+                    </div>
+
+                    <h4>{{ group.topic }}</h4>
+                    <p class="topic-preview">{{ group.preview_question }}</p>
+                    <p class="topic-meta">Created by {{ group.primary_creator }}</p>
+                    <p class="topic-meta muted">Contributors: {{ group.contributor_summary }}</p>
+
+                    <div class="topic-collection-actions">
+                        <a class="btn-primary" href="{% url 'take_quiz' classroom.class_id %}?topic={{ group.topic|urlencode }}">Take Quiz</a>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-study-state">
+                    No MCQs yet. Create the first topic set and then start a quiz from here.
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <aside class="styled-card create-panel">
+        {% if can_create %}
+            <div class="create-panel__header">
+                <div>
+                    <h3 class="section-heading">Create MCQs</h3>
+                    <p class="subtext-muted">Use one topic for the whole set and add as many questions as you need.</p>
+                </div>
+                <button type="button" class="btn-secondary" data-add-mcq-row>Add more MCQs</button>
+            </div>
+
+            <form method="POST" id="mcq-create-form" class="flashcard-create-form">
+                {% csrf_token %}
+                <label class="label-bold">Topic</label>
+                <input type="text" name="topic" class="form-control" placeholder="e.g. Python Functions" required>
+
+                <div class="flashcard-creator-list" data-mcq-creator-list>
+                    <article class="flashcard-entry-card">
+                        <div class="flashcard-entry-card__topline">
+                            <span class="topic-card-count">Question 1</span>
+                        </div>
+
+                        <label class="label-bold">Question</label>
+                        <textarea name="question" class="form-control" rows="3" required></textarea>
+
+                        <label class="label-bold">Options</label>
+                        <input type="text" name="option_a" class="form-control compact-input" placeholder="Option A" required>
+                        <input type="text" name="option_b" class="form-control compact-input" placeholder="Option B" required>
+                        <input type="text" name="option_c" class="form-control compact-input" placeholder="Option C" required>
+                        <input type="text" name="option_d" class="form-control compact-input" placeholder="Option D" required>
+
+                        <label class="label-bold">Correct Answer</label>
+                        <select name="correct_option" class="form-control" required>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+
+                        <label class="label-bold">Explanation</label>
+                        <textarea name="explanation" class="form-control" rows="3" placeholder="Optional answer explanation"></textarea>
+                    </article>
+                </div>
+
+                <button type="submit" class="btn-primary full-width-btn">Share MCQ</button>
+            </form>
+        {% else %}
+            <h3 class="section-heading">Create MCQ</h3>
+            <p class="subtext-muted">This private class only allows the owner to create shared MCQs. Approved participants can practice and view results.</p>
+        {% endif %}
+    </aside>
+</div>
+{% endblock %}

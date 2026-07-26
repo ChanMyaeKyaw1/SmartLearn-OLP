@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Quiz Result - {{ classroom.title }}{% endblock %}
+
+{% block content %}
+<div class="learning-page-header">
+    <a href="{% url 'mcqs' classroom.class_id %}" class="back-link">Back to MCQs</a>
+</div>
+
+<section class="styled-card result-hero">
+    <div>
+        <span class="topic-label">{{ classroom.title }}</span>
+        <h2 class="page-heading-large">Quiz Result</h2>
+        <p class="subtext-muted">Taken by {{ attempt.student.username }} on {{ attempt.taken_at|date:"M d, Y" }}.</p>
+    </div>
+
+    <div class="score-ring">
+        <strong>{{ percentage }}%</strong>
+        <span>{{ attempt.score }}/{{ attempt.total_questions }}</span>
+    </div>
+</section>
+
+<section class="styled-card result-review">
+    <h3 class="section-heading">Answer Review</h3>
+
+    {% for item in reviewed_questions %}
+        <article class="result-question-card {% if item.is_correct %}result-correct{% else %}result-wrong{% endif %}">
+            <div class="quiz-question-topline">
+                <span class="topic-label">{{ item.question.topic }}</span>
+                {% if item.is_correct %}
+                    <span class="result-status">Correct</span>
+                {% else %}
+                    <span class="result-status">Review</span>
+                {% endif %}
+            </div>
+
+            <h4>{{ forloop.counter }}. {{ item.question.question }}</h4>
+            <p><strong>Your answer:</strong> {{ item.selected|default:"Not answered" }}{% if item.selected_text %}. {{ item.selected_text }}{% endif %}</p>
+            <p><strong>Correct answer:</strong> {{ item.question.correct_option }}. {{ item.correct_text }}</p>
+
+            {% if item.question.explanation %}
+                <p class="result-explanation">{{ item.question.explanation }}</p>
+            {% endif %}
+        </article>
+    {% empty %}
+        <p class="empty-text-centered">No questions were available for this attempt.</p>
+    {% endfor %}
+</section>
+{% endblock %}

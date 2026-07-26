@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}My Classes - SmartLearn{% endblock %}
+
+{% block content %}
+
+<div class="styled-card content-header-box">
+    <div class="page-title-row">
+        <h2 class="page-heading-large">My Classes</h2>
+    </div>
+</div>
+
+
+<div class="cards-grid">
+
+    {% for classroom in classes %}
+
+    <div class="styled-card class-card">
+
+        <div class="class-card-header">
+
+            <h3 class="class-card-title">
+                {{ classroom.title }}
+            </h3>
+
+            <span class="status-badge 
+            {% if classroom.class_type == 'public' %}
+                badge-public
+            {% else %}
+                badge-private
+            {% endif %}">
+            
+                {{ classroom.class_type|title }}
+
+            </span>
+
+        </div>
+
+
+        <p class="class-card-desc">
+            {{ classroom.description|truncatewords:20 }}
+        </p>
+
+
+        <div class="class-card-footer">
+
+            <div>
+                <span class="footer-text-small">
+                    Subject
+                </span>
+
+                <span class="footer-text-bold">
+                    {{ classroom.subject }}
+                </span>
+            </div>
+
+
+            <div>
+                <a href="{% url 'manage_enrollments' classroom.class_id %}" 
+                   class="btn-secondary card-action-btn-small">
+                    Manage
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% empty %}
+
+    <p class="empty-text-centered">
+        No classes created yet.
+    </p>
+
+
+    {% endfor %}
+
+</div>
+
+
+{% endblock %}

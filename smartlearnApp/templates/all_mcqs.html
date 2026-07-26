@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}MCQs - SmartLearn{% endblock %}
+
+{% block content %}
+<div class="learning-page-header">
+    <div class="learning-title-row d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="page-heading-large">MCQs</h2>
+            <p class="subtext-muted">All accessible MCQ topics across your classes.</p>
+        </div>
+
+        <!-- TEACHER MODE TOGGLE -->
+        <div class="teacher-toggle d-flex align-items-center gap-2">
+            <span><i class="fa-solid fa-chalkboard-user"></i> Teacher Mode</span>
+            <div class="form-check form-switch m-0">
+                <input class="form-check-input" type="checkbox" role="switch" id="teacherModeToggle" style="cursor: pointer; width: 45px; height: 22px;">
+            </div>
+        </div>
+    </div>
+
+    <div class="learning-stats">
+        <span class="stat-chip">{{ total_topics }} topics</span>
+        <span class="stat-chip">{{ total_questions }} questions</span>
+    </div>
+</div>
+
+<section class="styled-card">
+    <div class="learning-section-head">
+        <div>
+            <h3 class="section-heading">Quiz Topics</h3>
+            <p class="subtext-muted">Choose a topic, then jump into the quiz page when you are ready.</p>
+        </div>
+    </div>
+
+    <div class="topic-collection-grid">
+        {% for group in mcq_groups %}
+            <article class="topic-collection-card topic-item-card" data-owner="{{ group.primary_creator }}">
+                <div class="topic-collection-topline">
+                    <span class="status-badge {% if group.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">{{ group.classroom_title }}</span>
+                    <span class="topic-card-count">{{ group.total_questions }} questions</span>
+                </div>
+
+                <h4>{{ group.topic }}</h4>
+                <p class="topic-preview">{{ group.preview_question }}</p>
+                <p class="topic-meta">Created by {{ group.primary_creator }}</p>
+                <p class="topic-meta muted">Contributors: {{ group.contributor_summary }}</p>
+
+                <div class="topic-collection-actions">
+                    <a class="btn-primary" href="{% url 'take_quiz' group.classroom_id %}?topic={{ group.topic|urlencode }}">Take Quiz</a>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-study-state">No accessible MCQs yet.</div>
+        {% endfor %}
+
+        <div id="noTeacherMCQMsg" class="empty-study-state" style="display: none;">You haven't created any MCQ topics yet.</div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const toggle = document.getElementById("teacherModeToggle");
+        const topicCards = document.querySelectorAll(".topic-item-card");
+        const noTeacherCardsMsg = document.getElementById("noTeacherCardsMsg") || document.getElementById("noTeacherMCQMsg");
+        
+        // Fallback checks both current_user and request.user
+        const currentUser = ("{{ current_user.username|default:request.user.username|escapejs }}").trim().toLowerCase();
+
+        function applyTeacherMode(isTeacherMode) {
+            let visibleCount = 0;
+
+            topicCards.forEach(card => {
+                const owner = (card.getAttribute("data-owner") || "").trim().toLowerCase();
+
+                if (isTeacherMode) {
+                    // Match owner with current user
+                    if (owner && owner === currentUser) {
+                        card.style.display = "";
+                        visibleCount++;
+                    } else {
+                        card.style.display = "none";
+                    }
+                } else {
+                    card.style.display = "";
+                    visibleCount++;
+                }
+            });
+
+            if (isTeacherMode && visibleCount === 0) {
+                if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "block";
+            } else {
+                if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "none";
+            }
+        }
+
+        const savedMode = localStorage.getItem("teacherMode") === "true";
+        if (toggle) {
+            toggle.checked = savedMode;
+            applyTeacherMode(savedMode);
+
+            toggle.addEventListener("change", (e) => {
+                const isChecked = e.target.checked;
+                localStorage.setItem("teacherMode", isChecked);
+                applyTeacherMode(isChecked);
+            });
+        }
+    });
+</script>
+{% endblock %}

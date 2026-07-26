@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Take Quiz - {{ classroom.title }}{% endblock %}
+
+{% block content %}
+<div class="learning-page-header">
+    <a href="{% url 'mcqs' classroom.class_id %}" class="back-link">Back to MCQs</a>
+    <div class="learning-title-row">
+        <div>
+            <h2 class="page-heading-large">Take Quiz</h2>
+            <p class="subtext-muted">
+                {% if selected_topic %}
+                    {{ selected_topic }} quiz with {{ question_count }} questions.
+                {% else %}
+                    Full class quiz with {{ question_count }} questions.
+                {% endif %}
+            </p>
+        </div>
+        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+            {{ classroom.class_type|title }} Class
+        </span>
+    </div>
+
+    <div class="learning-stats">
+        <span class="stat-chip">{{ question_count }} questions</span>
+        <span class="stat-chip">{{ classroom.title }}</span>
+    </div>
+</div>
+
+{% if question_count %}
+    <form method="POST" action="{% url 'submit_quiz' classroom.class_id %}" class="quiz-form">
+        {% csrf_token %}
+        <input type="hidden" name="topic" value="{{ selected_topic }}">
+
+        {% for question in questions %}
+            <article class="quiz-question-card">
+                <div class="quiz-question-topline">
+                    <span class="topic-label">{{ question.topic }}</span>
+                    <small>Question {{ forloop.counter }}</small>
+                </div>
+                <h4>{{ question.question }}</h4>
+
+                <label class="quiz-option">
+                    <input type="radio" name="question_{{ question.question_id }}" value="A">
+                    <span>{{ question.option_a }}</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="question_{{ question.question_id }}" value="B">
+                    <span>{{ question.option_b }}</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="question_{{ question.question_id }}" value="C">
+                    <span>{{ question.option_c }}</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="question_{{ question.question_id }}" value="D">
+                    <span>{{ question.option_d }}</span>
+                </label>
+            </article>
+        {% endfor %}
+
+        <button type="submit" class="btn-primary">Submit Quiz</button>
+    </form>
+{% else %}
+    <div class="styled-card">
+        <p class="empty-text-centered">No questions are available for this quiz yet.</p>
+    </div>
+{% endif %}
+{% endblock %}

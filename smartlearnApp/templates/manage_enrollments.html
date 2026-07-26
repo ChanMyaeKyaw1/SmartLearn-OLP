@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Manage Enrollments - EduSage{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 25px;">
+    <a href="{% url 'browse_classes' %}" class="back-link">← Back to Browser</a>
+    <h2 class="page-heading-large">Roster Management</h2>
+    <p class="subtext-muted">Classroom: <strong>{{ classroom.title }}</strong></p>
+</div>
+
+<div class="roster-split-layout">
+    
+    <div>
+    <h3 class="roster-column-title">Pending Requests</h3>
+    <div class="styled-card roster-card-list">
+        {% for req in pending_requests %}
+            <div class="roster-list-item d-flex justify-content-between align-items-center flex-wrap gap-2" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+                <div>
+                    <strong class="roster-student-name d-block">{{ req.student.username }}</strong>
+                    <small class="subtext-muted">Applied: {{ req.requested_at|date:"M d, Y" }}</small>
+                </div>
+
+                <div class="roster-action-group d-flex gap-2">
+                    <a href="{% url 'update_enrollment_status' req.enrollment_id 'approve' %}" class="btn-primary btn-approve-status">Approve</a>
+                    <a href="{% url 'update_enrollment_status' req.enrollment_id 'reject' %}" class="btn-secondary btn-reject-status">Reject</a>
+                </div>
+            </div>
+        {% empty %}
+            <p class="subtext-muted" style="text-align: center; padding: 20px 0;">No active waiting applications found.</p>
+        {% endfor %}
+    </div>
+</div>
+    </div>
+
+    <div>
+        <h3 class="roster-column-title">Active Roster</h3>
+        <div class="styled-card roster-card-list">
+            {% for active in active_students %}
+                <div class="roster-list-item">
+                    <div>
+                        <span style="font-weight: 500; font-size: 15px;">{{ active.student.username }}</span>
+                    </div>
+                    <small class="subtext-muted">Enrolled: {{ active.requested_at|date:"M d, Y" }}</small>
+                </div>
+            {% empty %}
+                <p class="subtext-muted" style="text-align: center; padding: 20px 0;">No enrolled students in this class yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

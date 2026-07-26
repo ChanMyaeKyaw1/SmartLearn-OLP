@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}My Results{% endblock %}
+
+{% block content %}
+<div class="learning-page-header">
+    <div>
+        <h2 class="page-heading-large">My Results</h2>
+        <p class="subtext-muted">Review every test you have taken and open the detailed result for each attempt.</p>
+    </div>
+</div>
+
+<section class="styled-card">
+    {% if attempts %}
+        <div class="result-list">
+            {% for attempt in attempts %}
+                <article class="result-question-card">
+                    <div class="quiz-question-topline">
+                        <span class="topic-label">{{ attempt.classroom.title }}</span>
+                        <span class="result-status">{{ attempt.score }}/{{ attempt.total_questions }}</span>
+                    </div>
+                    <h3>{{ attempt.classroom.title }}</h3>
+                    <p class="subtext-muted">Taken on {{ attempt.taken_at|date:"M d, Y H:i" }}</p>
+                    <p><strong>Score:</strong> {{ attempt.score }} out of {{ attempt.total_questions }}</p>
+                    <a href="{% url 'quiz_result' attempt.attempt_id %}" class="secondary-btn">View result</a>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p class="empty-text-centered">You have not taken any quiz yet.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

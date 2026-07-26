@@ -1,0 +1,111 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connecting Account - SmartLearn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #f5f7fb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .auth-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+        .brand-icon {
+            color: #4CAF7D;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        .provider-icon {
+            font-size: 2.5rem;
+            margin: 15px 0;
+        }
+        .icon-google { color: #EA4335; }
+        .icon-github { color: #24292e; }
+
+        .btn-continue {
+            background-color: #4CAF7D;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .btn-continue:hover {
+            background-color: #3f9d70;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .btn-cancel {
+            color: #777;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .btn-cancel:hover {
+            color: #333;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-card">
+        <div class="brand-icon">
+            <i class="fas fa-graduation-cap fa-3x"></i>
+        </div>
+
+        {% if process == "connect" %}
+            <h4 class="fw-bold mb-3">Connect your Account</h4>
+            <p class="text-muted small">You are connecting your SmartLearn account with your third-party profile.</p>
+        {% else %}
+            <h4 class="fw-bold mb-2">Secure Sign In</h4>
+            <p class="text-muted small">You are logging in to SmartLearn via a third-party account.</p>
+        {% endif %}
+
+        <div class="my-4">
+            {% if provider.id == 'google' %}
+                <i class="fab fa-google provider-icon icon-google"></i>
+                <h5 class="fw-semibold">Google Authentication</h5>
+            {% elif provider.id == 'github' %}
+                <i class="fab fa-github provider-icon icon-github"></i>
+                <h5 class="fw-semibold">GitHub Authentication</h5>
+            {% else %}
+                <i class="fas fa-key provider-icon text-secondary"></i>
+                <h5 class="fw-semibold">{{ provider.name }}</h5>
+            {% endif %}
+        </div>
+
+        <form method="post" action="{{ action_url }}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-continue shadow-sm mb-3">
+                Proceed with {{ provider.name }}
+            </button>
+        </form>
+
+        <a href="{% url 'login' %}" class="btn btn-link btn-cancel">Cancel and go back</a>
+    </div>
+
+</body>
+</html>

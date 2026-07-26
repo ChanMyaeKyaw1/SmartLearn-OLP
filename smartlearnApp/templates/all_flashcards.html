@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %}Flashcards - SmartLearn{% endblock %}
+
+{% block content %}
+<div class="learning-page-header">
+    <div class="learning-title-row d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="page-heading-large">Flashcards</h2>
+            <p class="subtext-muted">All accessible flashcard topics across your classes.</p>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <!-- TEACHER MODE TOGGLE -->
+            <div class="teacher-toggle d-flex align-items-center gap-2">
+                <span><i class="fa-solid fa-chalkboard-user"></i> Teacher Mode</span>
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" role="switch" id="teacherModeToggle" style="cursor: pointer; width: 45px; height: 22px;">
+                </div>
+            </div>
+
+            {% if can_create %}
+                <a href="{% url 'create_flashcard_topic' %}" class="btn-primary">+ Create New Topic</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="learning-stats">
+        <span class="stat-chip">{{ total_topics }} topics</span>
+        <span class="stat-chip">{{ total_flashcards }} flashcards</span>
+    </div>
+</div>
+
+<section class="styled-card">
+    <div class="learning-section-head">
+        <div>
+            <h3 class="section-heading">Study Topics</h3>
+            <p class="subtext-muted">Open a topic and learn the cards in a slow flip modal.</p>
+        </div>
+    </div>
+
+    <div class="topic-collection-grid">
+        {% for group in flashcard_groups %}
+            <article class="topic-collection-card topic-item-card" data-owner="{{ group.primary_creator }}">
+                <div class="topic-collection-topline">
+                    <span class="status-badge {% if group.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">{{ group.classroom_title }}</span>
+                    <span class="topic-card-count">{{ group.total_cards }} cards</span>
+                </div>
+
+                <h4>{{ group.topic }}</h4>
+                <p class="topic-preview">{{ group.preview_front }}</p>
+                <p class="topic-meta">Created by {{ group.primary_creator }}</p>
+                <p class="topic-meta muted">Contributors: {{ group.contributor_summary }}</p>
+
+                <div class="topic-collection-actions">
+                    <button type="button" class="btn-primary learn-topic-btn" data-learn-topic="{{ group.modal_key }}">Learn Topic</button>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-study-state">No accessible flashcards yet.</div>
+        {% endfor %}
+
+        <div id="noTeacherCardsMsg" class="empty-study-state" style="display: none;">You haven't created any flashcard topics yet.</div>
+    </div>
+</section>
+
+<div class="flashcard-modal" id="flashcard-learn-modal" aria-hidden="true" hidden>
+    <div class="flashcard-modal__overlay" data-close-learn-modal></div>
+    <div class="flashcard-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="flashcard-learn-title">
+        <button type="button" class="flashcard-modal__close" data-close-learn-modal aria-label="Close learning popup">&times;</button>
+
+        <div class="flashcard-modal__header">
+            <span class="topic-label" id="flashcard-learn-topic"></span>
+            <h3 id="flashcard-learn-title">Learn Topic</h3>
+        </div>
+
+        <div class="study-flip-card study-flip-card--modal" id="flashcard-modal-card">
+            <div class="study-flip-card-inner">
+                <div class="study-flip-face study-flip-front">
+                    <span class="topic-label" id="flashcard-modal-front-topic"></span>
+                    <h4 id="flashcard-modal-front-text"></h4>
+                </div>
+                <div class="study-flip-face study-flip-back">
+                    <span class="topic-label" id="flashcard-modal-back-topic"></span>
+                    <p id="flashcard-modal-back-text"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flashcard-modal__controls">
+            <button type="button" class="btn-secondary" data-learn-prev>Previous</button>
+            <button type="button" class="btn-primary" data-learn-flip>Flip Card</button>
+            <button type="button" class="btn-secondary" data-learn-next>Next</button>
+        </div>
+
+        <div class="flashcard-modal__footer">
+            <button type="button" class="btn-secondary" data-close-learn-modal>Close</button>
+        </div>
+    </div>
+</div>
+
+{{ flashcard_groups|json_script:"flashcards-topic-data" }}
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const toggle = document.getElementById("teacherModeToggle");
+        const topicCards = document.querySelectorAll(".topic-item-card");
+        const noTeacherCardsMsg = document.getElementById("noTeacherCardsMsg");
+        const currentUser = "{{ current_user.username|default:request.user.username|escapejs }}";
+
+        function applyTeacherMode(isTeacherMode) {
+            let visibleCount = 0;
+
+            topicCards.forEach(card => {
+                const owner = (card.getAttribute("data-owner") || "").trim().toLowerCase();
+                const current = (currentUser || "").trim().toLowerCase();
+
+                if (isTeacherMode) {
+                    if (owner === current) {
+                        card.style.display = "";
+                        visibleCount++;
+                    } else {
+                        card.style.display = "none";
+                    }
+                } else {
+                    card.style.display = "";
+                    visibleCount++;
+                }
+            });
+
+            if (isTeacherMode && visibleCount === 0) {
+                if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "block";
+            } else {
+                if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "none";
+            }
+        }
+
+        const savedMode = localStorage.getItem("teacherMode") === "true";
+        if (toggle) {
+            toggle.checked = savedMode;
+            applyTeacherMode(savedMode);
+
+            toggle.addEventListener("change", (e) => {
+                const isChecked = e.target.checked;
+                localStorage.setItem("teacherMode", isChecked);
+                applyTeacherMode(isChecked);
+            });
+        }
+    });
+</script>
+{% endblock %}
