@@ -185,8 +185,12 @@ def dashboard_view(request):
 
 @login_required(login_url='login')
 def my_classes(request):
-    classes = Classroom.objects.filter(owner=request.user)
-
+    classes = Classroom.objects.filter(
+        owner=request.user
+    ).annotate(
+        pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
+    )
+    
     return render(request, 'my_classes.html', {
         'classes': classes
     })
@@ -222,9 +226,13 @@ def browse_classes(request):
         user_enrollments.filter(status='pending').values_list('classroom_id', flat=True)
     )
 
+    available_classes = Classroom.objects.all().annotate(
+        pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
+    ).select_related('owner')
+
     # Separate into joined vs available
     joined_classes = classrooms.filter(class_id__in=joined_class_ids)
-    available_classes = classrooms.exclude(class_id__in=joined_class_ids)
+    # available_classes = classrooms.exclude(class_id__in=joined_class_ids)
 
     context = {
         'joined_classes': joined_classes,
