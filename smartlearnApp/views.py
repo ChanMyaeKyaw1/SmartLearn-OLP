@@ -167,12 +167,20 @@ def dashboard_view(request):
     pending_class_ids = list(Enrollment.objects.filter(student=request.user, status='pending').values_list('classroom_id', flat=True))
     rejected_class_ids = list(Enrollment.objects.filter(student=request.user, status='rejected').values_list('classroom_id', flat=True))
 
+    user_enrollments = {
+        e.classroom_id: e for e in Enrollment.objects.filter(student=request.user)
+    }
+
+    for classroom in available_classes:
+        classroom.user_enrollment = user_enrollments.get(classroom.class_id)
+
     return render(request, 'dashboard.html', {
         'my_classes': my_classes,
         'joined_classrooms': joined_classrooms,
         'available_classes': available_classes,
         'pending_class_ids': pending_class_ids,
         'rejected_class_ids': rejected_class_ids,
+        'user_enrollments': user_enrollments,
     })
 
 @login_required(login_url='login')
