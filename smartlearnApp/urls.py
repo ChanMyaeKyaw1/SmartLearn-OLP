@@ -8,7 +8,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'), # Ensure this matches views.dashboard_view
     path('my-classes/', views.my_classes, name='my_classes'),
     path('logout/', views.logout_view, name='logout'),    # Ensure this matches views.logout_view
-    path('home/', views.home_view, name='home'),  # Ensure this matches views.logout_view
+    # path('home/', views.home_view, name='home'),  # Ensure this matches views.logout_view
 
     path('browse/', views.browse_classes, name='browse_classes'),
     path('create/', views.create_class, name='create_class'),
@@ -35,10 +35,9 @@ urlpatterns = [
     path('payments/manage/', views.manage_payment_accounts, name='manage_payment_accounts'),
     path('payments/delete/<int:account_id>/', views.delete_payment_account, name='delete_payment_account'),
     path('create/<str:item_type>/', views.create_topic_global, name='create_topic_global'),
+    path('classroom/<str:class_id>/manage/', views.manage_classroom_view, name='manage_classroom'),
+    path('enrollment/<int:enrollment_id>/<str:action>/', views.handle_enrollment_request, name='handle_enrollment_request'),
+
 ]
 
 
-
-# ==========================================
-# Phase 1 done here by Chan,yoon
-# ==========================================

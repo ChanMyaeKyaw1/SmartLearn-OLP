@@ -65,7 +65,7 @@ class Enrollment(models.Model):
     payslip = models.ImageField(upload_to='payslips/', null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     requested_at = models.DateTimeField(auto_now_add=True)
-
+    rejection_reason = models.TextField(blank=True, null=True)
     class Meta:
         unique_together = ('classroom', 'student')
 

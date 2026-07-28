@@ -1,4 +1,3 @@
-<!-- dashboard.html -->
 {% extends 'base.html' %}
 {% block title %}Dashboard - SmartLearn{% endblock %}
 
@@ -14,7 +13,7 @@
         </div>
     </div>
 
-    <!-- TEACHER MODE ON: User's Created Classes -->
+<!-- TEACHER MODE ON: User's Created Classes -->
     <div id="teacherModeSection" style="display: none;">
         <div class="styled-card content-header-box" style="margin-bottom: 20px;">
             <div class="page-title-row">
@@ -32,16 +31,35 @@
                             {{ classroom.class_type|title }}
                         </span>
                     </div>
+                    
                     <p class="class-card-desc">{{ classroom.description|truncatewords:20 }}</p>
-                    <div class="class-card-footer">
-                        <div class="teacher-info">
-                            <span class="footer-text-small">Subject</span>
-                            <span class="footer-text-bold">{{ classroom.subject|default:"General" }}</span>
+                    
+                    <div class="class-card-footer d-flex justify-content-between align-items-center flex-nowrap" style="gap: 8px;">
+                        <div class="teacher-info text-truncate" style="min-width: 0; flex: 1 1 auto;">
+                            <span class="footer-text-small d-block">SUBJECT</span>
+                            <span class="footer-text-bold d-block text-truncate" style="max-width: 80px;">
+                                {{ classroom.subject|default:"General" }}
+                            </span>
                         </div>
-                        <div class="card-actions">
+                        
+                        <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 5px; flex-shrink: 0;">
                             <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
-                            <a href="{% url 'manage_enrollments' classroom.class_id %}" class="btn-secondary card-action-btn-small">Manage</a>
-                            <a href="{% url 'delete_class' classroom.class_id %}" class="delete-link" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
+                            
+                            <a href="{% url 'manage_enrollments' classroom.class_id %}" class="btn-primary card-action-btn-small" style="background-color: #f59e0b; border-color: #f59e0b; display: inline-flex; align-items: center; gap: 4px;">
+                                Manage
+                                {% if classroom.pending_count %}
+                                    <span style="background: #dc2626; color: #ffffff; padding: 1px 5px; border-radius: 10px; font-size: 10px; line-height: 1;">
+                                        {{ classroom.pending_count }}
+                                    </span>
+                                {% endif %}
+                            </a>                            
+                            
+                            <a href="{% url 'delete_class' classroom.class_id %}" 
+                               class="delete-link text-danger text-decoration-none" 
+                               style="white-space: nowrap; font-size: 13px; font-weight: 600; padding-left: 2px;" 
+                               onclick="return confirm('Are you sure you want to delete the class &quot;{{ classroom.title|escapejs }}&quot;? This action cannot be undone.');">
+                                Delete
+                            </a>
                         </div>
                     </div>
                 </article>
@@ -71,15 +89,31 @@
                         </span>
                     </div>
                     <p class="class-card-desc">{{ classroom.description|truncatewords:20 }}</p>
-                    <div class="class-card-footer">
-                        <div class="teacher-info">
-                            <span class="footer-text-small">Teacher</span>
-                            <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
-                        </div>
-                        <div class="card-actions">
-                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open Class</a>
-                        </div>
-                    </div>
+                    <div class="class-card-footer" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: nowrap;">
+    <!-- Left side: Subject Info -->
+    <div class="teacher-info" style="min-width: 0; flex: 1 1 auto; overflow: hidden;">
+        <span class="footer-text-small" style="display: block;">SUBJECT</span>
+        <span class="footer-text-bold" style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            {{ classroom.subject|default:"General" }}
+        </span>
+    </div>
+
+    <!-- Right side: Buttons -->
+    <div class="card-actions" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0; white-space: nowrap;">
+        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
+        
+        <a href="{% url 'manage_enrollments' classroom.class_id %}" class="btn-primary card-action-btn-small" style="background-color: #f59e0b; border-color: #f59e0b; display: inline-flex; align-items: center; gap: 4px;">
+            Manage
+            {% if classroom.pending_count %}
+                <span style="background: #dc2626; color: #ffffff; padding: 1px 5px; border-radius: 10px; font-size: 10px; line-height: 1;">
+                    {{ classroom.pending_count }}
+                </span>
+            {% endif %}
+        </a>
+        
+        <a href="{% url 'delete_class' classroom.class_id %}" class="delete-link" style="white-space: nowrap; font-size: 13px;" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
+    </div>
+</div>
                 </article>
             {% empty %}
                 <p class="empty-text-centered">You haven't joined any classes yet.</p>
@@ -88,226 +122,244 @@
 
         <!-- SECTION B: AVAILABLE CLASSES -->
         <div class="styled-card content-header-box mb-3">
-    <div class="page-title-row d-flex justify-content-between align-items-center">
-        <h3 class="page-heading-large" style="font-size: 24px; margin-bottom: 0;">
-            Explore Other Classes
-        </h3>
-        
-        <!-- Collapse Toggle Button -->
-        <button 
-            class="btn btn-outline-primary btn-sm rounded-pill px-3" 
-            type="button" 
-            data-bs-toggle="collapse" 
-            data-bs-target="#exploreClassesCollapse" 
-            aria-expanded="false" 
-            aria-controls="exploreClassesCollapse"
-            id="toggleExploreBtn">
-            <i class="fa-solid fa-chevron-down me-1" id="toggleExploreIcon"></i> Show Classes
-        </button>
-    </div>
-</div>
+            <div class="page-title-row d-flex justify-content-between align-items-center">
+                <h3 class="page-heading-large" style="font-size: 24px; margin-bottom: 0;">
+                    Explore Other Classes
+                </h3>
+                
+                <button 
+                    class="btn btn-outline-primary btn-sm rounded-pill px-3" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#exploreClassesCollapse" 
+                    aria-expanded="false" 
+                    aria-controls="exploreClassesCollapse"
+                    id="toggleExploreBtn">
+                    <i class="fa-solid fa-chevron-down me-1" id="toggleExploreIcon"></i> Show Classes
+                </button>
+            </div>
+        </div>
 
-<!-- Collapsible Wrapper (Hidden by default using collapse class) -->
-<div class="collapse" id="exploreClassesCollapse">
-    <div class="cards-grid">
-        {% for classroom in available_classes %}
-            <article class="styled-card class-card">
-                <div class="class-card-header">
-                    <h3 class="class-card-title">{{ classroom.title }}</h3>
-                    <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
-                        {{ classroom.class_type|title }}
-                    </span>
-                </div>
-                <p class="class-card-desc">{{ classroom.description|truncatewords:20 }}</p>
-                <div class="class-card-footer">
-                    <div class="teacher-info">
-                        <span class="footer-text-small">Teacher</span>
-                        <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
-                    </div>
-                    <div class="card-actions">
-                        {% if classroom.class_id in pending_class_ids %}
-                            <span class="status-text-pending"><i class="fa-solid fa-clock"></i> Pending Review</span>
-                        {% elif classroom.class_type == 'public' %}
-                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Join Class</a>
-                        {% else %}
-                            <a href="{% url 'request_join_class' classroom.class_id %}" class="btn-primary card-action-btn-small">Request Entry (${{ classroom.price }})</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </article>
-        {% empty %}
-            <p class="empty-text-centered">No other classes available right now.</p>
+        <!-- Collapsible Wrapper -->
+        <div class="collapse" id="exploreClassesCollapse">
+            <div class="cards-grid">
+                {% for classroom in available_classes %}
+                    <article class="styled-card class-card">
+                        <div class="class-card-header">
+                            <h3 class="class-card-title">{{ classroom.title }}</h3>
+                            <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+                                {{ classroom.class_type|title }}
+                            </span>
+                        </div>
+                        <p class="class-card-desc">{{ classroom.description|truncatewords:20 }}</p>
+                        <div class="class-card-footer">
+                            <div class="teacher-info">
+                                <span class="footer-text-small">Teacher</span>
+                                <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
+                            </div>
+                            <div class="card-actions">
+                                <!-- STUDENT STATUS NOTIFICATIONS -->
+                                <!-- Inside dashboard.html under SECTION B: AVAILABLE CLASSES -->
+{% if classroom.class_id in pending_class_ids %}
+    <span class="status-text-pending" style="color: #d97706; font-weight: 600;"><i class="fa-solid fa-clock"></i> Pending Review</span>
+
+{% elif classroom.class_id in rejected_class_ids %}
+    <div class="d-flex align-items-center gap-2">
+        {% for enrollment in user.enrollment_set.all %}
+            {% if enrollment.classroom_id == classroom.class_id and enrollment.status == 'rejected' %}
+                <span class="status-text-rejected" style="color: #dc2626; font-weight: 600;" 
+                      title="Reason: {{ enrollment.rejection_reason|default:'No reason provided' }}">
+                    <i class="fa-solid fa-circle-xmark"></i> Rejected
+                    {% if enrollment.rejection_reason %}
+                        <small class="d-block text-muted" style="font-size: 11px;">({{ enrollment.rejection_reason }})</small>
+                    {% endif %}
+                </span>
+            {% endif %}
         {% endfor %}
+        
+        <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">Re-apply</a>
     </div>
-</div>
+
+{% elif classroom.class_type == 'public' %}
+    <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Join Class</a>
+
+{% else %}
+    <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">Request Entry (${{ classroom.price }})</a>
+{% endif %}
+                            </div>
+                        </div>
+                    </article>
+                {% empty %}
+                    <p class="empty-text-centered">No other classes available right now.</p>
+                {% endfor %}
+            </div>
+        </div>
+
         <!-- DASHBOARD FEATURED SECTION -->
-<div class="dashboard-learning-hub my-5">
-
-    <!-- 1. POPULAR TOPICS / SUBJECTS -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="section-title fw-bold m-0"><i class="fa-solid fa-layer-group text-primary me-2"></i>Explore Topics</h3>
-        <a href="{% url 'browse_classes' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">View All</a>
-    </div>
-
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm custom-hover-card p-4 text-center rounded-4">
-                <div class="icon-wrapper bg-primary-subtle text-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                    <i class="fa-solid fa-database fs-3"></i>
-                </div>
-                <h5 class="fw-bold mb-1">Database Design</h5>
-                <p class="text-muted small mb-3">Master SQL, Normalization, & Schema Design</p>
-                <a href="{% url 'browse_classes' %}?search=Database" class="btn btn-light btn-sm text-primary fw-semibold rounded-pill stretched-link">
-                    Explore Subject <i class="fa-solid fa-arrow-right ms-1"></i>
-                </a>
+        <div class="dashboard-learning-hub my-5">
+            <!-- 1. POPULAR TOPICS / SUBJECTS -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="section-title fw-bold m-0"><i class="fa-solid fa-layer-group text-primary me-2"></i>Explore Topics</h3>
+                <a href="{% url 'browse_classes' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">View All</a>
             </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm custom-hover-card p-4 text-center rounded-4">
-                <div class="icon-wrapper bg-success-subtle text-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                    <i class="fa-solid fa-paint-brush fs-3"></i>
-                </div>
-                <h5 class="fw-bold mb-1">UI/UX Design</h5>
-                <p class="text-muted small mb-3">Wireframing, Prototyping & User Research</p>
-                <a href="{% url 'browse_classes' %}?search=UI/UX" class="btn btn-light btn-sm text-success fw-semibold rounded-pill stretched-link">
-                    Explore Subject <i class="fa-solid fa-arrow-right ms-1"></i>
-                </a>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm custom-hover-card p-4 text-center rounded-4">
-                <div class="icon-wrapper bg-warning-subtle text-warning rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                    <i class="fa-solid fa-shield-halved fs-3"></i>
-                </div>
-                <h5 class="fw-bold mb-1">Cyber Security</h5>
-                <p class="text-muted small mb-3">Network Defense, Encryption & Security</p>
-                <a href="{% url 'browse_classes' %}?search=Cyber" class="btn btn-light btn-sm text-warning fw-semibold rounded-pill stretched-link">
-                    Explore Subject <i class="fa-solid fa-arrow-right ms-1"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. QUICK REVISION FLASHCARDS -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="section-title fw-bold m-0"><i class="fa-solid fa-bolt text-warning me-2"></i>Flashcards</h3>
-    </div>
-
-    <div class="row g-3 mb-5">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
-                <div class="d-flex align-items-center">
-                    <div class="p-3 bg-danger-subtle text-danger rounded-3 me-3">
-                        <i class="fa-solid fa-code fs-4"></i>
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm custom-hover-card p-4 text-center rounded-4">
+                        <div class="icon-wrapper bg-primary-subtle text-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-database fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold mb-1">Database Design</h5>
+                        <p class="text-muted small mb-3">Master SQL, Normalization, & Schema Design</p>
+                        <a href="{% url 'browse_classes' %}?search=Database" class="btn btn-light btn-sm text-primary fw-semibold rounded-pill stretched-link">
+                            Explore Subject <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
                     </div>
-                    <div>
-                        <h6 class="fw-bold mb-0">HTML Basics</h6>
-                        <small class="text-muted">Quick Review</small>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm custom-hover-card p-4 text-center rounded-4">
+                        <div class="icon-wrapper bg-success-subtle text-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-paint-brush fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold mb-1">UI/UX Design</h5>
+                        <p class="text-muted small mb-3">Wireframing, Prototyping & User Research</p>
+                        <a href="{% url 'browse_classes' %}?search=UI/UX" class="btn btn-light btn-sm text-success fw-semibold rounded-pill stretched-link">
+                            Explore Subject <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
                     </div>
-                    <!-- Direct link to flashcard practice/detail -->
-                    <a href="{% url 'browse_classes' %}?search=HTML" class="stretched-link"></a>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm custom-hover-card p-4 text-center rounded-4">
+                        <div class="icon-wrapper bg-warning-subtle text-warning rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-shield-halved fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold mb-1">Cyber Security</h5>
+                        <p class="text-muted small mb-3">Network Defense, Encryption & Security</p>
+                        <a href="{% url 'browse_classes' %}?search=Cyber" class="btn btn-light btn-sm text-warning fw-semibold rounded-pill stretched-link">
+                            Explore Subject <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
-                <div class="d-flex align-items-center">
-                    <div class="p-3 bg-info-subtle text-info rounded-3 me-3">
-                        <i class="fa-brands fa-python fs-4"></i>
+            <!-- 2. QUICK REVISION FLASHCARDS -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="section-title fw-bold m-0"><i class="fa-solid fa-bolt text-warning me-2"></i>Flashcards</h3>
+            </div>
+
+            <div class="row g-3 mb-5">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
+                        <div class="d-flex align-items-center">
+                            <div class="p-3 bg-danger-subtle text-danger rounded-3 me-3">
+                                <i class="fa-solid fa-code fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">HTML Basics</h6>
+                                <small class="text-muted">Quick Review</small>
+                            </div>
+                            <a href="{% url 'browse_classes' %}?search=HTML" class="stretched-link"></a>
+                        </div>
                     </div>
-                    <div>
-                        <h6 class="fw-bold mb-0">Python Functions</h6>
-                        <small class="text-muted">Core Concepts</small>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
+                        <div class="d-flex align-items-center">
+                            <div class="p-3 bg-info-subtle text-info rounded-3 me-3">
+                                <i class="fa-brands fa-python fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Python Functions</h6>
+                                <small class="text-muted">Core Concepts</small>
+                            </div>
+                            <a href="{% url 'browse_classes' %}?search=Python" class="stretched-link"></a>
+                        </div>
                     </div>
-                    <a href="{% url 'browse_classes' %}?search=Python" class="stretched-link"></a>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
+                        <div class="d-flex align-items-center">
+                            <div class="p-3 bg-secondary-subtle text-secondary rounded-3 me-3">
+                                <i class="fa-solid fa-key fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Database Keys</h6>
+                                <small class="text-muted">Keys & Joins</small>
+                            </div>
+                            <a href="{% url 'browse_classes' %}?search=Database" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. MCQ QUIZZES -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="section-title fw-bold m-0"><i class="fa-solid fa-circle-question text-info me-2"></i>MCQ Quizzes</h3>
+            </div>
+
+            <div class="row g-3 mb-5">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
+                        <div class="d-flex align-items-center">
+                            <div class="p-3 bg-primary-subtle text-primary rounded-3 me-3">
+                                <i class="fa-solid fa-globe fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Web Development</h6>
+                                <small class="text-muted">10 Questions</small>
+                            </div>
+                            <a href="{% url 'browse_classes' %}?search=Web" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
+                        <div class="d-flex align-items-center">
+                            <div class="p-3 bg-danger-subtle text-danger rounded-3 me-3">
+                                <i class="fa-solid fa-shield fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Cyber Security</h6>
+                                <small class="text-muted">15 Questions</small>
+                            </div>
+                            <a href="{% url 'browse_classes' %}?search=Cyber" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
+                        <div class="d-flex align-items-center">
+                            <div class="p-3 bg-dark-subtle text-dark rounded-3 me-3">
+                                <i class="fa-solid fa-network-wired fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Networking</h6>
+                                <small class="text-muted">12 Questions</small>
+                            </div>
+                            <a href="{% url 'browse_classes' %}?search=Networking" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. CALL TO ACTION HERO CARD -->
+            <div class="cta-banner p-5 text-center rounded-4 shadow-sm text-white position-relative overflow-hidden" 
+                 style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);">
+                <div class="position-relative z-1 py-3">
+                    <h2 class="fw-bold display-6 mb-2">Ready to Test Your Knowledge?</h2>
+                    <p class="lead opacity-75 mb-4">Explore our complete catalog of interactive classrooms, quizzes, and decks.</p>
+                    <a href="{% url 'browse_classes' %}" class="btn btn-light btn-lg px-4 py-2 rounded-pill fw-bold text-primary shadow-sm custom-btn-hover">
+                        <i class="fa-solid fa-compass me-2"></i> Browse All Classes
+                    </a>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
-                <div class="d-flex align-items-center">
-                    <div class="p-3 bg-secondary-subtle text-secondary rounded-3 me-3">
-                        <i class="fa-solid fa-key fs-4"></i>
-                    </div>
-                    <div>
-                        <h6 class="fw-bold mb-0">Database Keys</h6>
-                        <small class="text-muted">Keys & Joins</small>
-                    </div>
-                    <a href="{% url 'browse_classes' %}?search=Database" class="stretched-link"></a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. MCQ QUIZZES -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="section-title fw-bold m-0"><i class="fa-solid fa-circle-question text-info me-2"></i>MCQ Quizzes</h3>
-    </div>
-
-    <div class="row g-3 mb-5">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
-                <div class="d-flex align-items-center">
-                    <div class="p-3 bg-primary-subtle text-primary rounded-3 me-3">
-                        <i class="fa-solid fa-globe fs-4"></i>
-                    </div>
-                    <div>
-                        <h6 class="fw-bold mb-0">Web Development</h6>
-                        <small class="text-muted">10 Questions</small>
-                    </div>
-                    <a href="{% url 'browse_classes' %}?search=Web" class="stretched-link"></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
-                <div class="d-flex align-items-center">
-                    <div class="p-3 bg-danger-subtle text-danger rounded-3 me-3">
-                        <i class="fa-solid fa-shield fs-4"></i>
-                    </div>
-                    <div>
-                        <h6 class="fw-bold mb-0">Cyber Security</h6>
-                        <small class="text-muted">15 Questions</small>
-                    </div>
-                    <a href="{% url 'browse_classes' %}?search=Cyber" class="stretched-link"></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm custom-hover-card p-3 rounded-3">
-                <div class="d-flex align-items-center">
-                    <div class="p-3 bg-dark-subtle text-dark rounded-3 me-3">
-                        <i class="fa-solid fa-network-wired fs-4"></i>
-                    </div>
-                    <div>
-                        <h6 class="fw-bold mb-0">Networking</h6>
-                        <small class="text-muted">12 Questions</small>
-                    </div>
-                    <a href="{% url 'browse_classes' %}?search=Networking" class="stretched-link"></a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 4. CALL TO ACTION HERO CARD -->
-    <div class="cta-banner p-5 text-center rounded-4 shadow-sm text-white position-relative overflow-hidden" 
-         style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);">
-        <div class="position-relative z-1 py-3">
-            <h2 class="fw-bold display-6 mb-2">Ready to Test Your Knowledge?</h2>
-            <p class="lead opacity-75 mb-4">Explore our complete catalog of interactive classrooms, quizzes, and decks.</p>
-            <a href="{% url 'browse_classes' %}" class="btn btn-light btn-lg px-4 py-2 rounded-pill fw-bold text-primary shadow-sm custom-btn-hover">
-                <i class="fa-solid fa-compass me-2"></i> Browse All Classes
-            </a>
-        </div>
-    </div>
-
-</div>
     </div>
 </div>
 
@@ -345,7 +397,6 @@
     document.addEventListener("DOMContentLoaded", () => {
         const collapseElement = document.getElementById('exploreClassesCollapse');
         const toggleBtn = document.getElementById('toggleExploreBtn');
-        const toggleIcon = document.getElementById('toggleExploreIcon');
 
         if (collapseElement && toggleBtn) {
             collapseElement.addEventListener('show.bs.collapse', () => {
@@ -358,5 +409,4 @@
         }
     });
 </script>
-
 {% endblock %}

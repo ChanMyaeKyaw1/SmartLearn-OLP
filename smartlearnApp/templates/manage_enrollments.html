@@ -1,52 +1,74 @@
 {% extends 'base.html' %}
-{% block title %}Manage Enrollments - EduSage{% endblock %}
+{% block title %}Manage Enrollments - {{ classroom.title }}{% endblock %}
 
 {% block content %}
-<div style="margin-bottom: 25px;">
-    <a href="{% url 'browse_classes' %}" class="back-link">← Back to Browser</a>
-    <h2 class="page-heading-large">Roster Management</h2>
-    <p class="subtext-muted">Classroom: <strong>{{ classroom.title }}</strong></p>
-</div>
-
-<div class="roster-split-layout">
-    
-    <div>
-    <h3 class="roster-column-title">Pending Requests</h3>
-    <div class="styled-card roster-card-list">
-        {% for req in pending_requests %}
-            <div class="roster-list-item d-flex justify-content-between align-items-center flex-wrap gap-2" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-                <div>
-                    <strong class="roster-student-name d-block">{{ req.student.username }}</strong>
-                    <small class="subtext-muted">Applied: {{ req.requested_at|date:"M d, Y" }}</small>
-                </div>
-
-                <div class="roster-action-group d-flex gap-2">
-                    <a href="{% url 'update_enrollment_status' req.enrollment_id 'approve' %}" class="btn-primary btn-approve-status">Approve</a>
-                    <a href="{% url 'update_enrollment_status' req.enrollment_id 'reject' %}" class="btn-secondary btn-reject-status">Reject</a>
-                </div>
-            </div>
-        {% empty %}
-            <p class="subtext-muted" style="text-align: center; padding: 20px 0;">No active waiting applications found.</p>
-        {% endfor %}
-    </div>
-</div>
-    </div>
-
-    <div>
-        <h3 class="roster-column-title">Active Roster</h3>
-        <div class="styled-card roster-card-list">
-            {% for active in active_students %}
-                <div class="roster-list-item">
-                    <div>
-                        <span style="font-weight: 500; font-size: 15px;">{{ active.student.username }}</span>
-                    </div>
-                    <small class="subtext-muted">Enrolled: {{ active.requested_at|date:"M d, Y" }}</small>
-                </div>
-            {% empty %}
-                <p class="subtext-muted" style="text-align: center; padding: 20px 0;">No enrolled students in this class yet.</p>
-            {% endfor %}
+<div class="main-container">
+    <div class="styled-card content-header-box mb-4">
+        <div class="page-title-row d-flex justify-content-between align-items-center">
+            <h2 class="page-heading-large">Manage Requests: {{ classroom.title }}</h2>
+            <a href="{% url 'dashboard' %}" class="btn-primary card-action-btn-small">← Back to Dashboard</a>
         </div>
     </div>
 
+    <!-- PENDING REQUESTS TABLE -->
+    <div class="styled-card mb-4">
+        <h3 class="fw-bold mb-3" style="font-size: 20px; color: #d97706;">
+            <i class="fa-solid fa-clock me-2"></i>Pending Access Requests
+        </h3>
+        
+        {% if pending_requests %}
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Phone</th>
+                            <th>Payment Slip</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in pending_requests %}
+                            <tr>
+                                <td><strong>{{ req.student.username }}</strong></td>
+                                <td>{{ req.phone|default:"N/A" }}</td>
+                                <td>
+                                    {% if req.payslip %}
+                                        <a href="{{ req.payslip.url }}" target="_blank" class="btn btn-sm btn-outline-primary">View Payslip</a>
+                                    {% else %}
+                                        <span class="text-muted">No Slip</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <!-- APPROVE BUTTON (Uses pk to prevent FieldError) -->
+                                    <a href="{% url 'handle_enrollment_request' req.pk 'approve' %}" class="btn btn-sm btn-success text-white me-1">
+                                        Approve
+                                    </a>
+                                    
+                                    <!-- REJECT BUTTON (Triggers reason input prompt) -->
+                                    <button type="button" class="btn btn-sm btn-danger text-white" onclick="rejectWithReason('{{ req.pk }}')">
+                                        Reject
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-text-centered text-muted m-0">No pending join requests for this class.</p>
+        {% endif %}
+    </div>
 </div>
+
+<!-- JavaScript to prompt teacher for rejection reason -->
+<script>
+    function rejectWithReason(enrollmentId) {
+        const reason = prompt("Enter a reason for rejection (e.g. 'Invalid payslip', 'Incorrect payment amount'):");
+        if (reason !== null) { // If user didn't click Cancel
+            const baseUrl = "{% url 'handle_enrollment_request' 0 'reject' %}".replace('0', enrollmentId);
+            window.location.href = baseUrl + "?rejection_reason=" + encodeURIComponent(reason);
+        }
+    }
+</script>
 {% endblock %}

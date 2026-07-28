@@ -143,34 +143,37 @@ def logout_view(request):
 # DASHBOARD & CLASSROOM MANAGEMENT
 # ==========================================
 
+from django.db.models import Count, Q
+
 @login_required(login_url='login')
 def dashboard_view(request):
-    # 1. Created classes (Teacher Mode)
+    # Annotate created classes with the pending requests count
     my_classes = Classroom.objects.filter(
-        owner=request.user,
+        owner=request.user, 
         created_from_site=True
+    ).annotate(
+        pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
     )
 
-    # 2. Joined classes (where user enrollment is approved)
     joined_classrooms = Classroom.objects.filter(
-        enrollments__student=request.user,
+        enrollments__student=request.user, 
         enrollments__status='approved'
     ).select_related('owner')
 
-    # 3. All system classes (excluding classes owned or already joined)
     available_classes = Classroom.objects.exclude(
         owner=request.user
-    ).exclude(
-        enrollments__student=request.user,
-        enrollments__status='approved'
     ).select_related('owner')
+
+    pending_class_ids = list(Enrollment.objects.filter(student=request.user, status='pending').values_list('classroom_id', flat=True))
+    rejected_class_ids = list(Enrollment.objects.filter(student=request.user, status='rejected').values_list('classroom_id', flat=True))
 
     return render(request, 'dashboard.html', {
         'my_classes': my_classes,
         'joined_classrooms': joined_classrooms,
         'available_classes': available_classes,
+        'pending_class_ids': pending_class_ids,
+        'rejected_class_ids': rejected_class_ids,
     })
-
 
 @login_required(login_url='login')
 def my_classes(request):
@@ -1047,3 +1050,49 @@ def create_topic_global(request, item_type):
         'classrooms': all_classes,
     }
     return render(request, 'create_topic.html', context)
+
+@login_required(login_url='login')
+def manage_classroom_view(request, class_id):
+    # Ensure only the owner can manage this class
+    classroom = get_object_or_404(Classroom, class_id=class_id, owner=request.user)
+    
+    # Get all pending enrollment requests for this classroom
+    pending_enrollments = Enrollment.objects.filter(
+        classroom=classroom, 
+        status='pending'
+    ).select_related('student')
+    
+    # Get approved students list (roster)
+    approved_enrollments = Enrollment.objects.filter(
+        classroom=classroom, 
+        status='approved'
+    ).select_related('student')
+
+    return render(request, 'manage_classroom.html', {
+        'classroom': classroom,
+        'pending_enrollments': pending_enrollments,
+        'approved_enrollments': approved_enrollments,
+    })
+
+
+@login_required(login_url='login')
+def handle_enrollment_request(request, enrollment_id, action):
+    # Fix: Use 'enrollment_id' instead of 'id'
+    enrollment = get_object_or_404(Enrollment, enrollment_id=enrollment_id, classroom__owner=request.user)
+    
+    if action == 'approve':
+        enrollment.status = 'approved'
+        enrollment.rejection_reason = None  # Clear reason on approval
+        enrollment.save()
+        messages.success(request, f"Approved {enrollment.student.username}'s request.")
+        
+    elif action == 'reject':
+        # Grab the reason sent from JavaScript query parameter
+        reason = request.GET.get('rejection_reason', '').strip()
+        
+        enrollment.status = 'rejected'
+        enrollment.rejection_reason = reason if reason else "No reason provided."
+        enrollment.save()
+        messages.warning(request, f"Rejected {enrollment.student.username}'s request.")
+        
+    return redirect('manage_enrollments', class_id=enrollment.classroom.class_id)
