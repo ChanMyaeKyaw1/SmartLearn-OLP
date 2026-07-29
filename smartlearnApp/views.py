@@ -150,7 +150,7 @@ def dashboard_view(request):
     # Annotate created classes with the pending requests count
     my_classes = Classroom.objects.filter(
         owner=request.user, 
-        created_from_site=True
+        # created_from_site=True
     ).annotate(
         pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
     )
@@ -199,8 +199,11 @@ def my_classes(request):
 def browse_classes(request):
     current_user = get_mock_user(request)
 
-    classrooms = Classroom.objects.all().select_related('owner')
-
+    # classrooms = Classroom.objects.all().select_related('owner')
+    classrooms = Classroom.objects.annotate(
+        pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
+    ).select_related('owner')
+    
     search_query = request.GET.get('search', '')
     if search_query:
         classrooms = classrooms.filter(title__istartswith=search_query)
@@ -226,13 +229,11 @@ def browse_classes(request):
         user_enrollments.filter(status='pending').values_list('classroom_id', flat=True)
     )
 
-    available_classes = Classroom.objects.all().annotate(
-        pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
-    ).select_related('owner')
+   
 
     # Separate into joined vs available
     joined_classes = classrooms.filter(class_id__in=joined_class_ids)
-    # available_classes = classrooms.exclude(class_id__in=joined_class_ids)
+    available_classes = classrooms.exclude(class_id__in=joined_class_ids)
 
     context = {
         'joined_classes': joined_classes,
