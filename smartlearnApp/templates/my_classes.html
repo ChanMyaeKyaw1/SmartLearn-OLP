@@ -56,11 +56,17 @@
 
 
             <div>
-                <a href="{% url 'manage_enrollments' classroom.class_id %}" 
-                   class="btn-secondary card-action-btn-small">
-                    Manage
-                </a>
-            </div>
+    <a href="{% url 'manage_enrollments' classroom.class_id %}" 
+       class="btn-primary card-action-btn-small" 
+       style="background-color: #f59e0b; border-color: #f59e0b; display: inline-flex; align-items: center; gap: 4px;">
+        Manage
+        {% if classroom.pending_count %}
+            <span style="background: #dc2626; color: #ffffff; padding: 1px 5px; border-radius: 10px; font-size: 10px; line-height: 1;">
+                {{ classroom.pending_count }}
+            </span>
+        {% endif %}
+    </a>
+</div>
 
         </div>
 

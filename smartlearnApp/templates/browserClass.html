@@ -91,20 +91,66 @@
                         <span class="footer-text-small">Teacher</span>
                         <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
                     </div>
-                    <div class="card-actions">
-                        {% if classroom.owner.username == current_user_name %}
-                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
-                            <a href="{% url 'manage_enrollments' classroom.class_id %}" class="btn-secondary card-action-btn-small">Manage</a>
-                            <a href="{% url 'delete_class' classroom.class_id %}" class="delete-link" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
-                        {% elif classroom.class_id in pending_class_ids %}
-                            <span class="status-text-pending"><i class="fa-solid fa-clock"></i> Pending Review</span>
-                        {% elif classroom.class_type == 'public' %}
-                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Join Class</a>
-                        {% else %}
-                            <!-- 🟢 Updated URL to redirect to payment upload view -->
-                            <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">Request Entry (${{ classroom.price }})</a>
-                        {% endif %}
-                    </div>
+                    <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
+    {% if classroom.owner.username == current_user_name %}
+        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
+        <a href="{% url 'manage_enrollments' classroom.class_id %}" class="btn-primary card-action-btn-small" style="background-color: #f59e0b; border-color: #f59e0b; display: inline-flex; align-items: center; gap: 4px;">
+            Manage
+            {% if classroom.pending_count %}
+                <span style="background: #dc2626; color: #ffffff; padding: 1px 5px; border-radius: 10px; font-size: 10px; line-height: 1;">
+                    {{ classroom.pending_count }}
+                </span>
+            {% endif %}
+        </a>
+        <a href="{% url 'delete_class' classroom.class_id %}" class="delete-link" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
+
+    {% elif classroom.user_enrollment %}
+        <!-- 1. PENDING STATUS -->
+        {% if classroom.user_enrollment.status == 'pending' %}
+            <span class="badge bg-warning-subtle text-warning border border-warning px-2 py-1" style="font-size: 12px; font-weight: 600;">
+                <i class="fa-solid fa-clock me-1"></i> Pending Review
+            </span>
+
+        <!-- 2. REJECTED STATUS + REASON -->
+        {% elif classroom.user_enrollment.status == 'rejected' %}
+            <div class="d-flex flex-column align-items-end">
+                <span class="badge bg-danger-subtle text-danger border border-danger px-2 py-1 mb-1" 
+                      style="font-size: 11px; font-weight: 600;"
+                      title="Reason: {{ classroom.user_enrollment.rejection_reason }}">
+                    <i class="fa-solid fa-circle-xmark me-1"></i> Rejected
+                </span>
+                
+                {% if classroom.user_enrollment.rejection_reason %}
+                    <small class="text-danger fw-semibold text-end" style="font-size: 10px; max-width: 140px; line-height: 1.1;">
+                        Note: {{ classroom.user_enrollment.rejection_reason|truncatechars:35 }}
+                    </small>
+                {% endif %}
+                
+                <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small mt-1" style="padding: 2px 8px; font-size: 11px;">
+                    Re-apply
+                </a>
+            </div>
+
+        <!-- 3. APPROVED STATUS -->
+        {% elif classroom.user_enrollment.status == 'approved' %}
+            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">
+                Open Class
+            </a>
+        {% endif %}
+
+    {% else %}
+        <!-- 4. NOT APPLIED YET -->
+        {% if classroom.class_type == 'public' %}
+            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">
+                Join Class
+            </a>
+        {% else %}
+            <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">
+                Request Entry (${{ classroom.price }})
+            </a>
+        {% endif %}
+    {% endif %}
+</div>
                 </div>
             </article>
         {% empty %}
@@ -171,7 +217,14 @@
                 if (availableTitle) availableTitle.textContent = "Available Classes";
 
                 // Show all cards
-                classCards.forEach(card => card.style.display = '');
+                classCards.forEach(card => {
+                    const owner = card.getAttribute('data-owner');
+                    if (owner !== currentUser) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
 
                 if (noTeacherClassesMsg) {
                     noTeacherClassesMsg.style.display = 'none';

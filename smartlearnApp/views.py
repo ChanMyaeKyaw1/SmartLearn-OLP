@@ -183,8 +183,13 @@ from django.db.models import Count, Q
 def dashboard_view(request):
     # Annotate created classes with the pending requests count
     my_classes = Classroom.objects.filter(
+<<<<<<< HEAD
         owner=request.user,
         created_from_site=True
+=======
+        owner=request.user, 
+        # created_from_site=True
+>>>>>>> 3b735d57487e3ea8b8439b5b7736f6365b7798a2
     ).annotate(
         pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
     )
@@ -219,8 +224,12 @@ def dashboard_view(request):
 
 @login_required(login_url='login')
 def my_classes(request):
-    classes = Classroom.objects.filter(owner=request.user)
-
+    classes = Classroom.objects.filter(
+        owner=request.user
+    ).annotate(
+        pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
+    )
+    
     return render(request, 'my_classes.html', {
         'classes': classes
     })
@@ -229,8 +238,11 @@ def my_classes(request):
 def browse_classes(request):
     current_user = get_mock_user(request)
 
-    classrooms = Classroom.objects.all().select_related('owner')
-
+    # classrooms = Classroom.objects.all().select_related('owner')
+    classrooms = Classroom.objects.annotate(
+        pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
+    ).select_related('owner')
+    
     search_query = request.GET.get('search', '')
     if search_query:
         classrooms = classrooms.filter(title__istartswith=search_query)
@@ -255,6 +267,8 @@ def browse_classes(request):
     pending_class_ids = list(
         user_enrollments.filter(status='pending').values_list('classroom_id', flat=True)
     )
+
+   
 
     # Separate into joined vs available
     joined_classes = classrooms.filter(class_id__in=joined_class_ids)
