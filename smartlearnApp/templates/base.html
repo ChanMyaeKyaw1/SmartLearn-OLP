@@ -109,7 +109,7 @@
             background-color: #4CAF7D;
             color: #ffffff;
         }
-        /* COMPREHENSIVE UTILITY SYSTEM FOOTER */
+        /* FOOTER */
 
         .main-footer {
             background-color: #2b4c3f;
@@ -234,7 +234,6 @@
 </head>
 
 <body>
-
     <!-- SHARED GLOBAL NAVBAR -->
     <header class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
@@ -247,16 +246,43 @@
             </button>
 
             <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'dashboard' %}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'browse_classes' %}">Classes</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'all_flashcards' %}">Flashcards</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'all_mcqs' %}">MCQs</a></li>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-2">
+                    <!-- 1. Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+
+                    <!-- 2. Dashboard Link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}?next={% url 'dashboard' %}{% endif %}">
+                            Dashboard
+                        </a>
+                    </li>
+
+                    <!-- 3. Classes Link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% if user.is_authenticated %}{% url 'browse_classes' %}{% else %}{% url 'login' %}?next={% url 'browse_classes' %}{% endif %}">
+                            Classes
+                        </a>
+                    </li>
+
+                    <!-- 4. Flashcards Link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% if user.is_authenticated %}{% url 'all_flashcards' %}{% else %}{% url 'login' %}?next={% url 'all_flashcards' %}{% endif %}">
+                            Flashcards
+                        </a>
+                    </li>
+
+                    <!-- 5. MCQs Link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% if user.is_authenticated %}{% url 'all_mcqs' %}{% else %}{% url 'login' %}?next={% url 'all_mcqs' %}{% endif %}">
+                            MCQs
+                        </a>
+                    </li>
                 </ul>
 
                 <div class="d-flex align-items-center gap-3">
-                    <!-- Teacher Toggle Switch -->
+                    {% if user.is_authenticated %}
                     <div class="teacher-toggle-box d-flex align-items-center me-2">
                         <span class="fw-bold me-2 small text-dark">Teacher Mode</span>
                         <div class="form-check form-switch m-0">
@@ -264,7 +290,6 @@
                         </div>
                     </div>
 
-                    {% if user.is_authenticated %}
                     <div class="dropdown">
                         <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" style="width: 42px; height: 42px; background-color: #2b4c3f; border: 2px solid #4CAF7D;">
@@ -277,27 +302,42 @@
                                 <span class="d-block small text-muted">Signed in as</span>
                                 <strong class="text-dark">{{ request.user.username }}</strong>
                             </li>
+
                             <li>
-                                <a class="dropdown-item py-2" href="#"><i class="fa-solid fa-user me-2 text-muted"></i> Profile</a>
+                                <a class="dropdown-item py-2" href="{% url 'dashboard' %}">
+                                    <i class="fa-solid fa-user me-2 text-muted"></i> Profile
+                                </a>
                             </li>
-                            <!-- 🟢 Dynamic Teacher Payment Methods Link -->
+                            <li>
+                                <a class="dropdown-item py-2" href="{% url 'edit_profile' %}">
+                                    <i class="fa-solid fa-user-pen me-2 text-muted"></i> Update Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="{% url 'change_password' %}">
+                                    <i class="fa-solid fa-key me-2 text-muted"></i> Change Password
+                                </a>
+                            </li>
+
                             <li id="teacherPaymentMenuItem" style="display: none;">
                                 <a class="dropdown-item py-2" href="{% url 'manage_payment_accounts' %}">
                                     <i class="fa-solid fa-wallet me-2 text-muted"></i> Payment Methods
                                 </a>
                             </li>
+
                             <li>
                                 <hr class="dropdown-divider my-1">
                             </li>
                             <li>
-                                <a class="dropdown-item py-2 text-danger" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
+                                <a class="dropdown-item py-2 text-danger" href="{% url 'logout' %}">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                                </a>
                             </li>
                         </ul>
                     </div>
                     {% else %}
                     <a href="{% url 'login' %}" class="btn btn-matcha-outline">Sign In</a>
-                    <a href="{% url 'register' %}" class="btn btn-matcha-primary">Get Started</a>
-                    {% endif %}
+                    <a href="{% url 'register' %}" class="btn btn-matcha-primary">Get Started</a> {% endif %}
                 </div>
             </div>
         </div>
@@ -309,6 +349,7 @@
     </main>
 
     <!-- FOOTER -->
+    {% block footer %}
     <footer class="main-footer">
         <div class="container">
             <div class="row g-4">
@@ -388,12 +429,13 @@
 
         </div>
     </footer>
+    {% endblock %}
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
 
-    <!-- 🟢 Teacher Mode Global Sync Script -->
+    <!-- Teacher Mode Global Sync Script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const toggle = document.getElementById('teacherModeToggle');
@@ -405,7 +447,6 @@
                 }
             }
 
-            // Retrieve saved state from localStorage
             const savedState = localStorage.getItem('teacherMode') === 'true';
 
             if (toggle) {

@@ -1,0 +1,71 @@
+{% extends 'custom_admin/admin_base.html' %} {% block title %}Admin Profile - SmartLearn{% endblock %} {% block content %}
+<div class="container-fluid">
+
+    <div class="card shadow mb-4 col">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Admin Profile ( <span class="text-danger">{% if request.user.is_superuser %}Superadmin{% else %}Staff{% endif %}</span> )
+            </h6>
+        </div>
+        <form action="{% url 'admin_update_profile' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card-body">
+                <div class="row">
+
+                    <!-- Profile Picture Section -->
+                    <div class="col-md-3 text-center mb-3">
+                        {% if request.user.profile_image %}
+                        <img class="img-profile img-thumbnail mb-2" id="output" src="{{ request.user.profile_image.url }}" style="max-height: 200px; object-fit: cover;"> {% else %}
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold bg-primary shadow-sm mx-auto mb-2" style="width: 120px; height: 120px; font-size: 36px;">
+                            {{ request.user.username|slice:":2"|upper }}
+                        </div>
+                        {% endif %}
+
+                        <input type="file" name="image" accept="image/*" class="form-control mt-1" onchange="loadFile(event)"> {% if form.image.errors %}
+                        <small class="text-danger d-block mt-1">{{ form.image.errors.0 }}</small> {% endif %}
+                    </div>
+
+                    <!-- User Information Section -->
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Username / Name</label>
+                                    <input type="text" name="username" class="form-control" placeholder="Name..." value="{{ form.username.value|default:request.user.username }}"> {% if form.username.errors %}
+                                    <small class="text-danger d-block mt-1">{{ form.username.errors.0 }}</small> {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email" class="form-control" placeholder="Email..." value="{{ form.email.value|default:request.user.email }}"> {% if form.email.errors %}
+                                    <small class="text-danger d-block mt-1">{{ form.email.errors.0 }}</small> {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="my-2">
+                            <a href="{% url 'admin_change_password' %}" class="text-decoration-none">
+                                <i class="fa-solid fa-key me-1"></i> Change Password
+                            </a>
+                        </div>
+
+                        <input type="submit" value="Update" class="btn btn-primary mt-3 px-3">
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+    function loadFile(event) {
+        const output = document.getElementById('output');
+        if (output && event.target.files && event.target.files[0]) {
+            output.src = URL.createObjectURL(event.target.files[0]);
+        }
+    }
+</script>
+{% endblock %}

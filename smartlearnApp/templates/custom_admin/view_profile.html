@@ -1,0 +1,70 @@
+{% extends 'custom_admin/admin_base.html' %} {% block title %}Admin Profile - SmartLearn{% endblock %} {% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fa-solid fa-user me-2"></i>Admin Profile Details
+                    </h6>
+                    <span class="badge bg-danger">
+                        {% if request.user.is_superuser %}Superadmin{% else %}Staff{% endif %}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <!-- Profile Picture Section -->
+                        <div class="col-md-4 text-center mb-4 mb-md-0 border-end">
+                            {% if request.user.profile_image %}
+                            <img class="img-profile img-thumbnail rounded-circle mb-3" src="{{ request.user.profile_image.url }}" style="width: 140px; height: 140px; object-fit: cover;"> {% else %}
+                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold bg-primary shadow-sm mx-auto mb-3" style="width: 140px; height: 140px; font-size: 42px;">
+                                {{ request.user.username|slice:":2"|upper }}
+                            </div>
+                            {% endif %}
+                            <h5 class="fw-bold mb-1">{{ request.user.username }}</h5>
+                            <p class="text-muted small mb-0">{{ request.user.email }}</p>
+                        </div>
+
+                        <!-- Info Details Section -->
+                        <div class="col-md-8 ps-md-4">
+                            <div class="mb-3">
+                                <label class="text-muted small d-block">Username / Name</label>
+                                <span class="fs-6 fw-semibold text-dark">{{ request.user.username }}</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted small d-block">Email Address</label>
+                                <span class="fs-6 fw-semibold text-dark">{{ request.user.email }}</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted small d-block">Account Status</label> {% if request.user.is_active %}
+                                <span class="badge bg-success">Active</span> {% else %}
+                                <span class="badge bg-secondary">Inactive</span> {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted small d-block">Date Joined</label>
+                                <span class="fs-6 text-dark">{{ request.user.date_joined|date:"M d, Y" }}</span>
+                            </div>
+
+                            <hr class="my-3">
+
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'admin_update_profile' %}" class="btn btn-primary">
+                                    <i class="fa-solid fa-user-pen me-1"></i> Edit Profile
+                                </a>
+                                <a href="{% url 'admin_change_password' %}" class="btn btn-outline-secondary py-3">
+                                    <i class="fa-solid fa-key me-1"></i> Change Password
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

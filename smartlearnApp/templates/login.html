@@ -1,5 +1,4 @@
-{% load static %}
-{% load socialaccount %}
+{% load static %} {% load socialaccount %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -75,8 +74,8 @@
         .btn-primary:hover {
             background: #3f9d70;
         }
-
         /* Social Button Styling adjustments */
+
         .social-btn {
             display: flex;
             align-items: center;
@@ -143,13 +142,11 @@
                 <div class="card shadow-lg my-5 border-0">
                     <div class="card-body p-5">
 
-                        {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert alert-info">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
+                        {% if messages %} {% for message in messages %}
+                        <div class="alert alert-info">
+                            {{ message }}
+                        </div>
+                        {% endfor %} {% endif %}
 
                         <div class="text-center mb-4">
                             <i class="fas fa-graduation-cap fa-3x mb-3" style="color: #4CAF7D;"></i>
@@ -157,23 +154,15 @@
                             <p>Sign in to continue your learning journey</p>
                         </div>
 
-                        <form method="POST">
+                        <form method="POST" action="">
                             {% csrf_token %}
 
                             <div class="mb-3">
-                                <input type="text"
-                                       name="username"
-                                       class="form-control form-control-lg"
-                                       placeholder="Username"
-                                       required>
+                                <input type="text" name="username" class="form-control form-control-lg" placeholder="Username" required>
                             </div>
 
                             <div class="mb-3">
-                                <input type="password"
-                                       name="password"
-                                       class="form-control form-control-lg"
-                                       placeholder="Password"
-                                       required>
+                                <input type="password" name="password" class="form-control form-control-lg" placeholder="Password" required>
                             </div>
 
                             <div class="form-check mb-3">

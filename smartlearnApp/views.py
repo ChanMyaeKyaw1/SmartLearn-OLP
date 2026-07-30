@@ -10,11 +10,13 @@ from django.utils.text import slugify
 
 from .models import Classroom, Enrollment, Flashcard, FlashcardTopicReaction, MCQQuestion, QuizAttempt
 
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from .models import PaymentAccount
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth import get_user_model
+
 
 # ==========================================
 # HELPER FUNCTIONS & ACCESS CONTROL
@@ -93,16 +95,48 @@ def home_view(request):
     return render(request, 'home.html', context)
 
 
-def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-    if request.method == 'POST':
-        user = authenticate(request, username=request.POST.get('username'), password=request.POST.get('password'))
-        if user:
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            return redirect('dashboard')
-    return render(request, 'login.html')
+# def login_view(request):
+#     if request.user.is_authenticated:
+#         return redirect('dashboard')
+#     if request.method == 'POST':
+#         user = authenticate(request, username=request.POST.get('username'), password=request.POST.get('password'))
+#         if user:
+#             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+#             return redirect('dashboard')
+#     return render(request, 'login.html')
 
+def login_view(request):
+    # 1. Check if user specified a 'next' parameter in GET or POST
+    next_url = request.GET.get('next') or request.POST.get('next')
+
+    # 2. If already logged in, redirect to requested page or role dashboard
+    if request.user.is_authenticated:
+        if next_url:
+            return redirect(next_url)
+        if request.user.is_superuser or request.user.is_staff:
+            return redirect('custom_admin_dashboard')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+            # 3. Superadmin/Staff override (takes priority or handles admin redirects)
+            if user.is_superuser or user.is_staff:
+                return redirect('custom_admin_dashboard')
+
+            # 4. Regular users go to the 'next' URL if present, otherwise 'dashboard'
+            if next_url:
+                return redirect(next_url)
+            return redirect('dashboard')
+        else:
+            messages.error(request, "Invalid username or password.")
+
+    return render(request, 'login.html')
 
 def register_view(request):
     if request.method == 'POST':
@@ -149,14 +183,14 @@ from django.db.models import Count, Q
 def dashboard_view(request):
     # Annotate created classes with the pending requests count
     my_classes = Classroom.objects.filter(
-        owner=request.user, 
+        owner=request.user,
         created_from_site=True
     ).annotate(
         pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
     )
 
     joined_classrooms = Classroom.objects.filter(
-        enrollments__student=request.user, 
+        enrollments__student=request.user,
         enrollments__status='approved'
     ).select_related('owner')
 
@@ -295,10 +329,6 @@ def serve_dashboard_page(request):
     return render(request, 'dashboard.html', {
         'current_user_name': user.username
     })
-
-
-def profile_edit(request):
-    return render(request, 'profile_edit.html')
 
 
 # ==========================================
@@ -791,7 +821,7 @@ def all_mcqs_view(request):
         'mcq_groups': mcq_groups,
         'total_questions': sum(group['total_questions'] for group in mcq_groups),
         'total_topics': len(mcq_groups),
-        'can_create': can_create,   
+        'can_create': can_create,
     })
 
 
@@ -993,7 +1023,7 @@ def create_topic_global(request, item_type):
     if request.method == 'POST':
         class_mode = request.POST.get('class_mode')
         topic = request.POST.get('topic')
-        
+
         # 1. Resolve Classroom
         if class_mode == 'new':
             new_title = request.POST.get('new_class_title')
@@ -1063,16 +1093,16 @@ def create_topic_global(request, item_type):
 def manage_classroom_view(request, class_id):
     # Ensure only the owner can manage this class
     classroom = get_object_or_404(Classroom, class_id=class_id, owner=request.user)
-    
+
     # Get all pending enrollment requests for this classroom
     pending_enrollments = Enrollment.objects.filter(
-        classroom=classroom, 
+        classroom=classroom,
         status='pending'
     ).select_related('student')
-    
+
     # Get approved students list (roster)
     approved_enrollments = Enrollment.objects.filter(
-        classroom=classroom, 
+        classroom=classroom,
         status='approved'
     ).select_related('student')
 
@@ -1087,20 +1117,173 @@ def manage_classroom_view(request, class_id):
 def handle_enrollment_request(request, enrollment_id, action):
     # Fix: Use 'enrollment_id' instead of 'id'
     enrollment = get_object_or_404(Enrollment, enrollment_id=enrollment_id, classroom__owner=request.user)
-    
+
     if action == 'approve':
         enrollment.status = 'approved'
         enrollment.rejection_reason = None  # Clear reason on approval
         enrollment.save()
         messages.success(request, f"Approved {enrollment.student.username}'s request.")
-        
+
     elif action == 'reject':
         # Grab the reason sent from JavaScript query parameter
         reason = request.GET.get('rejection_reason', '').strip()
-        
+
         enrollment.status = 'rejected'
         enrollment.rejection_reason = reason if reason else "No reason provided."
         enrollment.save()
         messages.warning(request, f"Rejected {enrollment.student.username}'s request.")
-        
+
     return redirect('manage_enrollments', class_id=enrollment.classroom.class_id)
+
+
+
+# (Note: If you want to redirect them to Django's built-in default admin page instead of a custom-built one, simply replace return redirect('custom_admin_dashboard') with return redirect('/admin/')).
+
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required(login_url='login')
+def custom_admin_dashboard(request):
+    # Fetch data you want to display on the admin page
+    total_users = User.objects.count()
+    total_classrooms = Classroom.objects.count()
+
+    context = {
+        'total_users': total_users,
+        'total_classrooms': total_classrooms,
+    }
+    return render(request, 'custom_admin/dashboard.html', context)
+
+
+
+
+User = get_user_model()
+
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def custom_admin_dashboard(request):
+    section = request.GET.get('section', 'all')
+
+    context = {
+        'section': section,
+        'total_users': User.objects.count(),
+        'total_classrooms': Classroom.objects.count(),
+        'total_flashcards': Flashcard.objects.count(),
+        'total_mcqs': MCQQuestion.objects.count(),
+        'users': User.objects.all(),
+        'classrooms': Classroom.objects.all(),
+        'flashcards': Flashcard.objects.all(),
+        'mcqs': MCQQuestion.objects.all(),
+    }
+    return render(request, 'custom_admin/dashboard.html', context)
+
+@staff_member_required(login_url='login')
+def admin_edit_user(request, user_id):
+    target_user = get_object_or_404(User, id=user_id)
+
+    if request.method == 'POST':
+        target_user.username = request.POST.get('username', '').strip()
+        target_user.email = request.POST.get('email', '').strip()
+        target_user.is_staff = 'is_staff' in request.POST
+        target_user.is_active = 'is_active' in request.POST
+        target_user.save()
+        messages.success(request, f"User {target_user.username} updated successfully!")
+        return redirect('custom_admin_dashboard')
+
+    return render(request, 'custom_admin/edit_user.html', {'target_user': target_user})
+
+
+@staff_member_required(login_url='login')
+def admin_delete_user(request, user_id):
+    target_user = get_object_or_404(User, id=user_id)
+    if target_user == request.user:
+        messages.error(request, "You cannot delete your own admin account!")
+    else:
+        target_user.delete()
+        messages.success(request, "User deleted successfully.")
+    return redirect('custom_admin_dashboard')
+
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def admin_view_profile(request):
+    return render(request, 'custom_admin/view_profile.html')
+
+@staff_member_required(login_url='login')
+def admin_update_profile(request):
+    if request.method == 'POST':
+        request.user.username = request.POST.get('username', '').strip()
+        request.user.email = request.POST.get('email', '').strip()
+        request.user.save()
+        messages.success(request, "Admin profile updated successfully!")
+        return redirect('admin_update_profile')
+
+    return render(request, 'custom_admin/edit_profile.html')
+
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def admin_change_password(request):
+    if request.method == 'POST':
+        old_password = request.POST.get('old_password')
+        new_password1 = request.POST.get('new_password1')
+        new_password2 = request.POST.get('new_password2')
+
+        # 1. Verify old password using Django's check_password method
+        if not request.user.check_password(old_password):
+            messages.error(request, "Incorrect old password.")
+            return render(request, 'custom_admin/change_password.html')
+
+        # 2. Check if new passwords match
+        if new_password1 != new_password2:
+            messages.error(request, "New passwords do not match.")
+            return render(request, 'custom_admin/change_password.html')
+
+        # 3. Save new password and update session so admin stays logged in
+        request.user.set_password(new_password1)
+        request.user.save()
+        update_session_auth_hash(request, request.user)  # Prevents logging out
+
+        messages.success(request, "Your password has been changed successfully!")
+        return redirect('admin_view_profile')
+
+    return render(request, 'custom_admin/change_password.html')
+
+
+
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        user = request.user
+        user.username = request.POST.get('username', user.username)
+        user.email = request.POST.get('email', user.email)
+
+        if 'image' in request.FILES:
+            user.profile_image = request.FILES['image']
+
+        user.save()
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('edit_profile')
+
+    return render(request, 'edit_profile.html')
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        old_password = request.POST.get('old_password')
+        new_password1 = request.POST.get('new_password1')
+        new_password2 = request.POST.get('new_password2')
+
+        if not request.user.check_password(old_password):
+            messages.error(request, "Incorrect old password.")
+            return render(request, 'change_password.html')
+
+        if new_password1 != new_password2:
+            messages.error(request, "New passwords do not match.")
+            return render(request, 'change_password.html')
+
+        request.user.set_password(new_password1)
+        request.user.save()
+        update_session_auth_hash(request, request.user)
+
+        messages.success(request, "Your password has been changed successfully!")
+        return redirect('edit_profile')
+
+    return render(request, 'change_password.html')

@@ -1,0 +1,67 @@
+{% extends 'base.html' %} {% block title %}Update Profile - SmartLearn{% endblock %} {% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">
+                        <i class="fa-solid fa-user-pen me-2"></i>Update Profile
+                    </h6>
+                </div>
+                <form action="{% url 'edit_profile' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="card-body p-4">
+                        <div class="row">
+
+                            <!-- Profile Image Upload Section -->
+                            <div class="col-md-4 text-center mb-4 mb-md-0 border-end">
+                                {% if request.user.profile_image %}
+                                <img class="img-profile img-thumbnail rounded-circle mb-3" id="output" src="{{ request.user.profile_image.url }}" style="width: 140px; height: 140px; object-fit: cover;"> {% else %}
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold bg-success shadow-sm mx-auto mb-3" style="width: 140px; height: 140px; font-size: 42px;">
+                                    {{ request.user.username|slice:":2"|upper }}
+                                </div>
+                                {% endif %}
+
+                                <input type="file" name="image" accept="image/*" class="form-control form-control-sm mt-2" onchange="loadFile(event)"> {% if form.image.errors %}
+                                <small class="text-danger d-block mt-1">{{ form.image.errors.0 }}</small> {% endif %}
+                            </div>
+
+                            <!-- Form Details Section -->
+                            <div class="col-md-8 ps-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Username / Name</label>
+                                    <input type="text" name="username" class="form-control" placeholder="Enter username..." value="{{ form.username.value|default:request.user.username }}"> {% if form.username.errors %}
+                                    <small class="text-danger d-block mt-1">{{ form.username.errors.0 }}</small> {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Email Address</label>
+                                    <input type="email" name="email" class="form-control" placeholder="Enter email..." value="{{ form.email.value|default:request.user.email }}"> {% if form.email.errors %}
+                                    <small class="text-danger d-block mt-1">{{ form.email.errors.0 }}</small> {% endif %}
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <a href="{% url 'change_password' %}" class="text-decoration-none">
+                                        <i class="fa-solid fa-key me-1"></i> Change Password
+                                    </a>
+                                    <button type="submit" class="btn btn-primary px-4">Update Profile</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+    function loadFile(event) {
+        const output = document.getElementById('output');
+        if (output && event.target.files && event.target.files[0]) {
+            output.src = URL.createObjectURL(event.target.files[0]);
+        }
+    }
+</script>
+{% endblock %}

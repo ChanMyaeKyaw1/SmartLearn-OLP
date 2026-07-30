@@ -1,0 +1,233 @@
+{% extends 'custom_admin/admin_base.html' %} {% block content %}
+<div class="container-fluid mt-4">
+    <!-- <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h2 class="h3 fw-bold text-dark mb-0">
+            <i class="fa-solid fa-user-shield me-2 text-primary"></i> {% if section == 'users' %}User Management {% elif section == 'classes' %}Classroom Management {% elif section == 'flashcards' %}Flashcard Management {% elif section == 'mcqs' %}MCQ
+            Management {% else %}Superadmin Dashboard {% endif %}
+        </h2>
+    </div> -->
+
+    <!-- Quick Metrics Overview (Shows on main Dashboard) -->
+    {% if section == 'all' %}
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <a href="{% url 'custom_admin_dashboard' %}?section=users" class="text-decoration-none">
+                <div class="card bg-primary text-white shadow-sm border-0">
+                    <div class="card-body">
+                        <h6 class="text-white-50">Total Users</h6>
+                        <h3 class="fw-bold mb-0">{{ total_users }}</h3>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'custom_admin_dashboard' %}?section=classes" class="text-decoration-none">
+                <div class="card bg-success text-white shadow-sm border-0">
+                    <div class="card-body">
+                        <h6 class="text-white-50">Classrooms</h6>
+                        <h3 class="fw-bold mb-0">{{ total_classrooms }}</h3>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'custom_admin_dashboard' %}?section=flashcards" class="text-decoration-none">
+                <div class="card bg-warning text-dark shadow-sm border-0">
+                    <div class="card-body">
+                        <h6 class="text-muted">Total Flashcards</h6>
+                        <h3 class="fw-bold mb-0">{{ total_flashcards }}</h3>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'custom_admin_dashboard' %}?section=mcqs" class="text-decoration-none">
+                <div class="card bg-info text-white shadow-sm border-0">
+                    <div class="card-body">
+                        <h6 class="text-white-50">Total MCQs</h6>
+                        <h3 class="fw-bold mb-0">{{ total_mcqs }}</h3>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 1. User Management Table -->
+    {% if section == 'all' or section == 'users' %}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white fw-bold py-3">
+            <i class="fa-solid fa-users me-2 text-primary"></i>Manage All Users (Teachers & Students)
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user_obj in users %}
+                        <tr>
+                            <td>#{{ user_obj.id }}</td>
+                            <td class="fw-semibold">{{ user_obj.username }}</td>
+                            <td>{{ user_obj.email|default:"No email" }}</td>
+                            <td>
+                                {% if user_obj.is_superuser %}
+                                <span class="badge bg-danger">Superadmin</span> {% elif user_obj.is_staff %}
+                                <span class="badge bg-primary">Teacher / Staff</span> {% else %}
+                                <span class="badge bg-secondary">Student</span> {% endif %}
+                            </td>
+                            <td>
+                                {% if user_obj.is_active %}
+                                <span class="badge bg-success">Active</span> {% else %}
+                                <span class="badge bg-danger">Disabled</span> {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <a href="{% url 'admin_edit_user' user_obj.id %}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                                <a href="{% url 'admin_delete_user' user_obj.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete user?')">Delete</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-3 text-muted">No users found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 2. Classroom Management Table -->
+    {% if section == 'all' or section == 'classes' %}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white fw-bold py-3">
+            <i class="fa-solid fa-chalkboard me-2 text-success"></i>Manage Classrooms
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Class ID</th>
+                            <th>Title</th>
+                            <th>Subject</th>
+                            <th>Type</th>
+                            <th>Owner</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cls in classrooms %}
+                        <tr>
+                            <td>#{{ cls.class_id }}</td>
+                            <td class="fw-semibold">{{ cls.title }}</td>
+                            <td>{{ cls.subject }}</td>
+                            <td>
+                                <span class="badge {% if cls.class_type == 'public' %}bg-info{% else %}bg-warning text-dark{% endif %}">
+                                    {{ cls.class_type|title }}
+                                </span>
+                            </td>
+                            <td>{{ cls.owner.username }}</td>
+                            <td class="text-end">
+                                <a href="{% url 'delete_class' cls.class_id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete classroom?')">Delete</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-3 text-muted">No classrooms found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 3. Flashcard Management Table -->
+    {% if section == 'all' or section == 'flashcards' %}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white fw-bold py-3">
+            <i class="fa-solid fa-clone me-2 text-warning"></i>Manage Flashcards
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Question / Term</th>
+                            <th>Answer / Definition</th>
+                            <th>Classroom</th>
+                            <th>Creator</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fc in flashcards %}
+                        <tr>
+                            <td>#{{ fc.id }}</td>
+                            <td class="fw-semibold">{{ fc.question|truncatechars:40 }}</td>
+                            <td>{{ fc.answer|truncatechars:40 }}</td>
+                            <td>{{ fc.classroom.title|default:"N/A" }}</td>
+                            <td>{{ fc.created_by.username|default:"System" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-3 text-muted">No flashcards found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 4. MCQ Management Table -->
+    {% if section == 'all' or section == 'mcqs' %}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white fw-bold py-3">
+            <i class="fa-solid fa-list-check me-2 text-info"></i>Manage MCQs
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Question</th>
+                            <th>Classroom</th>
+                            <th>Creator</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mcq in mcqs %}
+                        <tr>
+                            <td>#{{ mcq.id }}</td>
+                            <td class="fw-semibold">{{ mcq.question_text|truncatechars:50 }}</td>
+                            <td>{{ mcq.classroom.title|default:"N/A" }}</td>
+                            <td>{{ mcq.created_by.username|default:"System" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-3 text-muted">No MCQs found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

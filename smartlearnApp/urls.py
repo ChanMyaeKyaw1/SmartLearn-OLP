@@ -15,7 +15,7 @@ urlpatterns = [
     path('delete/<int:class_id>/', views.delete_class, name='delete_class'),
     path('join-request/<int:class_id>/', views.request_join_class, name='request_join_class'),
     # path('dashboard.html', views.serve_dashboard_page, name='dashboard_page'),
-    path('profile/edit/', views.profile_edit, name='profile_edit'),    # Teacher features
+    # path('profile/edit/', views.profile_edit, name='profile_edit'),    # Teacher features
     path('manage/<int:class_id>/', views.manage_enrollments, name='manage_enrollments'),
     path('enrollment-decision/<int:enrollment_id>/<str:action>/', views.update_enrollment_status, name='update_enrollment_status'),
     path('classroom/<int:class_id>/',views.classroom_detail,name='classroom_detail'),
@@ -38,6 +38,15 @@ urlpatterns = [
     path('classroom/<str:class_id>/manage/', views.manage_classroom_view, name='manage_classroom'),
     path('enrollment/<int:enrollment_id>/<str:action>/', views.handle_enrollment_request, name='handle_enrollment_request'),
 
+    path('custom-admin/', views.custom_admin_dashboard, name='custom_admin_dashboard'),
+    path('custom-admin/user/<int:user_id>/edit/', views.admin_edit_user, name='admin_edit_user'),
+    path('custom-admin/user/<int:user_id>/delete/', views.admin_delete_user, name='admin_delete_user'),
+    path('custom-admin/profile/', views.admin_view_profile, name='admin_view_profile'),
+    path('custom-admin/profile/update/', views.admin_update_profile, name='admin_update_profile'),
+    path('custom-admin/password/change/', views.admin_change_password, name='admin_change_password'),
+
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('profile/change-password/', views.change_password, name='change_password'),
 ]
 
 
