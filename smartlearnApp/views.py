@@ -179,17 +179,14 @@ def logout_view(request):
 
 from django.db.models import Count, Q
 
+
+
 @login_required(login_url='login')
 def dashboard_view(request):
     # Annotate created classes with the pending requests count
     my_classes = Classroom.objects.filter(
-<<<<<<< HEAD
         owner=request.user,
         created_from_site=True
-=======
-        owner=request.user,
-        # created_from_site=True
->>>>>>> 3b735d57487e3ea8b8439b5b7736f6365b7798a2
     ).annotate(
         pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
     )
