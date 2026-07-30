@@ -109,7 +109,46 @@
                 <p class="empty-text-centered">You haven't joined any classes yet.</p>
             {% endfor %}
         </div>
+<!-- SECTION A.5: PENDING APPROVAL CLASSES -->
+        <div class="styled-card content-header-box" style="margin-bottom: 20px;">
+            <div class="page-title-row">
+                <h3 class="page-heading-large" style="font-size: 26px; margin-bottom: 0;">
+                    <i class="fa-solid fa-clock text-warning me-2"></i>Pending Approval
+                </h3>
+            </div>
+        </div>
 
+        <div class="cards-grid mb-5">
+            {% for classroom in pending_classrooms %}
+                <article class="styled-card class-card" style="border-left: 4px solid #f59e0b;">
+                    <div class="class-card-header">
+                        <h3 class="class-card-title">{{ classroom.title }}</h3>
+                        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+                            {{ classroom.class_type|title }}
+                        </span>
+                    </div>
+                    
+                    <p class="class-card-desc">{{ classroom.description|truncatewords:20 }}</p>
+                    
+                    <div class="class-card-footer d-flex justify-content-between align-items-center flex-nowrap" style="gap: 8px;">
+                        <div class="teacher-info text-truncate" style="min-width: 0; flex: 1 1 auto;">
+                            <span class="footer-text-small d-block">TEACHER</span>
+                            <span class="footer-text-bold d-block text-truncate" style="max-width: 90px;">
+                                {{ classroom.owner.username|default:"Unknown" }}
+                            </span>
+                        </div>
+
+                        <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
+                            <span class="badge bg-warning-subtle text-warning border border-warning px-2 py-1" style="font-size: 12px; font-weight: 600;">
+                                <i class="fa-solid fa-spinner fa-spin me-1"></i> Awaiting Review
+                            </span>
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <p class="empty-text-centered">You have no pending class join requests.</p>
+            {% endfor %}
+        </div>
         <!-- SECTION B: AVAILABLE CLASSES -->
         <div class="styled-card content-header-box mb-3">
             <div class="page-title-row d-flex justify-content-between align-items-center">
