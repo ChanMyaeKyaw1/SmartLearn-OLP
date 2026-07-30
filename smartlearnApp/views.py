@@ -187,7 +187,7 @@ def dashboard_view(request):
         owner=request.user,
         created_from_site=True
 =======
-        owner=request.user, 
+        owner=request.user,
         # created_from_site=True
 >>>>>>> 3b735d57487e3ea8b8439b5b7736f6365b7798a2
     ).annotate(
@@ -229,7 +229,7 @@ def my_classes(request):
     ).annotate(
         pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
     )
-    
+
     return render(request, 'my_classes.html', {
         'classes': classes
     })
@@ -242,7 +242,7 @@ def browse_classes(request):
     classrooms = Classroom.objects.annotate(
         pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
     ).select_related('owner')
-    
+
     search_query = request.GET.get('search', '')
     if search_query:
         classrooms = classrooms.filter(title__istartswith=search_query)
@@ -268,7 +268,7 @@ def browse_classes(request):
         user_enrollments.filter(status='pending').values_list('classroom_id', flat=True)
     )
 
-   
+
 
     # Separate into joined vs available
     joined_classes = classrooms.filter(class_id__in=joined_class_ids)
