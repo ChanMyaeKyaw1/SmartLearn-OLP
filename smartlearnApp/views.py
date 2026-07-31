@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from urllib import request
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -860,6 +861,10 @@ def take_quiz_view(request, class_id):
     })
 
 
+# ==========================================
+# MCQS & QUIZZES
+# ==========================================
+
 def submit_quiz(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
     current_user, blocked_response = require_classroom_access(request, classroom)
@@ -892,19 +897,17 @@ def submit_quiz(request, class_id):
         }
 
     total_questions = len(questions)
-    percentage = round((score / total_questions * 100), 2) if total_questions > 0 else 0
 
+    # ✅ FIXED: Use 'student' instead of 'user', and remove 'topic'
     attempt = QuizAttempt.objects.create(
         classroom=classroom,
-        user=current_user,
-        topic=selected_topic or 'All Topics',
+        student=current_user,
         score=score,
         total_questions=total_questions,
         answers=answers
     )
 
     return redirect('quiz_result', attempt_id=attempt.attempt_id)
-
 
 def quiz_result(request, attempt_id):
     attempt = get_object_or_404(QuizAttempt, attempt_id=attempt_id)
@@ -916,15 +919,15 @@ def quiz_result(request, attempt_id):
 
     return render(request, 'quiz_result.html', {
         'attempt': attempt,
+        'classroom': attempt.classroom, # ✅ Added classroom here
         'percentage': percentage,
         'current_user': current_user,
     })
 
-
 @login_required(login_url='login')
 def my_results_view(request):
-    attempts = QuizAttempt.objects.filter(user=request.user).select_related('classroom').order_by('-completed_at')
 
+    attempts = QuizAttempt.objects.filter(student=request.user).select_related('classroom').order_by('-completed_at')
     return render(request, 'my_results.html', {
         'attempts': attempts
     })
@@ -937,7 +940,7 @@ def teacher_student_results(request, class_id):
         messages.error(request, "You do not have permission to view student results for this classroom.")
         return redirect('dashboard')
 
-    attempts = QuizAttempt.objects.filter(classroom=classroom).select_related('user').order_by('-completed_at')
+    attempts = QuizAttempt.objects.filter(classroom=classroom).select_related('student').order_by('-completed_at')
 
     return render(request, 'teacher_student_results.html', {
         'classroom': classroom,

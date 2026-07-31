@@ -20,7 +20,7 @@
 
 
 /* BACK BUTTON */
-.back-link {
+/* .back-link {
     display: inline-block;
     margin-bottom: 30px;
     color: #4CAF7D;
@@ -31,6 +31,30 @@
 
 .back-link:hover {
     color: #2b4c3f;
+} */
+
+/* Back Arrow Icon Button Styling */
+.back-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: white;
+    color: var(--forest);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    font-size: 18px;
+    /* box-shadow: 0 4px 12px rgba(43, 76, 63, 0.08); */
+    transition: all 0.25s ease;
+}
+
+.back-btn-icon:hover {
+    background-color: var(--forest);
+    color: #4CAF7D;
+    transform: translateX(-3px); /* Subtle left slide effect */
+    border-color: var(--forest);
 }
 
 
@@ -275,7 +299,7 @@ textarea.form-control {
     }
 
 }
-.back-link {
+/* .back-link {
     display: inline-block;
 
     padding: 10px 20px;
@@ -291,14 +315,14 @@ textarea.form-control {
     font-size: 15px;
 
     transition: 0.3s ease;
-}
+} */
 
 
-.back-link:hover {
+/* .back-link:hover {
     background-color: #4CAF7D;
     color: white;
     transform: translateY(-2px);
-}
+} */
 
 
 

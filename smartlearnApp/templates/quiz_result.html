@@ -2,8 +2,11 @@
 {% block title %}Quiz Result - {{ classroom.title }}{% endblock %}
 
 {% block content %}
-<div class="learning-page-header">
-    <a href="{% url 'mcqs' classroom.class_id %}" class="back-link">Back to MCQs</a>
+<div class="mb-3">
+        <!-- ✅ To this: -->
+         <a href="{% url 'mcqs' attempt.classroom.class_id %}" class="back-btn-icon">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
 </div>
 
 <section class="styled-card result-hero">

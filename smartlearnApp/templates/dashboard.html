@@ -73,7 +73,7 @@
     <div id="allClassesSection">
         
         <!-- SECTION A: JOINED CLASSES -->
-        <div class="styled-card content-header-box" style="margin-bottom: 20px;">
+        <div id="joined-classes-section" class="styled-card content-header-box" style="margin-bottom: 20px;">
             <div class="page-title-row">
                 <h3 class="page-heading-large" style="font-size: 26px; margin-bottom: 0;">My Joined Classes</h3>
             </div>
@@ -100,7 +100,7 @@
 
     <!-- Right side: Buttons -->
     <div class="card-actions" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0; white-space: nowrap;">
-        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
+        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open Class</a>
         
         </div>
 </div>

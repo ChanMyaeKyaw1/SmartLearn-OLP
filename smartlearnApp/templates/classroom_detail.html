@@ -543,36 +543,6 @@ font-size:30px;
 ========================= -->
 
 
-<div class="learning-panel">
-
-
-<div class="brand-name">
-Smart<span>Learn</span>
-</div>
-
-
-<div class="menu-item active">
-<i class="fa-solid fa-graduation-cap"></i>
- Hide Panel
-</div>
-
-
-<a href="{% url 'my_classes' %}" class="menu-item">
-<i class="fa-solid fa-book"></i>
- My Classes
-</a>
-
-
-<a href="{% url 'flashcards' classroom.class_id %}" class="menu-item">
-<i class="fa-solid fa-layer-group"></i>
- Flashcards
-</a>
-
-
-<a href="{% url 'mcqs' classroom.class_id %}" class="menu-item">
-<i class="fa-solid fa-list-check"></i>
- Quizzes
-</a>
 
 {% if classroom.owner == request.user %}
     <div style="margin: 15px 0 10px 0; border-top: 1px solid var(--border);"></div>
