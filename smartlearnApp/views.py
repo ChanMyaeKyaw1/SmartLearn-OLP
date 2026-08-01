@@ -332,7 +332,9 @@ def classroom_detail(request, class_id):
         request,
         "classroom_detail.html",
         {
-            "classroom": classroom
+            "classroom": classroom,
+            "current_user": current_user,
+            "is_owner": classroom.owner == current_user,
         }
     )
 
@@ -927,7 +929,7 @@ def quiz_result(request, attempt_id):
 @login_required(login_url='login')
 def my_results_view(request):
 
-    attempts = QuizAttempt.objects.filter(student=request.user).select_related('classroom').order_by('-completed_at')
+    attempts = QuizAttempt.objects.filter(student=request.user).select_related('classroom').order_by('-taken_at')
     return render(request, 'my_results.html', {
         'attempts': attempts
     })
@@ -940,7 +942,7 @@ def teacher_student_results(request, class_id):
         messages.error(request, "You do not have permission to view student results for this classroom.")
         return redirect('dashboard')
 
-    attempts = QuizAttempt.objects.filter(classroom=classroom).select_related('student').order_by('-completed_at')
+    attempts = QuizAttempt.objects.filter(classroom=classroom).select_related('student').order_by('-taken_at')
 
     return render(request, 'teacher_student_results.html', {
         'classroom': classroom,

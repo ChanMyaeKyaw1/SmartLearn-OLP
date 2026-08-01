@@ -3,22 +3,27 @@
 
 {% block content %}
 <div class="main-container">
+    <div class="learning-page-header" style="margin-bottom: 16px;">
+        <a href="{% url 'classroom_detail' classroom.class_id %}" class="back-btn-icon" title="Back to classroom">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+    </div>
+
     <div class="styled-card content-header-box mb-4">
         <div class="page-title-row d-flex justify-content-between align-items-center">
             <h2 class="page-heading-large">Manage Requests: {{ classroom.title }}</h2>
-            <a href="{% url 'dashboard' %}" class="btn-primary card-action-btn-small">← Back to Dashboard</a>
         </div>
     </div>
 
     <!-- PENDING REQUESTS TABLE -->
     <div class="styled-card mb-4">
-        <h3 class="fw-bold mb-3" style="font-size: 20px; color: #d97706;">
+        <h3 class="fw-bold mb-3" style="font-size: 20px; color: #2b4c3f; display: flex; align-items: center; gap: 10px;">
             <i class="fa-solid fa-clock me-2"></i>Pending Access Requests
         </h3>
         
         {% if pending_requests %}
             <div class="table-responsive">
-                <table class="table align-middle">
+                <table class="table align-middle request-table">
                     <thead>
                         <tr>
                             <th>Student</th>
@@ -30,23 +35,31 @@
                     <tbody>
                         {% for req in pending_requests %}
                             <tr>
-                                <td><strong>{{ req.student.username }}</strong></td>
+                                <td>
+                                    <div class="request-student-cell">
+                                        <div class="request-avatar">{{ req.student.username|slice:":1"|upper }}</div>
+                                        <div>
+                                            <strong>{{ req.student.username }}</strong>
+                                            <span>Pending approval</span>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>{{ req.phone|default:"N/A" }}</td>
                                 <td>
                                     {% if req.payslip %}
-                                        <a href="{{ req.payslip.url }}" target="_blank" class="btn btn-sm btn-outline-primary">View Payslip</a>
+                                        <a href="{{ req.payslip.url }}" target="_blank" class="payslip-link">View Payslip</a>
                                     {% else %}
                                         <span class="text-muted">No Slip</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     <!-- APPROVE BUTTON (Uses pk to prevent FieldError) -->
-                                    <a href="{% url 'handle_enrollment_request' req.pk 'approve' %}" class="btn btn-sm btn-success text-white me-1">
+                                    <a href="{% url 'handle_enrollment_request' req.pk 'approve' %}" class="btn btn-sm btn-success text-white me-1 action-pill">
                                         Approve
                                     </a>
                                     
                                     <!-- REJECT BUTTON (Triggers reason input prompt) -->
-                                    <button type="button" class="btn btn-sm btn-danger text-white" onclick="rejectWithReason('{{ req.pk }}')">
+                                    <button type="button" class="btn btn-sm btn-danger text-white action-pill" onclick="rejectWithReason('{{ req.pk }}')">
                                         Reject
                                     </button>
                                 </td>
