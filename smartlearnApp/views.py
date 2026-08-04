@@ -1032,13 +1032,18 @@ def custom_admin_dashboard(request):
     users = User.objects.all().order_by('-date_joined')
     classrooms = Classroom.objects.all().select_related('owner')
 
+    # Get section from URL; if missing or set to 'dashboard', treat as 'all'
+    section = request.GET.get('section', 'all')
+    if section == 'dashboard':
+        section = 'all'
+
     return render(request, 'custom_admin/dashboard.html', {
         'users': users,
         'classrooms': classrooms,
         'total_users': users.count(),
         'total_classrooms': classrooms.count(),
+        'section': section,
     })
-
 
 @staff_member_required
 def admin_edit_user(request, user_id):
