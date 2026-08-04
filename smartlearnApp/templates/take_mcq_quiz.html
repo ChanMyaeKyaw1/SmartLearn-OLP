@@ -2,8 +2,12 @@
 {% block title %}Take Quiz - {{ classroom.title }}{% endblock %}
 
 {% block content %}
-<div class="learning-page-header">
-    <a href="{% url 'mcqs' classroom.class_id %}" class="back-link">Back to MCQs</a>
+<div class="learning-page-header" style="margin-bottom: 18px;">
+    <a href="{% url 'mcqs' classroom.class_id %}" class="back-btn-icon" >
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+</div>
+
     <div class="learning-title-row">
         <div>
             <h2 class="page-heading-large">Take Quiz</h2>

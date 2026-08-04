@@ -3,29 +3,31 @@
 
 {% block content %}
 <div class="learning-page-header">
-    <h2>Student Quiz Results: {{ classroom.title }}</h2>
+    <div class="mb-3">
+        <a href="{% url 'classroom_detail' classroom.class_id %}" class="back-btn-icon" title="Back to classroom">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+    </div>
+    <h2 class="page-heading-large">Student Quiz Results: {{ classroom.title }}</h2>
     <p class="subtext-muted">Track quiz attempts and score breakdowns for enrolled students.</p>
 </div>
 
-<section class="styled-card" style="margin-top: 20px;">
+<section class="styled-card teacher-results-card">
     {% if attempts %}
         <div class="result-list">
             {% for attempt in attempts %}
-                <article class="result-question-card" style="border: 1px solid var(--border); padding: 18px; border-radius: 15px; margin-bottom: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="topic-label" style="font-weight: bold; color: var(--forest);">
-                            <i class="fa-solid fa-user"></i> {{ attempt.student.username }}
-                        </span>
-                        <span class="result-status" style="font-weight: 800; color: var(--matcha);">
-                            Score: {{ attempt.score }}/{{ attempt.total_questions }}
-                        </span>
+                <article class="teacher-result-row">
+                    <div class="teacher-result-main">
+                        <div class="teacher-result-avatar">{{ attempt.student.username|slice:":1"|upper }}</div>
+                        <div>
+                            <strong>{{ attempt.student.username }}</strong>
+                            <span>Taken on {{ attempt.taken_at|date:"M d, Y H:i" }}</span>
+                        </div>
                     </div>
-                    <p class="subtext-muted" style="font-size: 13px; color: #777; margin-top: 5px;">
-                        Submitted on {{ attempt.taken_at|date:"M d, Y H:i" }}
-                    </p>
-                    <a href="{% url 'quiz_result' attempt.attempt_id %}" class="secondary-btn" style="display: inline-block; margin-top: 10px;">
-                        View Detailed Submission
-                    </a>
+                    <div class="teacher-result-meta">
+                        <span class="teacher-result-score">{{ attempt.score }}/{{ attempt.total_questions }}</span>
+                        <a href="{% url 'quiz_result' attempt.attempt_id %}" class="view-result-link">View Detailed Submission</a>
+                    </div>
                 </article>
             {% endfor %}
         </div>
