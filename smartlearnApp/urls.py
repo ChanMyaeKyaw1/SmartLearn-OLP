@@ -52,6 +52,12 @@ urlpatterns = [
     path('classroom/<int:class_id>/materials/upload/', views.upload_material, name='upload_material'),
     path('materials/<int:material_id>/delete/', views.delete_material, name='delete_material'),
     path('materials/<int:material_id>/edit/', views.edit_material, name='edit_material'),
+
+    path('classroom/<int:class_id>/community-notes/', views.community_notes_view, name='community_notes'),
+    path('classroom/<int:class_id>/community-notes/create/', views.create_community_note, name='create_community_note'),
+    path('community-notes/<int:note_id>/upvote/', views.toggle_upvote_note, name='toggle_upvote_note'),
+    path('community-notes/<int:note_id>/verify/', views.toggle_verify_note, name='toggle_verify_note'),
+    path('community-notes/<int:note_id>/pin/', views.toggle_pin_note, name='toggle_pin_note'),
 ]
 
 

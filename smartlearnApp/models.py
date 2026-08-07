@@ -219,3 +219,35 @@ class TeacherMaterial(models.Model):
             return round(self.file.size / (1024 * 1024), 2)
         return 0
 
+# ==========================================
+# Community Notes model for Classroom Discussions
+# ==========================================
+
+from django.db import models
+from django.contrib.auth.models import User
+from .models import Classroom
+
+class CommunityNote(models.Model):
+    note_id = models.AutoField(primary_key=True)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name='community_notes')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    attachment = models.FileField(upload_to='community_notes/', blank=True, null=True)
+    
+    is_pinned = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
+    upvotes = models.ManyToManyField(User, related_name='upvoted_notes', blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-is_pinned', '-created_at']
+
+    def __str__(self):
+        return f"{self.title} - {self.classroom.title}"
+
+    @property
+    def total_upvotes(self):
+        return self.upvotes.count()

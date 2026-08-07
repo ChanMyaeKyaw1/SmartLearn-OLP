@@ -3,7 +3,9 @@
 
 {% block content %}
 <div class="learning-page-header">
-    <a href="{% url 'classroom_detail' classroom.class_id %}" class="back-link">Back to Classroom</a>
+    <a href="{% url 'classroom_detail' classroom.class_id %}" class="back-btn-icon">
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
     <div class="learning-title-row">
         <div>
             <h2 class="page-heading-large">Flashcards</h2>

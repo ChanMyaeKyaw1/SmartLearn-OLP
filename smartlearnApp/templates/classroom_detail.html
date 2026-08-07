@@ -799,13 +799,13 @@ Course Instructor
     <p>Learning resources and course files.</p>
 </a>
 
-<div class="module-card">
-<div class="module-icon">
-<i class="fa-solid fa-users"></i>
-</div>
-<h5>Community Notes</h5>
-<p>Student shared knowledge.</p>
-</div>
+<a href="{% url 'community_notes' classroom.class_id %}" class="module-card">
+    <div class="module-icon">
+        <i class="fa-solid fa-users"></i>
+    </div>
+    <h5>Community Notes</h5>
+    <p>Student shared knowledge.</p>
+</a>
 
 <a href="{% url 'flashcards' classroom.class_id %}" class="module-card">
 <div class="module-icon">

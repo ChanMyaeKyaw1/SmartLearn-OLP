@@ -9,7 +9,7 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 
-from .models import Classroom, Enrollment, Flashcard, FlashcardTopicReaction, MCQQuestion, QuizAttempt, TeacherMaterial
+from .models import Classroom, CommunityNote, Enrollment, Flashcard, FlashcardTopicReaction, MCQQuestion, QuizAttempt, TeacherMaterial
 
 from .models import PaymentAccount
 
@@ -1277,3 +1277,85 @@ def edit_material(request, material_id):
         messages.success(request, f"'{title}' updated successfully!")
 
     return redirect('teacher_materials', class_id=class_id)
+
+
+@login_required
+def community_notes_view(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+    is_owner = (classroom.owner == request.user)
+    
+    search_query = request.GET.get('q', '').strip()
+    filter_type = request.GET.get('filter', '')
+
+    notes = CommunityNote.objects.filter(classroom=classroom)
+
+    if search_query:
+        notes = notes.filter(title__icontains=search_query) | notes.filter(content__icontains=search_query)
+
+    if filter_type == 'verified':
+        notes = notes.filter(is_verified=True)
+    elif filter_type == 'pinned':
+        notes = notes.filter(is_pinned=True)
+
+    context = {
+        'classroom': classroom,
+        'notes': notes,
+        'is_owner': is_owner,
+        'search_query': search_query,
+        'filter_type': filter_type,
+    }
+    return render(request, 'community_notes.html', context)
+
+
+@login_required
+def create_community_note(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        content = request.POST.get('content', '').strip()
+        attachment = request.FILES.get('attachment')
+
+        if title and content:
+            CommunityNote.objects.create(
+                classroom=classroom,
+                author=request.user,
+                title=title,
+                content=content,
+                attachment=attachment
+            )
+            messages.success(request, "Note shared with the community!")
+        else:
+            messages.error(request, "Title and content are required.")
+
+    return redirect('community_notes', class_id=classroom.class_id)
+
+
+@login_required
+def toggle_upvote_note(request, note_id):
+    note = get_object_or_404(CommunityNote, note_id=note_id)
+    if request.user in note.upvotes.all():
+        note.upvotes.remove(request.user)
+    else:
+        note.upvotes.add(request.user)
+    return redirect('community_notes', class_id=note.classroom.class_id)
+
+
+@login_required
+def toggle_verify_note(request, note_id):
+    note = get_object_or_404(CommunityNote, note_id=note_id)
+    if note.classroom.owner == request.user:
+        note.is_verified = not note.is_verified
+        note.save()
+        messages.success(request, "Verification status updated.")
+    return redirect('community_notes', class_id=note.classroom.class_id)
+
+
+@login_required
+def toggle_pin_note(request, note_id):
+    note = get_object_or_404(CommunityNote, note_id=note_id)
+    if note.classroom.owner == request.user:
+        note.is_pinned = not note.is_pinned
+        note.save()
+        messages.success(request, "Pin status updated.")
+    return redirect('community_notes', class_id=note.classroom.class_id)
