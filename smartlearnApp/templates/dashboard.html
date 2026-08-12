@@ -149,107 +149,112 @@
                 <p class="empty-text-centered">You have no pending class join requests.</p>
             {% endfor %}
         </div>
-        <!-- SECTION B: AVAILABLE CLASSES -->
-        <div class="styled-card content-header-box mb-3">
-            <div class="page-title-row d-flex justify-content-between align-items-center">
-                <h3 class="page-heading-large" style="font-size: 24px; margin-bottom: 0;">
-                    Explore Other Classes
-                </h3>
-                
-                <button 
-                    class="btn btn-outline-primary btn-sm rounded-pill px-3" 
-                    type="button" 
-                    data-bs-toggle="collapse" 
-                    data-bs-target="#exploreClassesCollapse" 
-                    aria-expanded="false" 
-                    aria-controls="exploreClassesCollapse"
-                    id="toggleExploreBtn">
-                    <i class="fa-solid fa-chevron-down me-1" id="toggleExploreIcon"></i> Show Classes
-                </button>
-            </div>
+<!-- SECTION B: AVAILABLE CLASSES (UNIFIED CONTAINER) -->
+<div class="styled-card explore-section-card mb-5">
+    
+    <!-- Header Inside the Section Container -->
+    <div class="explore-header d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h3 class="page-heading-large m-0 fs-4 fw-bold">
+                <i class="fa-solid fa-compass text-success me-2"></i>Explore Other Classes
+            </h3>
         </div>
+        <!-- Class Search Input -->
+        <div class="search-input-wrapper position-relative" style="min-width: 260px; flex-grow: 0;">
+            <i class="fa-solid fa-magnifying-glass search-icon text-muted"></i>
+            <input 
+                type="text" 
+                id="classSearchInput" 
+                class="form-control class-search-field" 
+                placeholder="Search classes or teachers..." 
+                aria-label="Search classes"
+            >
+        </div>
+    </div>
 
-        <!-- Collapsible Wrapper -->
-        <div class="collapse" id="exploreClassesCollapse">
-            <div class="cards-grid">
-                <!-- Inside dashboard.html -> Available Classes Loop -->
-{% for classroom in available_classes %}
-    <article class="styled-card class-card">
-        <div class="class-card-header">
-            <h3 class="class-card-title">{{ classroom.title }}</h3>
-            <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
-                {{ classroom.class_type|title }}
-            </span>
-        </div>
-        <p class="class-card-desc">{{ classroom.description|truncatewords:20 }}</p>
+    <!-- Relative Carousel Wrapper Inside Container -->
+    <div class="carousel-wrapper position-relative">
         
-        <div class="class-card-footer d-flex justify-content-between align-items-center flex-nowrap" style="gap: 8px;">
-            <div class="teacher-info text-truncate">
-                <span class="footer-text-small d-block">TEACHER</span>
-                <span class="footer-text-bold d-block text-truncate" style="max-width: 90px;">
-                    {{ classroom.owner.username|default:"Unknown" }}
-                </span>
-            </div>
+        <!-- Left Floating Arrow -->
+        <button type="button" class="carousel-floating-btn btn-left" id="slideLeftBtn" aria-label="Previous classes">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
 
-            <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
-                
-                {% if classroom.user_enrollment %}
-                    
-                    <!-- 1. PENDING STATUS -->
-                    {% if classroom.user_enrollment.status == 'pending' %}
-                        <span class="badge bg-warning-subtle text-warning border border-warning px-2 py-1" style="font-size: 12px; font-weight: 600;">
-                            <i class="fa-solid fa-clock me-1"></i> Pending Review
+        <!-- Horizontal Track -->
+        <div class="class-carousel-container" id="availableClassesCarousel">
+            {% for classroom in available_classes %}
+                <article class="styled-card class-card carousel-card-item">
+                    <div class="class-card-header">
+                        <h3 class="class-card-title">{{ classroom.title }}</h3>
+                        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+                            {{ classroom.class_type|title }}
                         </span>
-
-                    <!-- 2. REJECTED STATUS + REASON -->
-                    {% elif classroom.user_enrollment.status == 'rejected' %}
-                        <div class="d-flex flex-column align-items-end">
-                            <span class="badge bg-danger-subtle text-danger border border-danger px-2 py-1 mb-1" 
-                                  style="font-size: 11px; font-weight: 600;"
-                                  title="Reason: {{ classroom.user_enrollment.rejection_reason }}">
-                                <i class="fa-solid fa-circle-xmark me-1"></i> Rejected
+                    </div>
+                    <p class="class-card-desc">{{ classroom.description|truncatewords:20 }}</p>
+                    
+                    <div class="class-card-footer d-flex justify-content-between align-items-center flex-nowrap" style="gap: 8px;">
+                        <div class="teacher-info text-truncate">
+                            <span class="footer-text-small d-block">TEACHER</span>
+                            <span class="footer-text-bold d-block text-truncate" style="max-width: 90px;">
+                                {{ classroom.owner.username|default:"Unknown" }}
                             </span>
-                            
-                            {% if classroom.user_enrollment.rejection_reason %}
-                                <small class="text-danger fw-semibold text-end" style="font-size: 10px; max-width: 140px; line-height: 1.1;">
-                                    Note: {{ classroom.user_enrollment.rejection_reason|truncatechars:35 }}
-                                </small>
-                            {% endif %}
-                            
-                            <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small mt-1" style="padding: 2px 8px; font-size: 11px;">
-                                Re-apply
-                            </a>
                         </div>
 
-                    <!-- 3. APPROVED STATUS -->
-                    {% elif classroom.user_enrollment.status == 'approved' %}
-                        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">
-                            Open Class
-                        </a>
-                    {% endif %}
-
-                {% else %}
-                    
-                    <!-- 4. NOT APPLIED YET -->
-                    {% if classroom.class_type == 'public' %}
-                        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">
-                            Join Class
-                        </a>
-                    {% else %}
-                        <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">
-                            Request Entry (${{ classroom.price }})
-                        </a>
-                    {% endif %}
-
-                {% endif %}
-
-            </div>
+                        <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
+                            {% if classroom.user_enrollment %}
+                                {% if classroom.user_enrollment.status == 'pending' %}
+                                    <span class="badge bg-warning-subtle text-warning border border-warning px-2 py-1" style="font-size: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-clock me-1"></i> Pending Review
+                                    </span>
+                                {% elif classroom.user_enrollment.status == 'rejected' %}
+                                    <div class="d-flex flex-column align-items-end">
+                                        <span class="badge bg-danger-subtle text-danger border border-danger px-2 py-1 mb-1" 
+                                              style="font-size: 11px; font-weight: 600;"
+                                              title="Reason: {{ classroom.user_enrollment.rejection_reason }}">
+                                            <i class="fa-solid fa-circle-xmark me-1"></i> Rejected
+                                        </span>
+                                        
+                                        {% if classroom.user_enrollment.rejection_reason %}
+                                            <small class="text-danger fw-semibold text-end" style="font-size: 10px; max-width: 140px; line-height: 1.1;">
+                                                Note: {{ classroom.user_enrollment.rejection_reason|truncatechars:35 }}
+                                            </small>
+                                        {% endif %}
+                                        
+                                        <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small mt-1" style="padding: 2px 8px; font-size: 11px;">
+                                            Re-apply
+                                        </a>
+                                    </div>
+                                {% elif classroom.user_enrollment.status == 'approved' %}
+                                    <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">
+                                        Open Class
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                {% if classroom.class_type == 'public' %}
+                                    <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">
+                                        Join Class
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">
+                                        Request Entry (${{ classroom.price }})
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <p class="empty-text-centered my-4">No available classes to explore right now.</p>
+            {% endfor %}
         </div>
-    </article>
-{% endfor %}
-            </div>
-        </div>
 
+        <!-- Right Floating Arrow -->
+        <button type="button" class="carousel-floating-btn btn-right" id="slideRightBtn" aria-label="Next classes">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+    </div>
+</div>
         <!-- DASHBOARD FEATURED SECTION -->
         <div class="dashboard-learning-hub my-5">
             <!-- 1. POPULAR TOPICS / SUBJECTS -->
@@ -460,6 +465,77 @@
 
             collapseElement.addEventListener('hide.bs.collapse', () => {
                 toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-down me-1"></i> Show Classes';
+            });
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const carousel = document.getElementById("availableClassesCarousel");
+        const leftBtn = document.getElementById("slideLeftBtn");
+        const rightBtn = document.getElementById("slideRightBtn");
+
+        if (carousel && leftBtn && rightBtn) {
+            // Scroll right by 340px (1 card width + gap)
+            rightBtn.addEventListener("click", () => {
+                carousel.scrollBy({ left: 340, behavior: "smooth" });
+            });
+
+            // Scroll left by 340px
+            leftBtn.addEventListener("click", () => {
+                carousel.scrollBy({ left: -340, behavior: "smooth" });
+            });
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const carousel = document.getElementById("availableClassesCarousel");
+        const leftBtn = document.getElementById("slideLeftBtn");
+        const rightBtn = document.getElementById("slideRightBtn");
+        const searchInput = document.getElementById("classSearchInput");
+        const noResultsMsg = document.getElementById("noSearchResultsMsg");
+
+        // 1. Carousel Controls
+        if (carousel && leftBtn && rightBtn) {
+            rightBtn.addEventListener("click", () => {
+                carousel.scrollBy({ left: 330, behavior: "smooth" });
+            });
+
+            leftBtn.addEventListener("click", () => {
+                carousel.scrollBy({ left: -330, behavior: "smooth" });
+            });
+        }
+
+        // 2. Real-time Live Search Filter
+        if (searchInput && carousel) {
+            searchInput.addEventListener("input", (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                const cards = carousel.querySelectorAll(".carousel-card-item");
+                let visibleCount = 0;
+
+                cards.forEach((card) => {
+                    const title = card.querySelector(".class-card-title")?.textContent.toLowerCase() || "";
+                    const desc = card.querySelector(".class-card-desc")?.textContent.toLowerCase() || "";
+                    const teacher = card.querySelector(".teacher-info")?.textContent.toLowerCase() || "";
+
+                    if (title.includes(query) || desc.includes(query) || teacher.includes(query)) {
+                        card.classList.remove("d-none");
+                        visibleCount++;
+                    } else {
+                        card.classList.add("d-none");
+                    }
+                });
+
+                // Toggle No Results Message
+                if (noResultsMsg) {
+                    if (visibleCount === 0 && cards.length > 0) {
+                        noResultsMsg.classList.remove("d-none");
+                    } else {
+                        noResultsMsg.classList.add("d-none");
+                    }
+                }
             });
         }
     });

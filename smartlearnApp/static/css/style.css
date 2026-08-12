@@ -1434,3 +1434,277 @@ textarea.form-control {
 .custom-btn-hover:hover {
     transform: scale(1.05);
 }
+/* ====================================
+   HORIZONTAL CLASS CAROUSEL STYLING
+==================================== */
+
+/* Scrollable Container Track */
+.class-carousel-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding: 10px 4px 20px 4px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbars across browsers */
+.class-carousel-container::-webkit-scrollbar {
+    display: none;
+}
+
+.class-carousel-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Individual Carousel Card Item */
+.carousel-card-item {
+    flex: 0 0 320px; /* Uniform width per card */
+    scroll-snap-align: start;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.carousel-card-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(43, 76, 63, 0.12);
+}
+
+/* Carousel Control Buttons */
+.carousel-nav-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 1px solid #d9dfc5;
+    color: #2b4c3f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.carousel-nav-btn:hover {
+    background-color: #4CAF7D;
+    color: #ffffff;
+    border-color: #4CAF7D;
+    transform: scale(1.05);
+}
+
+.carousel-nav-btn:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 576px) {
+    .carousel-card-item {
+        flex: 0 0 85vw; /* Responsive card size for mobile viewports */
+    }
+}
+
+/* ====================================
+   FLOATING OVERLAY CAROUSEL STYLING
+==================================== */
+
+.carousel-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Scrollable Track */
+.class-carousel-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding: 10px 10px 20px 10px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbars */
+.class-carousel-container::-webkit-scrollbar {
+    display: none;
+}
+.class-carousel-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Individual Card */
+.carousel-card-item {
+    flex: 0 0 320px;
+    scroll-snap-align: start;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.carousel-card-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(43, 76, 63, 0.12);
+}
+
+/* Floating Overlay Action Buttons */
+.carousel-floating-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 1px solid #d9dfc5;
+    color: #2b4c3f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(43, 76, 63, 0.18);
+    transition: all 0.25s ease;
+    z-index: 10;
+    font-size: 15px;
+}
+
+.carousel-floating-btn.btn-left {
+    left: -18px;
+}
+
+.carousel-floating-btn.btn-right {
+    right: -18px;
+}
+
+.carousel-floating-btn:hover {
+    background-color: #4CAF7D;
+    color: #ffffff;
+    border-color: #4CAF7D;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 8px 20px rgba(76, 175, 125, 0.35);
+}
+
+.carousel-floating-btn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+@media (max-width: 768px) {
+    .carousel-floating-btn.btn-left {
+        left: -5px;
+    }
+    .carousel-floating-btn.btn-right {
+        right: -5px;
+    }
+}
+
+/* Container Box */
+.explore-section-card {
+    padding: 24px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid rgba(43, 76, 63, 0.08);
+}
+
+/* Scroll Track Inside Container */
+.class-carousel-container {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding: 6px 4px 12px 4px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.class-carousel-container::-webkit-scrollbar {
+    display: none;
+}
+.class-carousel-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Inner Class Card Adjustments */
+.explore-section-card .carousel-card-item {
+    flex: 0 0 310px;
+    background: #fdfdfd;
+    border: 1px solid #e2e8f0;
+    scroll-snap-align: start;
+    transition: all 0.25s ease;
+}
+
+.explore-section-card .carousel-card-item:hover {
+    background: #ffffff;
+    border-color: #4CAF7D;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(43, 76, 63, 0.1);
+}
+
+/* Floating Arrows Resting Comfortably Inside/On Edge */
+.carousel-floating-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 1px solid #d9dfc5;
+    color: #2b4c3f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transition: all 0.2s ease;
+    z-index: 5;
+}
+
+.carousel-floating-btn.btn-left {
+    left: -14px;
+}
+
+.carousel-floating-btn.btn-right {
+    right: -14px;
+}
+
+.carousel-floating-btn:hover {
+    background-color: #4CAF7D;
+    color: #ffffff;
+    border-color: #4CAF7D;
+    transform: translateY(-50%) scale(1.08);
+}
+
+/* ====================================
+   SEARCH INPUT STYLING
+==================================== */
+
+.search-input-wrapper {
+    position: relative;
+}
+
+.search-input-wrapper .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.class-search-field {
+    padding-left: 36px !important;
+    padding-right: 14px;
+    height: 38px;
+    border-radius: 20px;
+    border: 1px solid #d9dfc5;
+    font-size: 13px;
+    background-color: #fdfdfd;
+    transition: all 0.2s ease;
+}
+
+.class-search-field:focus {
+    background-color: #ffffff;
+    border-color: #4CAF7D;
+    box-shadow: 0 0 0 3px rgba(76, 175, 125, 0.15);
+    outline: none;
+}
