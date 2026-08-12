@@ -16,6 +16,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
+    
     <style>
         * {
             margin: 0;
@@ -230,6 +231,45 @@
             color: #8fa69c;
             font-size: 14px;
         }
+
+        .scroll-to-top-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background-color: var(--forest, #2b4c3f);
+        color: #ffffff;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        box-shadow: 0 8px 20px rgba(43, 76, 63, 0.25);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+        }
+
+/* Hover Effect */
+        .scroll-to-top-btn:hover {
+            background-color: var(--matcha, #3f9d70);
+            color: #ffffff;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(63, 157, 112, 0.35);
+        }
+
+/* Active Class toggled by JavaScript */
+        .scroll-to-top-btn.is-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -434,13 +474,19 @@
     </footer>
     {% endblock %}
 
+    <button id="scrollToTopBtn" class="scroll-to-top-btn" title="Scroll to Top" aria-label="Scroll to Top">
+        <i class="fa-solid fa-chevron-up"></i>
+    </button>
+    
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
 
     <!-- Teacher Mode Global Sync Script -->
+    <!-- Teacher Mode & Scroll to Top Script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Teacher Mode Sync
             const toggle = document.getElementById('teacherModeToggle');
             const paymentMenuItem = document.getElementById('teacherPaymentMenuItem');
 
@@ -464,9 +510,30 @@
             } else {
                 syncTeacherDropdown(savedState);
             }
+
+            // Scroll to Top Logic
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+            if (scrollToTopBtn) {
+                window.addEventListener('scroll', function () {
+                    if (window.scrollY > 300) {
+                        scrollToTopBtn.classList.add('is-visible');
+                    } else {
+                        scrollToTopBtn.classList.remove('is-visible');
+                    }
+                });
+
+                scrollToTopBtn.addEventListener('click', function () {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
         });
     </script>
     {% block extra_js %}{% endblock %}
+    
 </body>
 
 </html>

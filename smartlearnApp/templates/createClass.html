@@ -3,7 +3,8 @@
 
 {% block content %}
 <div class="centered-form-wrapper">
-    <a href="{% url 'browse_classes' %}?user={{ request.GET.user|default:'TestUser' }}" class="back-link">← Back to Browser</a>
+    <a href="{% url 'browse_classes' %}?user={{ request.GET.user|default:'TestUser' }}" class="back-btn-icon"><i class="fa-solid fa-arrow-left"></i></a>
+    <br><br>
     <h2 class="page-heading-large">Create New Class</h2>
     <p class="subtext-muted">Fill out the class info to publish it instantly.</p>
 

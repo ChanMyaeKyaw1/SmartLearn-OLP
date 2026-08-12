@@ -276,4 +276,3 @@ function goToHome() {
             window.location.href = "login.html";
         }
 
-

@@ -1017,36 +1017,33 @@ from django.db.models import Q
 
 @login_required
 def create_topic_global(request, item_type):
-<<<<<<< HEAD
-    """
-    Handles global creation of Flashcards or MCQs with dynamic classroom filtering.
-    """
+
     if request.method == 'POST':
         class_mode = request.POST.get('class_mode')
         topic = request.POST.get('topic')
-=======
+
     # Route to manage global creation of topics/items across classes
     accessible_classrooms = get_accessible_classrooms(request.user)
     return render(request, 'create_topic.html', {
         'item_type': item_type,
         'classrooms': accessible_classrooms
     })
->>>>>>> 73f19a631754a529f5ab3d9fe47f1fee01ecc292
+
 
         # 1. Resolve Classroom
-        if class_mode == 'new':
+    if class_mode == 'new':
             new_title = request.POST.get('new_class_title')
             classroom = Classroom.objects.create(
                 title=new_title,
                 owner=request.user,
                 class_type='public'
             )
-        else:
+    else:
             classroom_id = request.POST.get('classroom_id')
             classroom = get_object_or_404(Classroom, class_id=classroom_id)
 
         # 2. Save Flashcards
-        if item_type == 'flashcards':
+    if item_type == 'flashcards':
             fronts = request.POST.getlist('front')
             backs = request.POST.getlist('back')
 
@@ -1062,7 +1059,7 @@ def create_topic_global(request, item_type):
             return redirect('all_flashcards')
 
         # 3. Save MCQs
-        elif item_type == 'mcqs':
+    elif item_type == 'mcqs':
             questions = request.POST.getlist('question')
             opts_a = request.POST.getlist('option_a')
             opts_b = request.POST.getlist('option_b')
