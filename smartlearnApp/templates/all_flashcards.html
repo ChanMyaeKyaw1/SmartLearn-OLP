@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-{% block title %}Flashcards - SmartLearn{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}Flashcards - SmartLearn{% endblock %} {% block content %}
 <div class="learning-page-header">
     <div class="learning-title-row d-flex justify-content-between align-items-center">
         <div>
@@ -11,8 +8,7 @@
 
         <div class="d-flex align-items-center gap-3">
             {% if can_create or request.user.is_authenticated %}
-                <a href="{% url 'create_topic_global' 'flashcards' %}" class="btn-primary">+ Create New Flashcards</a>
-            {% endif %}
+            <a href="{% url 'create_topic_global' 'flashcards' %}" class="btn-primary">+ Create New Flashcards</a> {% endif %}
         </div>
     </div>
 
@@ -32,23 +28,23 @@
 
     <div class="topic-collection-grid">
         {% for group in flashcard_groups %}
-            <article class="topic-collection-card topic-item-card" data-owner="{{ group.primary_creator }}">
-                <div class="topic-collection-topline">
-                    <span class="status-badge {% if group.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">{{ group.classroom_title }}</span>
-                    <span class="topic-card-count">{{ group.total_cards }} cards</span>
-                </div>
+        <article class="topic-collection-card topic-item-card" data-owner="{{ group.primary_creator }}">
+            <div class="topic-collection-topline">
+                <span class="status-badge {% if group.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">{{ group.classroom_title }}</span>
+                <span class="topic-card-count">{{ group.total_cards }} cards</span>
+            </div>
 
-                <h4>{{ group.topic }}</h4>
-                <p class="topic-preview">{{ group.preview_front }}</p>
-                <p class="topic-meta">Created by {{ group.primary_creator }}</p>
-                <p class="topic-meta muted">Contributors: {{ group.contributor_summary }}</p>
+            <h4>{{ group.topic }}</h4>
+            <p class="topic-preview">{{ group.preview_front }}</p>
+            <p class="topic-meta">Created by {{ group.primary_creator }}</p>
+            <p class="topic-meta muted">Contributors: {{ group.contributor_summary }}</p>
 
-                <div class="topic-collection-actions">
-                    <button type="button" class="btn-primary learn-topic-btn" data-learn-topic="{{ group.modal_key }}">Learn Topic</button>
-                </div>
-            </article>
+            <div class="topic-collection-actions">
+                <button type="button" class="btn-primary learn-topic-btn" data-learn-topic="{{ group.modal_key }}">Learn Topic</button>
+            </div>
+        </article>
         {% empty %}
-            <div class="empty-study-state">No accessible flashcards yet.</div>
+        <div class="empty-study-state">No accessible flashcards yet.</div>
         {% endfor %}
 
         <div id="noTeacherCardsMsg" class="empty-study-state" style="display: none;">You haven't created any flashcard topics yet.</div>

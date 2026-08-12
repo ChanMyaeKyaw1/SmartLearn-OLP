@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,17 +17,38 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Open Sans", sans-serif; background-color: #f8faf9; color: #333; overflow-x: hidden; }
-        h1, h2, h3, h4, h5, h6 { font-family: "Raleway", sans-serif; font-weight: 700; color: #2b4c3f; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: "Open Sans", sans-serif;
+            background-color: #f8faf9;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: "Raleway", sans-serif;
+            font-weight: 700;
+            color: #2b4c3f;
+        }
         /* Unified Navbar */
+
         .navbar {
             background-color: #ffffff;
             border-bottom: 1px solid #e4ebc6;
             padding: 15px 0;
             box-shadow: 0 2px 15px rgba(43, 76, 63, 0.02);
         }
+
         .logo {
             font-family: "Raleway", sans-serif;
             font-size: 25px;
@@ -37,44 +59,182 @@
             align-items: center;
             gap: 10px;
         }
+
         .nav-link {
             font-weight: 600;
             color: #555c58 !important;
             font-size: 15px;
             transition: 0.2s ease-in-out;
         }
-        .nav-link:hover { color: #4CAF7D !important; }
 
+        .nav-link:hover,
+        .nav-link.active {
+            color: #4CAF7D !important;
+        }
         /* Teacher Toggle Button Styling */
+
         .teacher-toggle-box {
             background-color: #f1f0d9;
             border: 1px solid #e4ebc6;
             padding: 6px 12px;
             border-radius: 20px;
         }
-
         /* Buttons */
-        .btn-matcha-primary {
-            background-color: #4CAF7D; color: #ffffff; font-weight: 700;
-            border-radius: 12px; padding: 10px 22px; border: none; transition: all 0.3s ease;
-        }
-        .btn-matcha-primary:hover { background-color: #3f9d70; color: #ffffff; }
-        .btn-matcha-outline {
-            background-color: transparent; color: #4CAF7D; font-weight: 700;
-            border-radius: 12px; padding: 9px 20px; border: 2px solid #4CAF7D; transition: all 0.3s ease;
-        }
-        .btn-matcha-outline:hover { background-color: #4CAF7D; color: #ffffff; }
 
-        /* Footer */
-        .main-footer {
-            background-color: #2b4c3f; color: #e2ebe7; padding: 60px 0 20px 0; margin-top: 80px; border-top: 5px solid #4CAF7D;
+        .btn-matcha-primary {
+            background-color: #4CAF7D;
+            color: #ffffff;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 10px 22px;
+            border: none;
+            transition: all 0.3s ease;
         }
-        .footer-logo { font-family: "Raleway", sans-serif; font-size: 24px; font-weight: 900; color: #fff; text-decoration: none; }
+
+        .btn-matcha-primary:hover {
+            background-color: #3f9d70;
+            color: #ffffff;
+        }
+
+        .btn-matcha-outline {
+            background-color: transparent;
+            color: #4CAF7D;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 9px 20px;
+            border: 2px solid #4CAF7D;
+            transition: all 0.3s ease;
+        }
+
+        .btn-matcha-outline:hover {
+            background-color: #4CAF7D;
+            color: #ffffff;
+        }
+        /* FOOTER */
+
+        .main-footer {
+            background-color: #2b4c3f;
+            color: #e2ebe7;
+            padding: 90px 0 0 0;
+            border-top: 6px solid #4CAF7D;
+        }
+
+        .footer-logo {
+            font-family: "Raleway", sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
+        }
+
+        .footer-logo span {
+            color: #4CAF7D;
+        }
+
+        .footer-links-header {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        .footer-links-header::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2.5px;
+            background-color: #4CAF7D;
+        }
+
+        .footer-links-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links-list li {
+            margin-bottom: 14px;
+        }
+
+        .footer-links-list a {
+            color: #b2c4bc;
+            text-decoration: none;
+            transition: 0.25s ease;
+            font-weight: 500;
+            font-size: 15px;
+            display: inline-block;
+        }
+
+        .footer-links-list a:hover {
+            color: #ffffff;
+            transform: translateX(4px);
+        }
+
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 22px;
+            color: #b2c4bc;
+            font-size: 15px;
+        }
+
+        .contact-info-item i {
+            color: #4CAF7D;
+            font-size: 19px;
+            margin-top: 3px;
+        }
+
+        .social-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .social-icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .social-icon-btn:hover {
+            background-color: #4CAF7D;
+            color: #ffffff;
+            transform: translateY(-4px);
+            box-shadow: 0 5px 15px rgba(76, 175, 125, 0.3);
+        }
+
+        .footer-bottom-bar {
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            margin-top: 80px;
+            padding: 30px 0;
+            color: #8fa69c;
+            font-size: 14px;
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
-<body>
 
+<body>
     <!-- SHARED GLOBAL NAVBAR -->
     <header class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
@@ -86,47 +246,101 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
+            <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-2">
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'dashboard' %}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'browse_classes' %}">Classes</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'all_flashcards' %}">Flashcards</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'all_mcqs' %}">MCQs</a></li>
+                    <!-- 1. Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+                            Home
+                        </a>
+                    </li>
+
+                    <!-- 2. Dashboard Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}?next={% url 'dashboard' %}{% endif %}">
+                            Dashboard
+                        </a>
+                    </li>
+
+                    <!-- 3. Classes Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'browse_classes' %}active{% endif %}" href="{% if user.is_authenticated %}{% url 'browse_classes' %}{% else %}{% url 'login' %}?next={% url 'browse_classes' %}{% endif %}">
+                            Classes
+                        </a>
+                    </li>
+
+                    <!-- 4. Flashcards Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'all_flashcards' %}active{% endif %}" href="{% if user.is_authenticated %}{% url 'all_flashcards' %}{% else %}{% url 'login' %}?next={% url 'all_flashcards' %}{% endif %}">
+                            Flashcards
+                        </a>
+                    </li>
+
+                    <!-- 5. MCQs Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'all_mcqs' %}active{% endif %}" href="{% if user.is_authenticated %}{% url 'all_mcqs' %}{% else %}{% url 'login' %}?next={% url 'all_mcqs' %}{% endif %}">
+                            MCQs
+                        </a>
+                    </li>
                 </ul>
 
-                <div class="d-flex align-items-center gap-3 ms-lg-3">
-                    <!-- Teacher Toggle Switch -->
+                <div class="d-flex align-items-center gap-3">
+                    {% if user.is_authenticated %}
                     <div class="teacher-toggle-box d-flex align-items-center me-2">
                         <span class="fw-bold me-2 small text-dark">Teacher Mode</span>
                         <div class="form-check form-switch m-0">
-                            <input class="form-check-input" type="checkbox" id="teacherModeToggle" style="cursor: pointer;" checked>
+                            <input class="form-check-input" type="checkbox" id="teacherModeToggle" style="cursor: pointer;">
                         </div>
                     </div>
 
-                    {% if user.is_authenticated %}
-                        <div class="dropdown">
-                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
-                                     style="width: 42px; height: 42px; background-color: #2b4c3f; border: 2px solid #4CAF7D;">
-                                    {{ request.user.username|slice:":2"|upper }}
-                                </div>
-                            </a>
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" style="width: 42px; height: 42px; background-color: #2b4c3f; border: 2px solid #4CAF7D;">
+                                {{ request.user.username|slice:":2"|upper }}
+                            </div>
+                        </a>
 
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" aria-labelledby="profileDropdown">
-                                <li class="px-3 py-2 border-bottom mb-1">
-                                    <span class="d-block small text-muted">Signed in as</span>
-                                    <strong class="text-dark">{{ request.user.username }}</strong>
-                                </li>
-                                <li><a class="dropdown-item py-2" href="#"><i class="fa-solid fa-user me-2 text-muted"></i> Profile</a></li>
-                                <li><hr class="dropdown-divider my-1"></li>
-                                <li><a class="dropdown-item py-2 text-danger" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
-                            </ul>
-                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" aria-labelledby="profileDropdown">
+                            <li class="px-3 py-2 border-bottom mb-1">
+                                <span class="d-block small text-muted">Signed in as</span>
+                                <strong class="text-dark">{{ request.user.username }}</strong>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item py-2" href="{% url 'dashboard' %}">
+                                    <i class="fa-solid fa-user me-2 text-muted"></i> Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="{% url 'edit_profile' %}">
+                                    <i class="fa-solid fa-user-pen me-2 text-muted"></i> Update Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="{% url 'change_password' %}">
+                                    <i class="fa-solid fa-key me-2 text-muted"></i> Change Password
+                                </a>
+                            </li>
+
+                            <li id="teacherPaymentMenuItem" style="display: none;">
+                                <a class="dropdown-item py-2" href="{% url 'manage_payment_accounts' %}">
+                                    <i class="fa-solid fa-wallet me-2 text-muted"></i> Payment Methods
+                                </a>
+                            </li>
+
+                            <li>
+                                <hr class="dropdown-divider my-1">
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2 text-danger" href="{% url 'logout' %}">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                     {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-matcha-outline">Sign In</a>
-                        <a href="{% url 'register' %}" class="btn btn-matcha-primary">Get Started</a>
-                    {% endif %}
+                    <a href="{% url 'login' %}" class="btn btn-matcha-outline">Sign In</a>
+                    <a href="{% url 'register' %}" class="btn btn-matcha-primary">Get Started</a> {% endif %}
                 </div>
             </div>
         </div>
@@ -138,6 +352,7 @@
     </main>
 
     <!-- FOOTER -->
+    {% block footer %}
     <footer class="main-footer">
         <div class="container">
             <div class="row g-4">
@@ -217,11 +432,41 @@
 
         </div>
     </footer>
-
+    {% endblock %}
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
+
+    <!-- Teacher Mode Global Sync Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('teacherModeToggle');
+            const paymentMenuItem = document.getElementById('teacherPaymentMenuItem');
+
+            function syncTeacherDropdown(isTeacher) {
+                if (paymentMenuItem) {
+                    paymentMenuItem.style.display = isTeacher ? 'block' : 'none';
+                }
+            }
+
+            const savedState = localStorage.getItem('teacherMode') === 'true';
+
+            if (toggle) {
+                toggle.checked = savedState;
+                syncTeacherDropdown(savedState);
+
+                toggle.addEventListener('change', (e) => {
+                    const isChecked = e.target.checked;
+                    localStorage.setItem('teacherMode', isChecked);
+                    syncTeacherDropdown(isChecked);
+                });
+            } else {
+                syncTeacherDropdown(savedState);
+            }
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
+
 </html>

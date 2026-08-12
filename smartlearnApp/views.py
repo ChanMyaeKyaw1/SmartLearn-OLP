@@ -1,5 +1,4 @@
 from collections import OrderedDict
-from urllib import request
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -180,8 +179,6 @@ def logout_view(request):
 
 from django.db.models import Count, Q
 
-
-
 @login_required(login_url='login')
 def dashboard_view(request):
     # Annotate created classes with the pending requests count
@@ -203,7 +200,7 @@ def dashboard_view(request):
 
     pending_class_ids = list(Enrollment.objects.filter(student=request.user, status='pending').values_list('classroom_id', flat=True))
     rejected_class_ids = list(Enrollment.objects.filter(student=request.user, status='rejected').values_list('classroom_id', flat=True))
-    pending_classrooms = Classroom.objects.filter(class_id__in=pending_class_ids)
+
     user_enrollments = {
         e.classroom_id: e for e in Enrollment.objects.filter(student=request.user)
     }
@@ -216,18 +213,13 @@ def dashboard_view(request):
         'joined_classrooms': joined_classrooms,
         'available_classes': available_classes,
         'pending_class_ids': pending_class_ids,
-        'pending_classrooms': pending_classrooms,
         'rejected_class_ids': rejected_class_ids,
         'user_enrollments': user_enrollments,
     })
 
 @login_required(login_url='login')
 def my_classes(request):
-    classes = Classroom.objects.filter(
-        owner=request.user
-    ).annotate(
-        pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
-    )
+    classes = Classroom.objects.filter(owner=request.user)
 
     return render(request, 'my_classes.html', {
         'classes': classes
@@ -237,10 +229,7 @@ def my_classes(request):
 def browse_classes(request):
     current_user = get_mock_user(request)
 
-    # classrooms = Classroom.objects.all().select_related('owner')
-    classrooms = Classroom.objects.annotate(
-        pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
-    ).select_related('owner')
+    classrooms = Classroom.objects.all().select_related('owner')
 
     search_query = request.GET.get('search', '')
     if search_query:
@@ -266,8 +255,6 @@ def browse_classes(request):
     pending_class_ids = list(
         user_enrollments.filter(status='pending').values_list('classroom_id', flat=True)
     )
-
-
 
     # Separate into joined vs available
     joined_classes = classrooms.filter(class_id__in=joined_class_ids)
@@ -332,9 +319,7 @@ def classroom_detail(request, class_id):
         request,
         "classroom_detail.html",
         {
-            "classroom": classroom,
-            "current_user": current_user,
-            "is_owner": classroom.owner == current_user,
+            "classroom": classroom
         }
     )
 
@@ -863,10 +848,6 @@ def take_quiz_view(request, class_id):
     })
 
 
-# ==========================================
-# MCQS & QUIZZES
-# ==========================================
-
 def submit_quiz(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
     current_user, blocked_response = require_classroom_access(request, classroom)
@@ -892,55 +873,75 @@ def submit_quiz(request, class_id):
 
         answers[str(question.question_id)] = {
             'selected': selected,
-            'correct_option': question.correct_option,
+            'correct': question.correct_option,
             'is_correct': is_correct,
-            'question_text': question.question,
-            'explanation': question.explanation,
         }
 
-    total_questions = len(questions)
-
-    # ✅ FIXED: Use 'student' instead of 'user', and remove 'topic'
     attempt = QuizAttempt.objects.create(
         classroom=classroom,
         student=current_user,
         score=score,
-        total_questions=total_questions,
+        total_questions=questions.count(),
         answers=answers
     )
 
     return redirect('quiz_result', attempt_id=attempt.attempt_id)
 
+
+def my_results_view(request):
+    current_user = get_mock_user(request)
+    attempts = QuizAttempt.objects.filter(student=current_user).select_related('classroom').order_by('-taken_at')
+
+    return render(request, 'my_results.html', {
+        'attempts': attempts,
+        'current_user': current_user,
+    })
+
+
 def quiz_result(request, attempt_id):
-    attempt = get_object_or_404(QuizAttempt, attempt_id=attempt_id)
+    attempt = get_object_or_404(
+        QuizAttempt.objects.select_related('classroom', 'student'),
+        attempt_id=attempt_id
+    )
     current_user, blocked_response = require_classroom_access(request, attempt.classroom)
     if blocked_response:
         return blocked_response
 
-    percentage = round((attempt.score / attempt.total_questions * 100), 2) if attempt.total_questions > 0 else 0
+    if attempt.student != current_user and attempt.classroom.owner != current_user:
+        messages.error(request, "You can only view your own quiz result.")
+        return redirect('mcqs', class_id=attempt.classroom.class_id)
+
+    questions = MCQQuestion.objects.filter(classroom=attempt.classroom).order_by('topic', 'question_id')
+    reviewed_questions = []
+
+    for question in questions:
+        answer = attempt.answers.get(str(question.question_id), {})
+        selected = answer.get('selected', '')
+        reviewed_questions.append({
+            'question': question,
+            'selected': selected,
+            'selected_text': question.option_text(selected),
+            'correct_text': question.option_text(question.correct_option),
+            'is_correct': answer.get('is_correct', False),
+        })
+
+    percentage = round((attempt.score / attempt.total_questions) * 100) if attempt.total_questions else 0
 
     return render(request, 'quiz_result.html', {
         'attempt': attempt,
-        'classroom': attempt.classroom, # ✅ Added classroom here
+        'classroom': attempt.classroom,
+        'reviewed_questions': reviewed_questions,
         'percentage': percentage,
-        'current_user': current_user,
-    })
-
-@login_required(login_url='login')
-def my_results_view(request):
-
-    attempts = QuizAttempt.objects.filter(student=request.user).select_related('classroom').order_by('-taken_at')
-    return render(request, 'my_results.html', {
-        'attempts': attempts
     })
 
 
 @login_required(login_url='login')
 def teacher_student_results(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
+
     if classroom.owner != request.user:
-        messages.error(request, "You do not have permission to view student results for this classroom.")
-        return redirect('dashboard')
+        messages.error(request, "Only the class instructor can access student quiz scores.")
+        return redirect('classroom_detail', class_id=classroom.class_id)
 
     attempts = QuizAttempt.objects.filter(classroom=classroom).select_related('student').order_by('-taken_at')
 
@@ -950,203 +951,339 @@ def teacher_student_results(request, class_id):
     })
 
 
-# ==========================================
-# PAYMENT ACCOUNTS & GLOBAL CREATION
-# ==========================================
+
+
+
+@login_required(login_url='login')
+def payment_upload_view(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+
+    # 🟢 Fetch the payment accounts created by the owner (teacher) of this classroom
+    payment_accounts = PaymentAccount.objects.filter(owner=classroom.owner)
+
+    if request.method == 'POST':
+        phone = request.POST.get('phone')
+        payment_type = request.POST.get('payment_type')
+        payslip = request.FILES.get('payslip')
+
+        # Record pending enrollment
+        Enrollment.objects.update_or_create(
+            student=request.user,
+            classroom=classroom,
+            defaults={
+                'phone': phone,
+                'payment_type': payment_type,
+                'payslip': payslip,
+                'status': 'pending',
+            }
+        )
+
+        messages.success(request, "Your payment slip has been uploaded successfully! Your request is pending review.")
+        return redirect('browse_classes')
+
+    return render(request, 'payment_upload.html', {
+        'classroom': classroom,
+        'payment_accounts': payment_accounts,  # 🟢 Pass to template
+    })
 
 @login_required(login_url='login')
 def manage_payment_accounts(request):
     if request.method == 'POST':
+        payment_type = request.POST.get('payment_type')
         account_name = request.POST.get('account_name')
         account_number = request.POST.get('account_number')
-        account_type = request.POST.get('account_type')
 
-        PaymentAccount.objects.create(
-            user=request.user,
-            account_name=account_name,
-            account_number=account_number,
-            account_type=account_type
-        )
-        messages.success(request, "Payment account added successfully.")
-        return redirect('manage_payment_accounts')
+        if payment_type and account_name and account_number:
+            PaymentAccount.objects.create(
+                owner=request.user,
+                payment_type=payment_type,
+                account_name=account_name,
+                account_number=account_number
+            )
+            messages.success(request, "Payment method added successfully!")
+            return redirect('manage_payment_accounts')
 
-    accounts = PaymentAccount.objects.filter(user=request.user)
+    accounts = PaymentAccount.objects.filter(owner=request.user)
     return render(request, 'manage_payment_accounts.html', {'accounts': accounts})
-
 
 @login_required(login_url='login')
 def delete_payment_account(request, account_id):
-    account = get_object_or_404(PaymentAccount, account_id=account_id, user=request.user)
+    account = get_object_or_404(PaymentAccount, account_id=account_id, owner=request.user)
     account.delete()
-    messages.success(request, "Payment account deleted.")
+    messages.success(request, "Payment method removed successfully.")
     return redirect('manage_payment_accounts')
 
+from django.db.models import Q
 
-@login_required(login_url='login')
+@login_required
 def create_topic_global(request, item_type):
-    # Route to manage global creation of topics/items across classes
-    accessible_classrooms = get_accessible_classrooms(request.user)
-    return render(request, 'create_topic_global.html', {
-        'item_type': item_type,
-        'classrooms': accessible_classrooms
-    })
+    """
+    Handles global creation of Flashcards or MCQs with dynamic classroom filtering.
+    """
+    if request.method == 'POST':
+        class_mode = request.POST.get('class_mode')
+        topic = request.POST.get('topic')
 
+        # 1. Resolve Classroom
+        if class_mode == 'new':
+            new_title = request.POST.get('new_class_title')
+            classroom = Classroom.objects.create(
+                title=new_title,
+                owner=request.user,
+                class_type='public'
+            )
+        else:
+            classroom_id = request.POST.get('classroom_id')
+            classroom = get_object_or_404(Classroom, class_id=classroom_id)
+
+        # 2. Save Flashcards
+        if item_type == 'flashcards':
+            fronts = request.POST.getlist('front')
+            backs = request.POST.getlist('back')
+
+            for front, back in zip(fronts, backs):
+                if front.strip() and back.strip():
+                    Flashcard.objects.create(
+                        classroom=classroom,
+                        topic=topic,
+                        front=front,
+                        back=back,
+                        created_by=request.user
+                    )
+            return redirect('all_flashcards')
+
+        # 3. Save MCQs
+        elif item_type == 'mcqs':
+            questions = request.POST.getlist('question')
+            opts_a = request.POST.getlist('option_a')
+            opts_b = request.POST.getlist('option_b')
+            opts_c = request.POST.getlist('option_c')
+            opts_d = request.POST.getlist('option_d')
+            corrects = request.POST.getlist('correct_option')
+            explanations = request.POST.getlist('explanation')
+
+            for i in range(len(questions)):
+                if questions[i].strip():
+                    MCQQuestion.objects.create(
+                        classroom=classroom,
+                        topic=topic,
+                        question=questions[i],
+                        option_a=opts_a[i],
+                        option_b=opts_b[i],
+                        option_c=opts_c[i],
+                        option_d=opts_d[i],
+                        correct_option=corrects[i],
+                        explanation=explanations[i] if i < len(explanations) else '',
+                        created_by=request.user
+                    )
+            return redirect('all_mcqs')
+
+    # GET Request: Fetch owned vs public classes separately or mark them
+    all_classes = Classroom.objects.filter(
+        Q(class_type='public') | Q(owner=request.user)
+    ).distinct()
+
+    context = {
+        'item_type': item_type,
+        'classrooms': all_classes,
+    }
+    return render(request, 'create_topic.html', context)
 
 @login_required(login_url='login')
 def manage_classroom_view(request, class_id):
-    classroom = get_object_or_404(Classroom, class_id=class_id)
-    if classroom.owner != request.user:
-        messages.error(request, "You do not own this classroom.")
-        return redirect('dashboard')
+    # Ensure only the owner can manage this class
+    classroom = get_object_or_404(Classroom, class_id=class_id, owner=request.user)
 
-    pending_requests = Enrollment.objects.filter(classroom=classroom, status='pending').select_related('student')
-    approved_students = Enrollment.objects.filter(classroom=classroom, status='approved').select_related('student')
+    # Get all pending enrollment requests for this classroom
+    pending_enrollments = Enrollment.objects.filter(
+        classroom=classroom,
+        status='pending'
+    ).select_related('student')
+
+    # Get approved students list (roster)
+    approved_enrollments = Enrollment.objects.filter(
+        classroom=classroom,
+        status='approved'
+    ).select_related('student')
 
     return render(request, 'manage_classroom.html', {
         'classroom': classroom,
-        'pending_requests': pending_requests,
-        'approved_students': approved_students,
+        'pending_enrollments': pending_enrollments,
+        'approved_enrollments': approved_enrollments,
     })
 
 
 @login_required(login_url='login')
 def handle_enrollment_request(request, enrollment_id, action):
-    enrollment = get_object_or_404(Enrollment, enrollment_id=enrollment_id)
-    if enrollment.classroom.owner != request.user:
-        messages.error(request, "Unauthorized request.")
-        return redirect('dashboard')
+    # Fix: Use 'enrollment_id' instead of 'id'
+    enrollment = get_object_or_404(Enrollment, enrollment_id=enrollment_id, classroom__owner=request.user)
 
     if action == 'approve':
         enrollment.status = 'approved'
+        enrollment.rejection_reason = None  # Clear reason on approval
         enrollment.save()
         messages.success(request, f"Approved {enrollment.student.username}'s request.")
+
     elif action == 'reject':
+        # Grab the reason sent from JavaScript query parameter
+        reason = request.GET.get('rejection_reason', '').strip()
+
         enrollment.status = 'rejected'
+        enrollment.rejection_reason = reason if reason else "No reason provided."
         enrollment.save()
-        messages.info(request, f"Rejected {enrollment.student.username}'s request.")
+        messages.warning(request, f"Rejected {enrollment.student.username}'s request.")
 
-    return redirect('manage_classroom', class_id=enrollment.classroom.class_id)
+    return redirect('manage_enrollments', class_id=enrollment.classroom.class_id)
 
 
-# ==========================================
-# CUSTOM ADMIN PANEL
-# ==========================================
 
-@staff_member_required
+# (Note: If you want to redirect them to Django's built-in default admin page instead of a custom-built one, simply replace return redirect('custom_admin_dashboard') with return redirect('/admin/')).
+
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required(login_url='login')
 def custom_admin_dashboard(request):
-    User = get_user_model()
-    users = User.objects.all().order_by('-date_joined')
-    classrooms = Classroom.objects.all().select_related('owner')
+    # Fetch data you want to display on the admin page
+    total_users = User.objects.count()
+    total_classrooms = Classroom.objects.count()
 
-    # Get section from URL; if missing or set to 'dashboard', treat as 'all'
+    context = {
+        'total_users': total_users,
+        'total_classrooms': total_classrooms,
+    }
+    return render(request, 'custom_admin/dashboard.html', context)
+
+
+
+
+User = get_user_model()
+
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def custom_admin_dashboard(request):
     section = request.GET.get('section', 'all')
-    if section == 'dashboard':
-        section = 'all'
 
-    return render(request, 'custom_admin/dashboard.html', {
-        'users': users,
-        'classrooms': classrooms,
-        'total_users': users.count(),
-        'total_classrooms': classrooms.count(),
+    context = {
         'section': section,
-    })
+        'total_users': User.objects.count(),
+        'total_classrooms': Classroom.objects.count(),
+        'total_flashcards': Flashcard.objects.count(),
+        'total_mcqs': MCQQuestion.objects.count(),
+        'users': User.objects.all(),
+        'classrooms': Classroom.objects.all(),
+        'flashcards': Flashcard.objects.all(),
+        'mcqs': MCQQuestion.objects.all(),
+    }
+    return render(request, 'custom_admin/dashboard.html', context)
 
-@staff_member_required
+@staff_member_required(login_url='login')
 def admin_edit_user(request, user_id):
-    User = get_user_model()
-    target_user = get_object_or_404(User, pk=user_id)
+    target_user = get_object_or_404(User, id=user_id)
 
     if request.method == 'POST':
-        target_user.username = request.POST.get('username')
-        target_user.email = request.POST.get('email')
-        target_user.is_staff = request.POST.get('is_staff') == 'on'
+        target_user.username = request.POST.get('username', '').strip()
+        target_user.email = request.POST.get('email', '').strip()
+        target_user.is_staff = 'is_staff' in request.POST
+        target_user.is_active = 'is_active' in request.POST
         target_user.save()
-        messages.success(request, f"Updated user profile for {target_user.username}.")
+        messages.success(request, f"User {target_user.username} updated successfully!")
         return redirect('custom_admin_dashboard')
 
     return render(request, 'custom_admin/edit_user.html', {'target_user': target_user})
 
 
-@staff_member_required
+@staff_member_required(login_url='login')
 def admin_delete_user(request, user_id):
-    User = get_user_model()
-    target_user = get_object_or_404(User, pk=user_id)
-    if request.method == 'POST':
+    target_user = get_object_or_404(User, id=user_id)
+    if target_user == request.user:
+        messages.error(request, "You cannot delete your own admin account!")
+    else:
         target_user.delete()
         messages.success(request, "User deleted successfully.")
-        return redirect('custom_admin_dashboard')
+    return redirect('custom_admin_dashboard')
 
-    return render(request, 'custom_admin/delete_user.html', {'target_user': target_user})
-
-
-@staff_member_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
 def admin_view_profile(request):
     return render(request, 'custom_admin/view_profile.html')
 
-
-@staff_member_required
+@staff_member_required(login_url='login')
 def admin_update_profile(request):
     if request.method == 'POST':
-        request.user.email = request.POST.get('email')
-        request.user.first_name = request.POST.get('first_name')
-        request.user.last_name = request.POST.get('last_name')
+        request.user.username = request.POST.get('username', '').strip()
+        request.user.email = request.POST.get('email', '').strip()
         request.user.save()
-        messages.success(request, "Profile updated successfully.")
-        return redirect('admin_view_profile')
+        messages.success(request, "Admin profile updated successfully!")
+        return redirect('admin_update_profile')
 
-    return render(request, 'custom_admin/update_profile.html')
+    return render(request, 'custom_admin/edit_profile.html')
 
-
-@staff_member_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
 def admin_change_password(request):
     if request.method == 'POST':
         old_password = request.POST.get('old_password')
-        new_password = request.POST.get('new_password')
-        confirm_password = request.POST.get('confirm_password')
+        new_password1 = request.POST.get('new_password1')
+        new_password2 = request.POST.get('new_password2')
 
+        # 1. Verify old password using Django's check_password method
         if not request.user.check_password(old_password):
-            messages.error(request, "Incorrect current password.")
-        elif new_password != confirm_password:
+            messages.error(request, "Incorrect old password.")
+            return render(request, 'custom_admin/change_password.html')
+
+        # 2. Check if new passwords match
+        if new_password1 != new_password2:
             messages.error(request, "New passwords do not match.")
-        else:
-            request.user.set_password(new_password)
-            request.user.save()
-            update_session_auth_hash(request, request.user)
-            messages.success(request, "Password updated successfully.")
-            return redirect('admin_view_profile')
+            return render(request, 'custom_admin/change_password.html')
+
+        # 3. Save new password and update session so admin stays logged in
+        request.user.set_password(new_password1)
+        request.user.save()
+        update_session_auth_hash(request, request.user)  # Prevents logging out
+
+        messages.success(request, "Your password has been changed successfully!")
+        return redirect('admin_view_profile')
 
     return render(request, 'custom_admin/change_password.html')
 
 
-@login_required(login_url='login')
+
+
+
+@login_required
 def edit_profile(request):
     if request.method == 'POST':
-        request.user.email = request.POST.get('email', request.user.email)
-        request.user.first_name = request.POST.get('first_name', request.user.first_name)
-        request.user.last_name = request.POST.get('last_name', request.user.last_name)
-        request.user.save()
-        messages.success(request, "Profile updated successfully.")
-        return redirect('dashboard')
+        user = request.user
+        user.username = request.POST.get('username', user.username)
+        user.email = request.POST.get('email', user.email)
+
+        if 'image' in request.FILES:
+            user.profile_image = request.FILES['image']
+
+        user.save()
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('edit_profile')
 
     return render(request, 'edit_profile.html')
 
 
-@login_required(login_url='login')
+@login_required
 def change_password(request):
     if request.method == 'POST':
         old_password = request.POST.get('old_password')
-        new_password = request.POST.get('new_password')
-        confirm_password = request.POST.get('confirm_password')
+        new_password1 = request.POST.get('new_password1')
+        new_password2 = request.POST.get('new_password2')
 
         if not request.user.check_password(old_password):
-            messages.error(request, "Current password is incorrect.")
-        elif new_password != confirm_password:
+            messages.error(request, "Incorrect old password.")
+            return render(request, 'change_password.html')
+
+        if new_password1 != new_password2:
             messages.error(request, "New passwords do not match.")
-        else:
-            request.user.set_password(new_password)
-            request.user.save()
-            update_session_auth_hash(request, request.user)
-            messages.success(request, "Password changed successfully.")
-            return redirect('dashboard')
+            return render(request, 'change_password.html')
+
+        request.user.set_password(new_password1)
+        request.user.save()
+        update_session_auth_hash(request, request.user)
+
+        messages.success(request, "Your password has been changed successfully!")
+        return redirect('edit_profile')
 
     return render(request, 'change_password.html')
