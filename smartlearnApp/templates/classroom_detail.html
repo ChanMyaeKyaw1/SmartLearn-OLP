@@ -754,15 +754,6 @@ Course Instructor
 </div>
 
 
-
-
-<a href="#" class="join-btn">
-
-Join Workspace
-
-</a>
-
-
 {% if is_owner %}
 <div class="teacher-tools teacher-tools--inline">
     <div class="teacher-tools__title">Teacher Tools</div>
@@ -800,21 +791,21 @@ Join Workspace
 
 <div class="module-grid">
 
-<div class="module-card">
-<div class="module-icon">
-<i class="fa-solid fa-folder-open"></i>
-</div>
-<h5>Teacher Materials</h5>
-<p>Learning resources and course files.</p>
-</div>
+<a href="{% url 'teacher_materials' classroom.class_id %}" class="module-card">
+    <div class="module-icon">
+        <i class="fa-solid fa-folder-open"></i>
+    </div>
+    <h5>Teacher Materials</h5>
+    <p>Learning resources and course files.</p>
+</a>
 
-<div class="module-card">
-<div class="module-icon">
-<i class="fa-solid fa-users"></i>
-</div>
-<h5>Community Notes</h5>
-<p>Student shared knowledge.</p>
-</div>
+<a href="{% url 'community_notes' classroom.class_id %}" class="module-card">
+    <div class="module-icon">
+        <i class="fa-solid fa-users"></i>
+    </div>
+    <h5>Community Notes</h5>
+    <p>Student shared knowledge.</p>
+</a>
 
 <a href="{% url 'flashcards' classroom.class_id %}" class="module-card">
 <div class="module-icon">

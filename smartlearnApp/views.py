@@ -8,7 +8,7 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 
-from .models import Classroom, Enrollment, Flashcard, FlashcardTopicReaction, MCQQuestion, QuizAttempt
+from .models import Classroom, CommunityNote, Enrollment, Flashcard, FlashcardTopicReaction, MCQQuestion, QuizAttempt, TeacherMaterial
 
 from .models import PaymentAccount
 
@@ -1017,12 +1017,21 @@ from django.db.models import Q
 
 @login_required
 def create_topic_global(request, item_type):
+<<<<<<< HEAD
     """
     Handles global creation of Flashcards or MCQs with dynamic classroom filtering.
     """
     if request.method == 'POST':
         class_mode = request.POST.get('class_mode')
         topic = request.POST.get('topic')
+=======
+    # Route to manage global creation of topics/items across classes
+    accessible_classrooms = get_accessible_classrooms(request.user)
+    return render(request, 'create_topic.html', {
+        'item_type': item_type,
+        'classrooms': accessible_classrooms
+    })
+>>>>>>> 73f19a631754a529f5ab3d9fe47f1fee01ecc292
 
         # 1. Resolve Classroom
         if class_mode == 'new':
@@ -1287,3 +1296,212 @@ def change_password(request):
         return redirect('edit_profile')
 
     return render(request, 'change_password.html')
+
+@login_required
+def teacher_materials_view(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+    
+    # Verify access permission
+    current_user, blocked_response = require_classroom_access(request, classroom)
+    if blocked_response:
+        return blocked_response
+
+    is_owner = (classroom.owner == request.user)
+    
+    # Filter search and category
+    search_query = request.GET.get('q', '').strip()
+    selected_category = request.GET.get('category', '').strip()
+
+    materials = TeacherMaterial.objects.filter(classroom=classroom)
+    
+    # Non-owners only see published materials
+    if not is_owner:
+        materials = materials.filter(is_visible=True)
+
+    if search_query:
+        materials = materials.filter(
+            Q(title__icontains=search_query) | Q(description__icontains=search_query)
+        )
+
+    if selected_category:
+        materials = materials.filter(category=selected_category)
+
+    context = {
+        'classroom': classroom,
+        'materials': materials,
+        'is_owner': is_owner,
+        'search_query': search_query,
+        'selected_category': selected_category,
+        'categories': TeacherMaterial.CATEGORY_CHOICES,
+    }
+    return render(request, 'teacher_materials.html', context)
+
+
+@login_required
+def upload_material(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+
+    if classroom.owner != request.user:
+        messages.error(request, "Only the course teacher can upload materials.")
+        return redirect('teacher_materials', class_id=classroom.class_id)
+
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        category = request.POST.get('category', 'lecture')
+        external_url = request.POST.get('external_url', '').strip()
+        file_obj = request.FILES.get('file')
+
+        if not title:
+            messages.error(request, "Material title is required.")
+            return redirect('teacher_materials', class_id=classroom.class_id)
+
+        if not file_obj and not external_url:
+            messages.error(request, "Please attach a file or provide an external URL.")
+            return redirect('teacher_materials', class_id=classroom.class_id)
+
+        TeacherMaterial.objects.create(
+            classroom=classroom,
+            uploader=request.user,
+            title=title,
+            description=description,
+            category=category,
+            file=file_obj if file_obj else None,
+            external_url=external_url if external_url else None
+        )
+        messages.success(request, f"'{title}' uploaded successfully!")
+
+    return redirect('teacher_materials', class_id=classroom.class_id)
+
+
+@login_required
+def delete_material(request, material_id):
+    material = get_object_or_404(TeacherMaterial, material_id=material_id)
+    class_id = material.classroom.class_id
+
+    if material.classroom.owner != request.user:
+        messages.error(request, "Permission denied.")
+        return redirect('teacher_materials', class_id=class_id)
+
+    if request.method == 'POST':
+        material.delete()
+        messages.success(request, "Material deleted successfully.")
+
+    return redirect('teacher_materials', class_id=class_id)
+
+@login_required
+def edit_material(request, material_id):
+    material = get_object_or_404(TeacherMaterial, material_id=material_id)
+    class_id = material.classroom.class_id
+
+    # Ensure only the classroom owner can edit
+    if material.classroom.owner != request.user:
+        messages.error(request, "Permission denied.")
+        return redirect('teacher_materials', class_id=class_id)
+
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        category = request.POST.get('category', material.category)
+        external_url = request.POST.get('external_url', '').strip()
+        file_obj = request.FILES.get('file')
+
+        if not title:
+            messages.error(request, "Material title is required.")
+            return redirect('teacher_materials', class_id=class_id)
+
+        material.title = title
+        material.description = description
+        material.category = category
+        material.external_url = external_url if external_url else None
+
+        # Replace existing file if a new file is uploaded
+        if file_obj:
+            material.file = file_obj
+
+        material.save()
+        messages.success(request, f"'{title}' updated successfully!")
+
+    return redirect('teacher_materials', class_id=class_id)
+
+
+@login_required
+def community_notes_view(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+    is_owner = (classroom.owner == request.user)
+    
+    search_query = request.GET.get('q', '').strip()
+    filter_type = request.GET.get('filter', '')
+
+    notes = CommunityNote.objects.filter(classroom=classroom)
+
+    if search_query:
+        notes = notes.filter(title__icontains=search_query) | notes.filter(content__icontains=search_query)
+
+    if filter_type == 'verified':
+        notes = notes.filter(is_verified=True)
+    elif filter_type == 'pinned':
+        notes = notes.filter(is_pinned=True)
+
+    context = {
+        'classroom': classroom,
+        'notes': notes,
+        'is_owner': is_owner,
+        'search_query': search_query,
+        'filter_type': filter_type,
+    }
+    return render(request, 'community_notes.html', context)
+
+
+@login_required
+def create_community_note(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        content = request.POST.get('content', '').strip()
+        attachment = request.FILES.get('attachment')
+
+        if title and content:
+            CommunityNote.objects.create(
+                classroom=classroom,
+                author=request.user,
+                title=title,
+                content=content,
+                attachment=attachment
+            )
+            messages.success(request, "Note shared with the community!")
+        else:
+            messages.error(request, "Title and content are required.")
+
+    return redirect('community_notes', class_id=classroom.class_id)
+
+
+@login_required
+def toggle_upvote_note(request, note_id):
+    note = get_object_or_404(CommunityNote, note_id=note_id)
+    if request.user in note.upvotes.all():
+        note.upvotes.remove(request.user)
+    else:
+        note.upvotes.add(request.user)
+    return redirect('community_notes', class_id=note.classroom.class_id)
+
+
+@login_required
+def toggle_verify_note(request, note_id):
+    note = get_object_or_404(CommunityNote, note_id=note_id)
+    if note.classroom.owner == request.user:
+        note.is_verified = not note.is_verified
+        note.save()
+        messages.success(request, "Verification status updated.")
+    return redirect('community_notes', class_id=note.classroom.class_id)
+
+
+@login_required
+def toggle_pin_note(request, note_id):
+    note = get_object_or_404(CommunityNote, note_id=note_id)
+    if note.classroom.owner == request.user:
+        note.is_pinned = not note.is_pinned
+        note.save()
+        messages.success(request, "Pin status updated.")
+    return redirect('community_notes', class_id=note.classroom.class_id)

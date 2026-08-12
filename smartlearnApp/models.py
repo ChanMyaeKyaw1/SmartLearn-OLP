@@ -166,3 +166,88 @@ class PaymentAccount(models.Model):
 
     def __str__(self):
         return f"{self.owner.username if self.owner else 'Admin'} - {self.payment_type} ({self.account_number})"
+
+# ==========================================
+# Teacher Materials & Resources model
+# ==========================================
+
+import os
+from django.db import models
+from django.contrib.auth.models import User
+from .models import Classroom  # Adjust import based on your models layout
+
+class TeacherMaterial(models.Model):
+    CATEGORY_CHOICES = [
+        ('lecture', 'Lecture Slides'),
+        ('syllabus', 'Syllabus & Info'),
+        ('assignment', 'Assignment / Worksheet'),
+        ('reference', 'Reference Material'),
+        ('video', 'Video / Audio Link'),
+        ('other', 'Other Resource'),
+    ]
+
+    material_id = models.AutoField(primary_key=True)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name='materials')
+    uploader = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='lecture')
+    
+    # Storage options: Direct File OR External Link
+    file = models.FileField(upload_to='teacher_materials/', blank=True, null=True)
+    external_url = models.URLField(max_length=500, blank=True, null=True)
+    
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    is_visible = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return f"{self.title} - {self.classroom.title}"
+
+    @property
+    def extension(self):
+        if self.file:
+            name, ext = os.path.splitext(self.file.name)
+            return ext.lower().replace('.', '')
+        return 'link'
+
+    @property
+    def size_mb(self):
+        if self.file and hasattr(self.file, 'size'):
+            return round(self.file.size / (1024 * 1024), 2)
+        return 0
+
+# ==========================================
+# Community Notes model for Classroom Discussions
+# ==========================================
+
+from django.db import models
+from django.contrib.auth.models import User
+from .models import Classroom
+
+class CommunityNote(models.Model):
+    note_id = models.AutoField(primary_key=True)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name='community_notes')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    attachment = models.FileField(upload_to='community_notes/', blank=True, null=True)
+    
+    is_pinned = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
+    upvotes = models.ManyToManyField(User, related_name='upvoted_notes', blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-is_pinned', '-created_at']
+
+    def __str__(self):
+        return f"{self.title} - {self.classroom.title}"
+
+    @property
+    def total_upvotes(self):
+        return self.upvotes.count()
