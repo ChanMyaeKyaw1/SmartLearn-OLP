@@ -194,9 +194,19 @@ def dashboard_view(request):
         enrollments__status='approved'
     ).select_related('owner')
 
+    pending_classrooms = Classroom.objects.filter(
+        enrollments__student=request.user,
+        enrollments__status='pending'
+    ).select_related('owner')
+
+    # 4. Classes available to explore:
+    # Exclude: owned classes, approved joined classes, and pending classes
     available_classes = Classroom.objects.exclude(
         owner=request.user
-    ).select_related('owner')
+    ).exclude(
+        enrollments__student=request.user,
+        enrollments__status__in=['approved', 'pending']
+    ).select_related('owner').distinct()
 
     pending_class_ids = list(Enrollment.objects.filter(student=request.user, status='pending').values_list('classroom_id', flat=True))
     rejected_class_ids = list(Enrollment.objects.filter(student=request.user, status='rejected').values_list('classroom_id', flat=True))
@@ -212,6 +222,7 @@ def dashboard_view(request):
         'my_classes': my_classes,
         'joined_classrooms': joined_classrooms,
         'available_classes': available_classes,
+        'pending_classrooms': pending_classrooms,
         'pending_class_ids': pending_class_ids,
         'rejected_class_ids': rejected_class_ids,
         'user_enrollments': user_enrollments,
@@ -227,13 +238,14 @@ def my_classes(request):
 
 
 def browse_classes(request):
-    current_user = get_mock_user(request)
+    current_user = request.user
 
     classrooms = Classroom.objects.all().select_related('owner')
 
     search_query = request.GET.get('search', '')
     if search_query:
-        classrooms = classrooms.filter(title__istartswith=search_query)
+        available_classes = available_classes.filter(title__icontains=search_query)
+        joined_classes = joined_classes.filter(title__icontains=search_query)
 
     visibility = request.GET.get('visibility', '')
     if visibility == 'public':
@@ -257,8 +269,18 @@ def browse_classes(request):
     )
 
     # Separate into joined vs available
-    joined_classes = classrooms.filter(class_id__in=joined_class_ids)
-    available_classes = classrooms.exclude(class_id__in=joined_class_ids)
+    #joined_classes = classrooms.filter(class_id__in=joined_class_ids)
+    joined_classes = Classroom.objects.filter(
+        enrollments__student=current_user,
+        enrollments__status='approved'
+    ).select_related('owner').distinct()
+
+    available_classes = Classroom.objects.exclude(
+        owner=current_user
+    ).exclude(
+        enrollments__student=current_user,
+        enrollments__status__in=['approved', 'pending']
+    ).select_related('owner').distinct()
 
     context = {
         'joined_classes': joined_classes,
@@ -314,7 +336,13 @@ def classroom_detail(request, class_id):
     current_user, blocked_response = require_classroom_access(request, classroom)
     if blocked_response:
         return blocked_response
-
+    
+    if request.user.is_authenticated and classroom.class_type == 'public' and classroom.owner != request.user:
+        Enrollment.objects.get_or_create(
+            student=request.user,
+            classroom=classroom,
+            defaults={'status': 'approved'}
+        )
     return render(
         request,
         "classroom_detail.html",
