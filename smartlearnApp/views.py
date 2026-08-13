@@ -237,39 +237,15 @@ def my_classes(request):
     })
 
 
+@login_required(login_url='login')  # Ensures current_user is authenticated
 def browse_classes(request):
     current_user = request.user
 
-    classrooms = Classroom.objects.all().select_related('owner')
+    search_query = request.GET.get('search', '').strip()
+    visibility = request.GET.get('visibility', '').strip()
+    sorting = request.GET.get('sorting', '').strip()
 
-    search_query = request.GET.get('search', '')
-    if search_query:
-        available_classes = available_classes.filter(title__icontains=search_query)
-        joined_classes = joined_classes.filter(title__icontains=search_query)
-
-    visibility = request.GET.get('visibility', '')
-    if visibility == 'public':
-        classrooms = classrooms.filter(class_type='public')
-    elif visibility == 'private':
-        classrooms = classrooms.filter(class_type='private')
-
-    sorting = request.GET.get('sorting', '')
-    if sorting == 'az':
-        classrooms = classrooms.order_by('title')
-    elif sorting == 'za':
-        classrooms = classrooms.order_by('-title')
-
-    # Query enrollments
-    user_enrollments = Enrollment.objects.filter(student=current_user)
-    joined_class_ids = list(
-        user_enrollments.filter(status='approved').values_list('classroom_id', flat=True)
-    )
-    pending_class_ids = list(
-        user_enrollments.filter(status='pending').values_list('classroom_id', flat=True)
-    )
-
-    # Separate into joined vs available
-    #joined_classes = classrooms.filter(class_id__in=joined_class_ids)
+    # 1. Base Querysets
     joined_classes = Classroom.objects.filter(
         enrollments__student=current_user,
         enrollments__status='approved'
@@ -282,6 +258,32 @@ def browse_classes(request):
         enrollments__status__in=['approved', 'pending']
     ).select_related('owner').distinct()
 
+    # 2. Apply Search Filter (__icontains allows partial matching anywhere in the title)
+    if search_query:
+        joined_classes = joined_classes.filter(title__icontains=search_query)
+        available_classes = available_classes.filter(title__icontains=search_query)
+
+    # 3. Apply Visibility Filter
+    if visibility == 'public':
+        joined_classes = joined_classes.filter(class_type='public')
+        available_classes = available_classes.filter(class_type='public')
+    elif visibility == 'private':
+        joined_classes = joined_classes.filter(class_type='private')
+        available_classes = available_classes.filter(class_type='private')
+
+    # 4. Apply Sorting
+    if sorting == 'az':
+        joined_classes = joined_classes.order_by('title')
+        available_classes = available_classes.order_by('title')
+    elif sorting == 'za':
+        joined_classes = joined_classes.order_by('-title')
+        available_classes = available_classes.order_by('-title')
+
+    # 5. Query enrollment lists for IDs if needed
+    user_enrollments = Enrollment.objects.filter(student=current_user)
+    joined_class_ids = list(user_enrollments.filter(status='approved').values_list('classroom_id', flat=True))
+    pending_class_ids = list(user_enrollments.filter(status='pending').values_list('classroom_id', flat=True))
+
     context = {
         'joined_classes': joined_classes,
         'available_classes': available_classes,
@@ -293,7 +295,6 @@ def browse_classes(request):
         'current_user_name': current_user.username,
     }
     return render(request, 'browserClass.html', context)
-
 
 @login_required(login_url='login')
 def create_class(request):
