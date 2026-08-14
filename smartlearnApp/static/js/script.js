@@ -122,116 +122,141 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    if (dataElement && modal) {
-        let topicGroups = [];
-        try {
-            topicGroups = JSON.parse(dataElement.textContent || "[]");
-        } catch (error) {
-            console.error("Unable to parse flashcard topic data", error);
+if (!dataElement || !modal) return;
+
+    let topicGroups = [];
+    try {
+        topicGroups = JSON.parse(dataElement.textContent || "[]");
+    } catch (error) {
+        console.error("Unable to parse flashcard topic data", error);
+        return;
+    }
+
+    if (!topicGroups.length) return;
+
+    // Create a topic lookup map that supports both modal_key and topic_slug
+    const topicMap = new Map();
+    topicGroups.forEach((group) => {
+        if (group.modal_key) topicMap.set(group.modal_key, group);
+        if (group.topic_slug) topicMap.set(group.topic_slug, group);
+        if (group.topic) topicMap.set(group.topic, group);
+    });
+
+    const modalTopic = document.getElementById("flashcard-learn-topic");
+    const modalTitle = document.getElementById("flashcard-learn-title");
+    const modalCard = document.getElementById("flashcard-modal-card");
+    const modalFrontTopic = document.getElementById("flashcard-modal-front-topic");
+    const modalFrontText = document.getElementById("flashcard-modal-front-text");
+    const modalBackTopic = document.getElementById("flashcard-modal-back-topic");
+    const modalBackText = document.getElementById("flashcard-modal-back-text");
+    const modalCounter = document.getElementById("flashcard-modal-counter");
+
+    let activeGroup = null;
+    let activeIndex = 0;
+
+    const setModalCard = () => {
+        if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
+
+        const card = activeGroup.cards[activeIndex];
+        if (modalTopic) modalTopic.textContent = activeGroup.topic;
+        if (modalTitle) modalTitle.textContent = activeGroup.topic;
+        if (modalFrontTopic) modalFrontTopic.textContent = activeGroup.topic;
+        if (modalFrontText) modalFrontText.textContent = card.front;
+        if (modalBackTopic) modalBackTopic.textContent = activeGroup.topic;
+        if (modalBackText) modalBackText.textContent = card.back;
+        
+        // Reset card to front side when navigating
+        if (modalCard) modalCard.classList.remove("is-flipped");
+
+        if (modalCounter) {
+            modalCounter.textContent = `Card ${activeIndex + 1} of ${activeGroup.cards.length}`;
+        }
+    };
+
+    const openModal = (key) => {
+        const group = topicMap.get(key);
+        if (!group) return;
+
+        activeGroup = group;
+        activeIndex = 0;
+        setModalCard();
+        
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        modal.hidden = false;
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+    };
+
+    const closeModal = () => {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        modal.hidden = true;
+        modal.style.display = "none";
+        document.body.style.overflow = "";
+        if (modalCard) modalCard.classList.remove("is-flipped");
+    };
+
+    // --- EVENT DELEGATION (Prevents broken button click handlers) ---
+    document.addEventListener("click", (event) => {
+        // Open Learn Topic Modal
+        const learnBtn = event.target.closest("[data-learn-topic]");
+        if (learnBtn) {
+            event.preventDefault();
+            const topicKey = learnBtn.getAttribute("data-learn-topic");
+            openModal(topicKey);
             return;
         }
 
-        if (!topicGroups.length) {
+        // Close Modal
+        if (event.target.closest("[data-close-learn-modal]")) {
+            closeModal();
             return;
         }
 
-        const topicMap = new Map(topicGroups.map((group) => [group.modal_key || group.topic_slug, group]));
-        const modalTopic = document.getElementById("flashcard-learn-topic");
-        const modalTitle = document.getElementById("flashcard-learn-title");
-        const modalCard = document.getElementById("flashcard-modal-card");
-        const modalFrontTopic = document.getElementById("flashcard-modal-front-topic");
-        const modalFrontText = document.getElementById("flashcard-modal-front-text");
-        const modalBackTopic = document.getElementById("flashcard-modal-back-topic");
-        const modalBackText = document.getElementById("flashcard-modal-back-text");
-        const prevButton = modal.querySelector("[data-learn-prev]");
-        const nextButton = modal.querySelector("[data-learn-next]");
-        const flipButton = modal.querySelector("[data-learn-flip]");
-        const closeButtons = modal.querySelectorAll("[data-close-learn-modal]");
-        const openButtons = document.querySelectorAll("[data-learn-topic]");
-
-        let activeGroup = null;
-        let activeIndex = 0;
-
-        const setModalCard = () => {
-            if (!activeGroup || !activeGroup.cards.length) {
-                return;
-            }
-
-            const card = activeGroup.cards[activeIndex];
-            modalTopic.textContent = activeGroup.topic;
-            modalTitle.textContent = activeGroup.topic;
-            modalFrontTopic.textContent = activeGroup.topic;
-            modalFrontText.textContent = card.front;
-            modalBackTopic.textContent = activeGroup.topic;
-            modalBackText.textContent = card.back;
-            modalCard.classList.remove("is-flipped");
-        };
-
-        const openModal = (topicSlug) => {
-            const group = topicMap.get(topicSlug);
-            if (!group) {
-                return;
-            }
-
-            activeGroup = group;
-            activeIndex = 0;
-            setModalCard();
-            modal.classList.add("is-open");
-            modal.setAttribute("aria-hidden", "false");
-            modal.hidden = false;
-            modal.style.display = "flex";
-            document.body.style.overflow = "hidden";
-        };
-
-        const closeModal = () => {
-            modal.classList.remove("is-open");
-            modal.setAttribute("aria-hidden", "true");
-            modal.hidden = true;
-            modal.style.display = "none";
-            document.body.style.overflow = "";
-            modalCard.classList.remove("is-flipped");
-        };
-
-        openButtons.forEach((button) => {
-            button.addEventListener("click", () => {
-                openModal(button.dataset.learnTopic);
-            });
-        });
-
-        prevButton.addEventListener("click", () => {
-            if (!activeGroup || !activeGroup.cards.length) {
-                return;
-            }
-
+        // Previous Card Arrow
+        if (event.target.closest("[data-learn-prev]")) {
+            if (!activeGroup || !activeGroup.cards.length) return;
             activeIndex = (activeIndex - 1 + activeGroup.cards.length) % activeGroup.cards.length;
             setModalCard();
-        });
+            return;
+        }
 
-        nextButton.addEventListener("click", () => {
-            if (!activeGroup || !activeGroup.cards.length) {
-                return;
-            }
-
+        // Next Card Arrow
+        if (event.target.closest("[data-learn-next]")) {
+            if (!activeGroup || !activeGroup.cards.length) return;
             activeIndex = (activeIndex + 1) % activeGroup.cards.length;
             setModalCard();
-        });
+            return;
+        }
 
-        flipButton.addEventListener("click", () => {
-            modalCard.classList.toggle("is-flipped");
-        });
+        // Tap/Click Card Body to Flip
+        if (event.target.closest("#flashcard-modal-card")) {
+            if (modalCard) modalCard.classList.toggle("is-flipped");
+            return;
+        }
+    });
 
-        closeButtons.forEach((button) => {
-            button.addEventListener("click", closeModal);
-        });
+    // Keyboard controls (Left/Right arrows for nav, Space/Up/Down for flip, Esc for close)
+    document.addEventListener("keydown", (event) => {
+        if (!modal.classList.contains("is-open")) return;
 
-        document.addEventListener("keydown", (event) => {
-            if (event.key === "Escape" && modal.classList.contains("is-open")) {
-                closeModal();
-            }
-        });
-    }
+        if (event.key === "Escape") {
+            closeModal();
+        } else if (event.key === "ArrowLeft") {
+            if (!activeGroup || !activeGroup.cards.length) return;
+            activeIndex = (activeIndex - 1 + activeGroup.cards.length) % activeGroup.cards.length;
+            setModalCard();
+        } else if (event.key === "ArrowRight") {
+            if (!activeGroup || !activeGroup.cards.length) return;
+            activeIndex = (activeIndex + 1) % activeGroup.cards.length;
+            setModalCard();
+        } else if (event.key === " " || event.key === "ArrowUp" || event.key === "ArrowDown") {
+            event.preventDefault();
+            if (modalCard) modalCard.classList.toggle("is-flipped");
+        }
+    });
 });
-
 
 
 // home.html ___________________

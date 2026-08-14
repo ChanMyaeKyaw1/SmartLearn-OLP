@@ -37,7 +37,6 @@
             <h4>{{ group.topic }}</h4>
             <p class="topic-preview">{{ group.preview_front }}</p>
             <p class="topic-meta">Created by {{ group.primary_creator }}</p>
-            <p class="topic-meta muted">Contributors: {{ group.contributor_summary }}</p>
 
             <div class="topic-collection-actions">
                 <button type="button" class="btn-primary learn-topic-btn" data-learn-topic="{{ group.modal_key }}">Learn Topic</button>
@@ -54,34 +53,46 @@
 <div class="flashcard-modal" id="flashcard-learn-modal" aria-hidden="true" hidden>
     <div class="flashcard-modal__overlay" data-close-learn-modal></div>
     <div class="flashcard-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="flashcard-learn-title">
+        
+        <!-- Header & Close Button -->
         <button type="button" class="flashcard-modal__close" data-close-learn-modal aria-label="Close learning popup">&times;</button>
-
         <div class="flashcard-modal__header">
-            <span class="topic-label" id="flashcard-learn-topic"></span>
+            
             <h3 id="flashcard-learn-title">Learn Topic</h3>
         </div>
 
-        <div class="study-flip-card study-flip-card--modal" id="flashcard-modal-card">
-            <div class="study-flip-card-inner">
-                <div class="study-flip-face study-flip-front">
-                    <span class="topic-label" id="flashcard-modal-front-topic"></span>
-                    <h4 id="flashcard-modal-front-text"></h4>
-                </div>
-                <div class="study-flip-face study-flip-back">
-                    <span class="topic-label" id="flashcard-modal-back-topic"></span>
-                    <p id="flashcard-modal-back-text"></p>
+        <!-- Interactive Flashcard Section with Side Nav Arrows -->
+        <div class="flashcard-interactive-wrapper">
+            <!-- Previous Card Arrow -->
+            <button type="button" class="flashcard-nav-arrow arrow-prev" data-learn-prev aria-label="Previous card">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <!-- Clickable Flip Card -->
+            <div class="study-flip-card study-flip-card--modal" id="flashcard-modal-card">
+                <div class="study-flip-card-inner">
+                    <div class="study-flip-face study-flip-front">
+                        
+                        <h4 id="flashcard-modal-front-text"></h4>
+                        
+                    </div>
+                    <div class="study-flip-face study-flip-back">
+                        
+                        <p id="flashcard-modal-back-text"></p>
+                        
+                    </div>
                 </div>
             </div>
+
+            <!-- Next Card Arrow -->
+            <button type="button" class="flashcard-nav-arrow arrow-next" data-learn-next aria-label="Next card">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
         </div>
 
-        <div class="flashcard-modal__controls">
-            <button type="button" class="btn-secondary" data-learn-prev>Previous</button>
-            <button type="button" class="btn-primary" data-learn-flip>Flip Card</button>
-            <button type="button" class="btn-secondary" data-learn-next>Next</button>
-        </div>
-
+        <!-- Footer Counter -->
         <div class="flashcard-modal__footer">
-            <button type="button" class="btn-secondary" data-close-learn-modal>Close</button>
+            <span class="modal-counter" id="flashcard-modal-counter">Card 1 of 1</span>
         </div>
     </div>
 </div>

@@ -2025,3 +2025,121 @@ textarea.form-control {
 .arrow-right {
     right: -20px; /* Positioned safely outside the right card edge */
 }
+
+/* Layout wrapper placing side arrows next to the card */
+.flashcard-interactive-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 20px 0;
+    position: relative;
+}
+
+/* Modal Flip Card Container */
+.study-flip-card--modal {
+    flex: 1;
+    min-height: 320px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.study-flip-card--modal .study-flip-card-inner {
+    height: 320px;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+/* Flip Badge Indicator */
+.flip-hint-badge {
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b756f;
+    background: #f0f7f2;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-end;
+}
+
+.flip-hint-badge.back-badge {
+    color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Arrow Navigation Buttons */
+.flashcard-nav-arrow {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #dcebdc;
+    color: #2b4c3f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.flashcard-nav-arrow:hover {
+    background: #4CAF7D;
+    color: #ffffff;
+    border-color: #4CAF7D;
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(76, 175, 125, 0.3);
+}
+
+.flashcard-nav-arrow:active {
+    transform: scale(0.95);
+}
+
+.flashcard-modal__footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.modal-counter {
+    font-size: 14px;
+    font-weight: 800;
+    color: #6b756f;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 576px) {
+    .flashcard-nav-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 15px;
+    }
+
+    .study-flip-card--modal,
+    .study-flip-card--modal .study-flip-card-inner {
+        height: 280px;
+    }
+}
+
+.study-flip-face {
+    position: absolute;
+    inset: 0;
+    padding: 32px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    
+    /* --- CENTER TEXT HORIZONTALLY & VERTICALLY --- */
+    justify-content: center; /* Centers content vertically */
+    align-items: center;     /* Centers content horizontally */
+    text-align: center;      /* Ensures multi-line text is centered */
+    
+    backface-visibility: hidden;
+    box-shadow: 0 12px 30px rgba(43, 76, 63, 0.08);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
