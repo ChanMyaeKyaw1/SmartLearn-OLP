@@ -218,6 +218,23 @@ def dashboard_view(request):
     for classroom in available_classes:
         classroom.user_enrollment = user_enrollments.get(classroom.class_id)
 
+    # ==========================================
+    # 2. CALCULATE QUIZ STATS FOR THE LOGGED-IN USER
+    # ==========================================
+    user_attempts = QuizAttempt.objects.filter(student=request.user)
+    taken_quizzes_count = user_attempts.count()
+
+    # Compute average score percentage across all attempts
+    # Formula for percentage of an attempt: (score / total_questions) * 100
+    if taken_quizzes_count > 0:
+        total_percentage_sum = sum(
+            (attempt.score / attempt.total_questions * 100)
+            for attempt in user_attempts
+            if attempt.total_questions > 0
+        )
+        avg_score = round(total_percentage_sum / taken_quizzes_count, 1)
+    else:
+        avg_score = 0
     return render(request, 'dashboard.html', {
         'my_classes': my_classes,
         'joined_classrooms': joined_classrooms,
@@ -226,6 +243,8 @@ def dashboard_view(request):
         'pending_class_ids': pending_class_ids,
         'rejected_class_ids': rejected_class_ids,
         'user_enrollments': user_enrollments,
+        'taken_quizzes_count': taken_quizzes_count,
+        'avg_score': avg_score,
     })
 
 @login_required(login_url='login')
@@ -244,6 +263,8 @@ def browse_classes(request):
     search_query = request.GET.get('search', '').strip()
     visibility = request.GET.get('visibility', '').strip()
     sorting = request.GET.get('sorting', '').strip()
+
+    owned_classes = Classroom.objects.filter(owner=current_user).select_related('owner')
 
     # 1. Base Querysets
     joined_classes = Classroom.objects.filter(
@@ -285,6 +306,7 @@ def browse_classes(request):
     pending_class_ids = list(user_enrollments.filter(status='pending').values_list('classroom_id', flat=True))
 
     context = {
+        'owned_classes': owned_classes,
         'joined_classes': joined_classes,
         'available_classes': available_classes,
         'search_query': search_query,

@@ -12,6 +12,7 @@
                 
                 <!-- TINY JUMP TO JOINED CLASSES BUTTON -->
                 <a href="#joinedClassesSection" 
+                   id="joinedJumpBtn"
                    class="btn btn-sm btn-light border text-secondary d-inline-flex align-items-center gap-1 ms-2" 
                    style="font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; transition: all 0.2s ease-in-out;"
                    title="Jump to My Joined Classes">
@@ -65,21 +66,20 @@
     </form>
 </div>
 
-<!-- SECTION 1: AVAILABLE / OTHER CLASSES (FIRST) -->
-<div id="availableClassesSection" class="mb-5">
+<!-- ================= TEACHER MODE CONTENT ================= -->
+<div id="teacherModeSection" style="display: none;" class="mb-5">
     <div class="d-flex align-items-center mb-3" style="gap: 10px;">
-        <h3 class="m-0" id="availableSectionTitle" style="font-size: 22px; font-weight: 700; color: #111827;">
-            Available Classes
+        <h3 class="m-0" style="font-size: 22px; font-weight: 700; color: #111827;">
+            My Created Classes
         </h3>
-        <!-- Sleek Count Badge -->
         <span class="badge" style="background-color: #e5e7eb; color: #374151; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 20px;">
-            {{ available_classes|length }}
+            {{ owned_classes|length }}
         </span>
     </div>
 
     <div class="cards-grid">
-        {% for classroom in available_classes %}
-            <article class="styled-card class-card class-item-card" data-owner="{{ classroom.owner.username }}">
+        {% for classroom in owned_classes %}
+            <article class="styled-card class-card">
                 <div class="class-card-header">
                     <h3 class="class-card-title">{{ classroom.title }}</h3>
                     <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
@@ -93,64 +93,102 @@
                         <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
                     </div>
                     <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
-                        {% if classroom.owner.username == current_user_name %}
-                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
-                            <a href="{% url 'manage_enrollments' classroom.class_id %}" class="btn-primary card-action-btn-small" style="background-color: #f59e0b; border-color: #f59e0b;">
-                                Manage
-                            </a>
-                            <a href="{% url 'delete_class' classroom.class_id %}" class="delete-link" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
-                        {% elif classroom.class_type == 'public' %}
-                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Join Class</a>
-                        {% else %}
-                            <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">Request Entry (${{ classroom.price }})</a>
-                        {% endif %}
+                        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
+                        <a href="{% url 'manage_enrollments' classroom.class_id %}" class="btn-primary card-action-btn-small" style="background-color: #f59e0b; border-color: #f59e0b;">
+                            Manage
+                        </a>
+                        <a href="{% url 'delete_class' classroom.class_id %}" class="delete-link" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
                     </div>
                 </div>
             </article>
         {% empty %}
-            <p class="empty-text-centered text-muted py-3">No available classrooms match your criteria.</p>
+            <p class="empty-text-centered text-muted py-3">You haven't created any classrooms yet.</p>
         {% endfor %}
-
-        <p id="noTeacherClassesMsg" class="empty-text-centered text-muted py-3" style="display: none;">You haven't created any classrooms yet.</p>
     </div>
 </div>
 
-<!-- SECTION 2: JOINED CLASSES (SECOND) -->
-<div id="joinedClassesSection" class="mb-5">
-    <div class="d-flex align-items-center mb-3" style="gap: 10px;">
-        <h3 class="m-0" style="font-size: 22px; font-weight: 700; color: #111827;">
-            My Joined Classes
-        </h3>
-        <!-- Sleek Count Badge -->
-        <span class="badge" style="background-color: #d1fae5; color: #065f46; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 20px;">
-            {{ joined_classes|length }}
-        </span>
+
+<!-- ================= STUDENT MODE CONTENT ================= -->
+<div id="studentModeSection">
+
+    <!-- SECTION 1: AVAILABLE / OTHER CLASSES -->
+    <div id="availableClassesSection" class="mb-5">
+        <div class="d-flex align-items-center mb-3" style="gap: 10px;">
+            <h3 class="m-0" style="font-size: 22px; font-weight: 700; color: #111827;">
+                Available Classes
+            </h3>
+            <span class="badge" style="background-color: #e5e7eb; color: #374151; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 20px;">
+                {{ available_classes|length }}
+            </span>
+        </div>
+
+        <div class="cards-grid">
+            {% for classroom in available_classes %}
+                <article class="styled-card class-card">
+                    <div class="class-card-header">
+                        <h3 class="class-card-title">{{ classroom.title }}</h3>
+                        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+                            {{ classroom.class_type|title }}
+                        </span>
+                    </div>
+                    <p class="class-card-desc">{{ classroom.description|default:"No description provided."|truncatewords:20 }}</p>
+                    <div class="class-card-footer">
+                        <div class="teacher-info">
+                            <span class="footer-text-small">Teacher</span>
+                            <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
+                        </div>
+                        <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
+                            {% if classroom.class_type == 'public' %}
+                                <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Join Class</a>
+                            {% else %}
+                                <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">Request Entry (${{ classroom.price }})</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <p class="empty-text-centered text-muted py-3">No available classrooms match your criteria.</p>
+            {% endfor %}
+        </div>
     </div>
 
-    <div class="cards-grid">
-        {% for classroom in joined_classes %}
-            <article class="styled-card class-card class-item-card" data-owner="{{ classroom.owner.username }}">
-                <div class="class-card-header">
-                    <h3 class="class-card-title">{{ classroom.title }}</h3>
-                    <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
-                        {{ classroom.class_type|title }}
-                    </span>
-                </div>
-                <p class="class-card-desc">{{ classroom.description|default:"No description provided."|truncatewords:20 }}</p>
-                <div class="class-card-footer">
-                    <div class="teacher-info">
-                        <span class="footer-text-small">Teacher</span>
-                        <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
+    <!-- SECTION 2: JOINED CLASSES -->
+    <div id="joinedClassesSection" class="mb-5">
+        <div class="d-flex align-items-center mb-3" style="gap: 10px;">
+            <h3 class="m-0" style="font-size: 22px; font-weight: 700; color: #111827;">
+                My Joined Classes
+            </h3>
+            <span class="badge" style="background-color: #d1fae5; color: #065f46; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 20px;">
+                {{ joined_classes|length }}
+            </span>
+        </div>
+
+        <div class="cards-grid">
+            {% for classroom in joined_classes %}
+                <article class="styled-card class-card">
+                    <div class="class-card-header">
+                        <h3 class="class-card-title">{{ classroom.title }}</h3>
+                        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+                            {{ classroom.class_type|title }}
+                        </span>
                     </div>
-                    <div class="card-actions">
-                        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open Class</a>
+                    <p class="class-card-desc">{{ classroom.description|default:"No description provided."|truncatewords:20 }}</p>
+                    <div class="class-card-footer">
+                        <div class="teacher-info">
+                            <span class="footer-text-small">Teacher</span>
+                            <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
+                        </div>
+                        <div class="card-actions">
+                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open Class</a>
+                        </div>
                     </div>
-                </div>
-            </article>
-        {% empty %}
-            <p class="empty-text-centered text-muted py-3">You haven't joined any classes yet.</p>
-        {% endfor %}
+                </article>
+            {% empty %}
+                <p class="empty-text-centered text-muted py-3">You haven't joined any classes yet.</p>
+            {% endfor %}
+        </div>
     </div>
+
 </div>
 
 <script>
@@ -167,68 +205,38 @@
         const input = document.getElementById('searchInput');
         if (input && input.value) {
             input.focus();
-            // Move cursor to the end of input field
             const val = input.value;
             input.value = '';
             input.value = val;
         }
 
-        // --- TEACHER MODE TOGGLE LOGIC ---
+        // --- TEACHER MODE TOGGLE LOGIC (Dashboard-Style Block Toggle) ---
         const toggle = document.getElementById('teacherModeToggle');
-        const joinedSection = document.getElementById('joinedClassesSection');
-        const availableTitle = document.getElementById('availableSectionTitle');
-        const classCards = document.querySelectorAll('.class-item-card');
-        const noTeacherClassesMsg = document.getElementById('noTeacherClassesMsg');
-        const currentUser = "{{ current_user_name }}";
+        const teacherSection = document.getElementById('teacherModeSection');
+        const studentSection = document.getElementById('studentModeSection');
+        const joinedJumpBtn = document.getElementById('joinedJumpBtn');
 
-        function applyTeacherMode(isTeacherMode) {
-            let visibleCount = 0;
-
+        function updateView(isTeacherMode) {
             if (isTeacherMode) {
-                if (joinedSection) joinedSection.style.display = 'none';
-                if (availableTitle) availableTitle.textContent = "My Created Classes";
-
-                classCards.forEach(card => {
-                    const owner = card.getAttribute('data-owner');
-                    if (owner === currentUser) {
-                        card.style.display = '';
-                        visibleCount++;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-
-                if (noTeacherClassesMsg) {
-                    noTeacherClassesMsg.style.display = visibleCount === 0 ? 'block' : 'none';
-                }
+                if (teacherSection) teacherSection.style.display = 'block';
+                if (studentSection) studentSection.style.display = 'none';
+                if (joinedJumpBtn) joinedJumpBtn.style.display = 'none';
             } else {
-                if (joinedSection) joinedSection.style.display = '';
-                if (availableTitle) availableTitle.textContent = "Available Classes";
-
-                classCards.forEach(card => {
-                    const owner = card.getAttribute('data-owner');
-                    if (owner !== currentUser) {
-                        card.style.display = '';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-
-                if (noTeacherClassesMsg) {
-                    noTeacherClassesMsg.style.display = 'none';
-                }
+                if (teacherSection) teacherSection.style.display = 'none';
+                if (studentSection) studentSection.style.display = 'block';
+                if (joinedJumpBtn) joinedJumpBtn.style.display = 'inline-flex';
             }
         }
 
         const savedMode = localStorage.getItem('teacherMode') === 'true';
-        applyTeacherMode(savedMode);
+        updateView(savedMode);
 
         if (toggle) {
             toggle.checked = savedMode;
             toggle.addEventListener('change', (e) => {
                 const isChecked = e.target.checked;
                 localStorage.setItem('teacherMode', isChecked);
-                applyTeacherMode(isChecked);
+                updateView(isChecked);
             });
         }
     });

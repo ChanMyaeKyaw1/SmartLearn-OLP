@@ -15,7 +15,7 @@
                     <span id="timeGreeting">Welcome back</span>, {{ request.user.username }}! <span class="wave-emoji">👋</span>
                 </h1>
                 <p class="hero-subtext">
-                    Ready to achieve your learning goals today? Browse your enrolled subjects or find a new class below.
+                    Ready to achieve your learning goals today? Browse your classes below.
                 </p>
             </div>
             
@@ -77,7 +77,7 @@
                     <i class="fa-solid fa-pen-to-square"></i>
                 </div>
                 <div class="metric-info">
-                    <span class="metric-value">{{ taken_quiz_count|default:"0" }}</span>
+                    <span class="metric-value">{{ taken_quizzes_count }}</span>
                     <span class="metric-label">Taken Quizzes</span>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                     <i class="fa-solid fa-trophy"></i>
                 </div>
                 <div class="metric-info">
-                    <span class="metric-value">{{ average_score|default:"0" }}%</span>
+                    <span class="metric-value">{{ avg_score }}%</span>
                     <span class="metric-label">Average Score</span>
                 </div>
             </div>
