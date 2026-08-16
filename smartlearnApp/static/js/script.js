@@ -301,3 +301,44 @@ function goToHome() {
             window.location.href = "login.html";
         }
 
+document.addEventListener("DOMContentLoaded", () => {
+    // Check if ScrollReveal is loaded
+    if (typeof ScrollReveal !== "undefined") {
+        const sr = ScrollReveal({
+            origin: "bottom",
+            distance: "30px",
+            duration: 800,
+            delay: 100,
+            easing: "cubic-bezier(0.165, 0.84, 0.44, 1)",
+            reset: false // Set to true if you want animations to re-trigger on scroll up
+        });
+
+        // 1. Hero & Header Elements
+        sr.reveal(".hero-greeting-card, .hero-section, .page-heading-large", {
+            origin: "top",
+            distance: "20px"
+        });
+
+        // 2. Filter & Metric Cards
+        sr.reveal(".metrics-bar, .metric-card, .filter-panel, .styled-card.mb-4", {
+            interval: 100
+        });
+
+        // 3. Grid Cards (Classes, Topics, Modules)
+        sr.reveal(".cards-grid .styled-card, .module-card, .topic-collection-card, .smart-card", {
+            interval: 120
+        });
+
+        // 4. Section Titles & Callout Rows
+        sr.reveal(".dashboard-section-header, .feature-callout-row, .note-section", {
+            origin: "bottom",
+            distance: "40px"
+        });
+
+        // 5. Sidebars & Form Panels
+        sr.reveal(".create-panel, .learning-panel", {
+            origin: "right",
+            distance: "30px"
+        });
+    }
+});

@@ -2143,3 +2143,38 @@ textarea.form-control {
     box-shadow: 0 12px 30px rgba(43, 76, 63, 0.08);
     transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
+
+/* ================================
+   SCROLL REVEAL ANIMATIONS
+   ================================ */
+
+/* Initial hidden state for custom reveal elements */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger & Direction Variants */
+.reveal-left {
+    transform: translateX(-40px);
+}
+
+.reveal-right {
+    transform: translateX(40px);
+}
+
+.reveal-zoom {
+    transform: scale(0.92);
+}
+
+.reveal-left.is-visible,
+.reveal-right.is-visible,
+.reveal-zoom.is-visible {
+    transform: translate(0) scale(1);
+}
