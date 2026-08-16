@@ -156,5 +156,46 @@
     </div>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const addCardBtn = document.querySelector("[data-add-flashcard-row]");
+    const creatorList = document.querySelector("[data-flashcard-creator-list]");
+
+    if (addCardBtn && creatorList) {
+        addCardBtn.addEventListener("click", () => {
+            const cardCount = creatorList.children.length + 1;
+            const newCard = document.createElement("article");
+            newCard.className = "flashcard-entry-card";
+            newCard.style.marginTop = "1rem";
+            
+            newCard.innerHTML = `
+                <div class="flashcard-entry-card__topline" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="topic-card-count">Card ${cardCount}</span>
+                    <button type="button" class="btn-secondary remove-card-btn" style="padding:2px 8px; font-size:12px;">&times; Remove</button>
+                </div>
+
+                <label class="label-bold">Front</label>
+                <textarea name="front" class="form-control" rows="3" placeholder="Question or term" required></textarea>
+
+                <label class="label-bold">Back</label>
+                <textarea name="back" class="form-control" rows="4" placeholder="Answer or explanation" required></textarea>
+            `;
+
+            // Remove entry listener
+            newCard.querySelector(".remove-card-btn").addEventListener("click", () => {
+                newCard.remove();
+                // Update remaining card numbers
+                const remainingCards = creatorList.querySelectorAll(".flashcard-entry-card");
+                remainingCards.forEach((card, idx) => {
+                    const badge = card.querySelector(".topic-card-count");
+                    if (badge) badge.textContent = `Card ${idx + 1}`;
+                });
+            });
+
+            creatorList.appendChild(newCard);
+        });
+    }
+});
+</script>
 {{ topic_groups_payload|json_script:"flashcards-topic-data" }}
 {% endblock %}

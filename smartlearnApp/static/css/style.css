@@ -761,6 +761,15 @@ textarea.form-control {
     font-weight: 800;
     padding: 7px 12px;
 }
+/* Hide creation elements by default */
+.teacher-only {
+    display: none !important;
+}
+
+/* Show creation elements when Teacher Mode is active */
+body.teacher-mode-active .teacher-only {
+    display: inline-block !important; /* or 'flex' / 'block' depending on element layout */
+}
 
 .view-result-link {
     color: var(--matcha);

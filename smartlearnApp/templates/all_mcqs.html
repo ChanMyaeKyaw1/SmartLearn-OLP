@@ -8,8 +8,8 @@
 
         <div class="d-flex align-items-center gap-3">
             {% if can_create %}
-            <a href="{% url 'create_topic_global' 'mcqs' %}" class="btn-primary">+ Create New Quiz Topic</a> {% elif request.user.is_authenticated %}
-            <a href="{% url 'create_topic_global' 'mcqs' %}" class="btn-primary">+ Create New Quiz Topic</a> {% endif %}
+            <a href="{% url 'create_topic_global' 'mcqs' %}" class="btn-primary teacher-only">+ Create New Quiz Topic</a> {% elif request.user.is_authenticated %}
+            <a href="{% url 'create_topic_global' 'mcqs' %}" class="btn-primary teacher-only">+ Create New Quiz Topic</a> {% endif %}
         </div>
     </div>
 

@@ -532,6 +532,35 @@
                 });
             }
         });
+
+        function applyTeacherMode(isTeacher) {
+    if (isTeacher) {
+        document.body.classList.add('teacher-mode-active');
+    } else {
+        document.body.classList.remove('teacher-mode-active');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Check initial state from localStorage
+    const isTeacher = localStorage.getItem('teacherMode') === 'true';
+    
+    // Set initial checkbox state if toggle switch exists on current page
+    const toggleInput = document.querySelector('#teacherModeToggle');
+    if (toggleInput) {
+        toggleInput.checked = isTeacher;
+        
+        // Listen for user toggling the switch
+        toggleInput.addEventListener('change', (e) => {
+            const enabled = e.target.checked;
+            localStorage.setItem('teacherMode', enabled);
+            applyTeacherMode(enabled);
+        });
+    }
+
+    // Apply mode class on page load
+    applyTeacherMode(isTeacher);
+});
     </script>
     {% block extra_js %}{% endblock %}
     

@@ -603,8 +603,9 @@ def flashcards_view(request, class_id):
 
 def all_flashcards_view(request):
     current_user = request.user
-    accessible_classrooms = get_accessible_classrooms(current_user)
-
+    accessible_classrooms = Classroom.objects.filter(
+        Q(class_type='public') | Q(owner=current_user) | Q(enrollments__student=current_user, enrollments__status='approved')
+    ).distinct()
     flashcard_groups = []
     for classroom in accessible_classrooms:
         classroom_flashcards = list(
