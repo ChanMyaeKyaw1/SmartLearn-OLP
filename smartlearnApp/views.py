@@ -1067,35 +1067,107 @@ def delete_payment_account(request, account_id):
 
 from django.db.models import Q
 
+# @login_required
+# def create_topic_global(request, item_type):
+
+#     if request.method == 'POST':
+#         class_mode = request.POST.get('class_mode')
+#         topic = request.POST.get('topic')
+
+#     # Route to manage global creation of topics/items across classes
+#     accessible_classrooms = get_accessible_classrooms(request.user)
+#     return render(request, 'create_topic.html', {
+#         'item_type': item_type,
+#         'classrooms': accessible_classrooms
+#     })
+
+
+#         # 1. Resolve Classroom
+#         if class_mode == 'new':
+#             new_title = request.POST.get('new_class_title')
+#             classroom = Classroom.objects.create(
+#                 title=new_title,
+#                 owner=request.user,
+#                 class_type='public'
+#             )
+#         else:
+#             classroom_id = request.POST.get('classroom_id')
+#             classroom = get_object_or_404(Classroom, class_id=classroom_id)
+
+#         # 2. Save Flashcards
+#     if item_type == 'flashcards':
+#             fronts = request.POST.getlist('front')
+#             backs = request.POST.getlist('back')
+
+#             for front, back in zip(fronts, backs):
+#                 if front.strip() and back.strip():
+#                     Flashcard.objects.create(
+#                         classroom=classroom,
+#                         topic=topic,
+#                         front=front,
+#                         back=back,
+#                         created_by=request.user
+#                     )
+#             return redirect('all_flashcards')
+
+#         # 3. Save MCQs
+#     elif item_type == 'mcqs':
+#             questions = request.POST.getlist('question')
+#             opts_a = request.POST.getlist('option_a')
+#             opts_b = request.POST.getlist('option_b')
+#             opts_c = request.POST.getlist('option_c')
+#             opts_d = request.POST.getlist('option_d')
+#             corrects = request.POST.getlist('correct_option')
+#             explanations = request.POST.getlist('explanation')
+
+#             for i in range(len(questions)):
+#                 if questions[i].strip():
+#                     MCQQuestion.objects.create(
+#                         classroom=classroom,
+#                         topic=topic,
+#                         question=questions[i],
+#                         option_a=opts_a[i],
+#                         option_b=opts_b[i],
+#                         option_c=opts_c[i],
+#                         option_d=opts_d[i],
+#                         correct_option=corrects[i],
+#                         explanation=explanations[i] if i < len(explanations) else '',
+#                         created_by=request.user
+#                     )
+#             return redirect('all_mcqs')
+
+#     # GET Request: Fetch owned vs public classes separately or mark them
+#     all_classes = Classroom.objects.filter(
+#         Q(class_type='public') | Q(owner=request.user)
+#     ).distinct()
+
+#     context = {
+#         'item_type': item_type,
+#         'classrooms': all_classes,
+#     }
+#     return render(request, 'create_topic.html', context)
+
+
 @login_required
 def create_topic_global(request, item_type):
-
     if request.method == 'POST':
         class_mode = request.POST.get('class_mode')
         topic = request.POST.get('topic')
 
-    # Route to manage global creation of topics/items across classes
-    accessible_classrooms = get_accessible_classrooms(request.user)
-    return render(request, 'create_topic.html', {
-        'item_type': item_type,
-        'classrooms': accessible_classrooms
-    })
-
-
         # 1. Resolve Classroom
-    if class_mode == 'new':
+        if class_mode == 'new':
             new_title = request.POST.get('new_class_title')
             classroom = Classroom.objects.create(
                 title=new_title,
                 owner=request.user,
                 class_type='public'
             )
-    else:
+        else:
             classroom_id = request.POST.get('classroom_id')
             classroom = get_object_or_404(Classroom, class_id=classroom_id)
 
         # 2. Save Flashcards
-    if item_type == 'flashcards':
+        if item_type == 'flashcards':
             fronts = request.POST.getlist('front')
             backs = request.POST.getlist('back')
 
@@ -1111,7 +1183,7 @@ def create_topic_global(request, item_type):
             return redirect('all_flashcards')
 
         # 3. Save MCQs
-    elif item_type == 'mcqs':
+        elif item_type == 'mcqs':
             questions = request.POST.getlist('question')
             opts_a = request.POST.getlist('option_a')
             opts_b = request.POST.getlist('option_b')
@@ -1136,17 +1208,17 @@ def create_topic_global(request, item_type):
                     )
             return redirect('all_mcqs')
 
-    # GET Request: Fetch owned vs public classes separately or mark them
+    # GET Request
     all_classes = Classroom.objects.filter(
         Q(class_type='public') | Q(owner=request.user)
     ).distinct()
 
-    context = {
+    return render(request, 'create_topic.html', {
         'item_type': item_type,
         'classrooms': all_classes,
-    }
-    return render(request, 'create_topic.html', context)
+    })
 
+    
 @login_required(login_url='login')
 def manage_classroom_view(request, class_id):
     # Ensure only the owner can manage this class

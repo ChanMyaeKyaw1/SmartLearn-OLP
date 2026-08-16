@@ -124,78 +124,134 @@
 <div class="flashcard-modal" id="flashcard-learn-modal" aria-hidden="true" hidden>
     <div class="flashcard-modal__overlay" data-close-learn-modal></div>
     <div class="flashcard-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="flashcard-learn-title">
+        
+        <!-- Header & Close Button -->
         <button type="button" class="flashcard-modal__close" data-close-learn-modal aria-label="Close learning popup">&times;</button>
-
         <div class="flashcard-modal__header">
-            <span class="topic-label" id="flashcard-learn-topic"></span>
+            
             <h3 id="flashcard-learn-title">Learn Topic</h3>
         </div>
 
-        <div class="study-flip-card study-flip-card--modal" id="flashcard-modal-card">
-            <div class="study-flip-card-inner">
-                <div class="study-flip-face study-flip-front">
-                    <span class="topic-label" id="flashcard-modal-front-topic"></span>
-                    <h4 id="flashcard-modal-front-text"></h4>
-                </div>
-                <div class="study-flip-face study-flip-back">
-                    <span class="topic-label" id="flashcard-modal-back-topic"></span>
-                    <p id="flashcard-modal-back-text"></p>
+        <!-- Interactive Flashcard Section with Side Nav Arrows -->
+        <div class="flashcard-interactive-wrapper">
+            <!-- Previous Card Arrow -->
+            <button type="button" class="flashcard-nav-arrow arrow-prev" data-learn-prev aria-label="Previous card">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <!-- Clickable Flip Card -->
+            <div class="study-flip-card study-flip-card--modal" id="flashcard-modal-card">
+                <div class="study-flip-card-inner">
+                    <div class="study-flip-face study-flip-front">
+                        
+                        <h4 id="flashcard-modal-front-text"></h4>
+                        
+                    </div>
+                    <div class="study-flip-face study-flip-back">
+                        
+                        <p id="flashcard-modal-back-text"></p>
+                        
+                    </div>
                 </div>
             </div>
+
+            <!-- Next Card Arrow -->
+            <button type="button" class="flashcard-nav-arrow arrow-next" data-learn-next aria-label="Next card">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
         </div>
 
-        <div class="flashcard-modal__controls">
-            <button type="button" class="btn-secondary" data-learn-prev>Previous</button>
-            <button type="button" class="btn-primary" data-learn-flip>Flip Card</button>
-            <button type="button" class="btn-secondary" data-learn-next>Next</button>
-        </div>
-
+        <!-- Footer Counter -->
         <div class="flashcard-modal__footer">
-            <button type="button" class="btn-secondary" data-close-learn-modal>Close</button>
+            <span class="modal-counter" id="flashcard-modal-counter">Card 1 of 1</span>
         </div>
     </div>
 </div>
-
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const addCardBtn = document.querySelector("[data-add-flashcard-row]");
-    const creatorList = document.querySelector("[data-flashcard-creator-list]");
+    document.addEventListener("DOMContentLoaded", () => {
+        const toggle = document.getElementById("teacherModeToggle");
+        const topicCards = document.querySelectorAll(".topic-item-card");
+        const noTeacherCardsMsg = document.getElementById("noTeacherCardsMsg");
+        const currentUser = "{{ current_user.username|default:request.user.username|escapejs }}";
 
-    if (addCardBtn && creatorList) {
-        addCardBtn.addEventListener("click", () => {
-            const cardCount = creatorList.children.length + 1;
-            const newCard = document.createElement("article");
-            newCard.className = "flashcard-entry-card";
-            newCard.style.marginTop = "1rem";
-            
-            newCard.innerHTML = `
-                <div class="flashcard-entry-card__topline" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span class="topic-card-count">Card ${cardCount}</span>
-                    <button type="button" class="btn-secondary remove-card-btn" style="padding:2px 8px; font-size:12px;">&times; Remove</button>
-                </div>
+        function applyTeacherMode(isTeacherMode) {
+            let visibleCount = 0;
 
-                <label class="label-bold">Front</label>
-                <textarea name="front" class="form-control" rows="3" placeholder="Question or term" required></textarea>
+            topicCards.forEach(card => {
+                const owner = (card.getAttribute("data-owner") || "").trim().toLowerCase();
+                const current = (currentUser || "").trim().toLowerCase();
 
-                <label class="label-bold">Back</label>
-                <textarea name="back" class="form-control" rows="4" placeholder="Answer or explanation" required></textarea>
-            `;
-
-            // Remove entry listener
-            newCard.querySelector(".remove-card-btn").addEventListener("click", () => {
-                newCard.remove();
-                // Update remaining card numbers
-                const remainingCards = creatorList.querySelectorAll(".flashcard-entry-card");
-                remainingCards.forEach((card, idx) => {
-                    const badge = card.querySelector(".topic-card-count");
-                    if (badge) badge.textContent = `Card ${idx + 1}`;
-                });
+                if (isTeacherMode) {
+                    if (owner === current) {
+                        card.style.display = "";
+                        visibleCount++;
+                    } else {
+                        card.style.display = "none";
+                    }
+                } else {
+                    card.style.display = "";
+                    visibleCount++;
+                }
             });
 
-            creatorList.appendChild(newCard);
-        });
-    }
-});
+            if (isTeacherMode && visibleCount === 0) {
+                if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "block";
+            } else {
+                if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "none";
+            }
+        }
+
+        const savedMode = localStorage.getItem("teacherMode") === "true";
+        if (toggle) {
+            toggle.checked = savedMode;
+            applyTeacherMode(savedMode);
+
+            toggle.addEventListener("change", (e) => {
+                const isChecked = e.target.checked;
+                localStorage.setItem("teacherMode", isChecked);
+                applyTeacherMode(isChecked);
+            });
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const addCardBtn = document.querySelector("[data-add-flashcard-row]");
+        const creatorList = document.querySelector("[data-flashcard-creator-list]");
+
+        if (addCardBtn && creatorList) {
+            addCardBtn.addEventListener("click", () => {
+                const cardCount = creatorList.children.length + 1;
+                const newCard = document.createElement("article");
+                newCard.className = "flashcard-entry-card";
+                newCard.style.marginTop = "1rem";
+                
+                newCard.innerHTML = `
+                    <div class="flashcard-entry-card__topline" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="topic-card-count">Card ${cardCount}</span>
+                    </div>
+
+                    <label class="label-bold">Front</label>
+                    <textarea name="front" class="form-control" rows="3" placeholder="Question or term" required></textarea>
+
+                    <label class="label-bold">Back</label>
+                    <textarea name="back" class="form-control" rows="4" placeholder="Answer or explanation" required></textarea>
+                `;
+
+                // Remove entry listener
+                newCard.querySelector(".remove-card-btn").addEventListener("click", () => {
+                    newCard.remove();
+                    // Update remaining card numbers
+                    const remainingCards = creatorList.querySelectorAll(".flashcard-entry-card");
+                    remainingCards.forEach((card, idx) => {
+                        const badge = card.querySelector(".topic-card-count");
+                        if (badge) badge.textContent = `Card ${idx + 1}`;
+                    });
+                });
+
+                creatorList.appendChild(newCard);
+            });
+        }
+    });
 </script>
 {{ topic_groups_payload|json_script:"flashcards-topic-data" }}
 {% endblock %}

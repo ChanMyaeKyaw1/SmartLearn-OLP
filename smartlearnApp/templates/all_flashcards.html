@@ -8,7 +8,12 @@
 
         <div class="d-flex align-items-center gap-3">
             {% if can_create or request.user.is_authenticated %}
-            <a href="{% url 'create_topic_global' 'flashcards' %}" class="btn-primary teacher-only">+ Create New Flashcards</a> {% endif %}
+            <!-- Modal Trigger Button -->
+            <button type="button" class="btn-primary teacher-only" data-bs-toggle="modal" data-bs-target="#createFlashcardModal">
+                + Create New Flashcards
+            </button>
+            {% endif %}
+        
         </div>
     </div>
 
@@ -97,8 +102,139 @@
     </div>
 </div>
 
-{{ flashcard_groups|json_script:"flashcards-topic-data" }}
+<!-- ========================================== -->
+<!-- CREATE FLASHCARD MODAL -->
+<!-- ========================================== -->
+<div class="modal fade" id="createFlashcardModal" tabindex="-1" aria-labelledby="createFlashcardModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-bold" id="createFlashcardModalLabel">Create New Flashcard Topic</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form method="POST" action="{% url 'create_topic_global' 'flashcards' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <!-- Classroom Toggle -->
+                    <div class="mb-3">
+                        <label class="label-bold d-block">Classroom Options</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="class_mode" id="fcModeExisting" value="existing" checked>
+                            <label class="form-check-label" for="fcModeExisting">Choose Existing Class</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="class_mode" id="fcModeNew" value="new">
+                            <label class="form-check-label" for="fcModeNew">+ Create New Class</label>
+                        </div>
+                    </div>
 
+                    <!-- Existing Classroom Select -->
+                    <div id="fcExistingClassSec" class="mb-3">
+                        <label for="fcClassroomSelect" class="label-bold">Select Classroom</label>
+                        <select name="classroom_id" id="fcClassroomSelect" class="form-control">
+                            {% for group in flashcard_groups %}
+                                <option value="{{ group.classroom_id }}">{{ group.classroom_title }}</option>
+                            {% empty %}
+                                <option value="" disabled selected>No classrooms available</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- New Classroom Fields -->
+                    <div id="fcNewClassSec" class="mb-3" style="display: none;">
+                        <label for="new_class_title" class="label-bold">Classroom Title</label>
+                        <input type="text" name="new_class_title" class="form-control mb-2" placeholder="e.g. Physics 101">
+
+                        <label for="new_class_subject" class="label-bold">Subject</label>
+                        <input type="text" name="new_class_subject" class="form-control mb-2" placeholder="e.g. Science">
+
+                        <label for="new_class_type" class="label-bold">Class Visibility</label>
+                        <select name="new_class_type" class="form-control">
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
+
+                    <hr>
+
+                    <!-- Topic -->
+                    <div class="mb-3">
+                        <label class="label-bold">Topic Name</label>
+                        <input type="text" name="topic" class="form-control" placeholder="e.g., Data Structures" required>
+                    </div>
+
+                    <!-- Dynamic Card List -->
+                    <div id="modalFcContainer">
+                        <div class="card p-3 mb-2 bg-light border">
+                            <h6 class="font-weight-bold text-muted">Card 1</h6>
+                            <label class="label-bold">Front</label>
+                            <textarea name="front" class="form-control mb-2" rows="2" required></textarea>
+                            <label class="label-bold">Back</label>
+                            <textarea name="back" class="form-control" rows="2" required></textarea>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-sm btn-secondary mt-2" id="addFcRowBtn">+ Add Another Card</button>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Flashcards</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+{{ flashcard_groups|json_script:"flashcards-topic-data" }}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Mode switch JS
+        const modeExisting = document.getElementById("fcModeExisting");
+        const modeNew = document.getElementById("fcModeNew");
+        const existingSec = document.getElementById("fcExistingClassSec");
+        const newSec = document.getElementById("fcNewClassSec");
+
+        if (modeExisting && modeNew) {
+            modeExisting.addEventListener("change", () => {
+                existingSec.style.display = "block";
+                newSec.style.display = "none";
+            });
+            modeNew.addEventListener("change", () => {
+                existingSec.style.display = "none";
+                newSec.style.display = "block";
+            });
+        }
+
+        // Dynamic card addition
+        const container = document.getElementById("modalFcContainer");
+        const addBtn = document.getElementById("addFcRowBtn");
+        let cardCount = 1;
+
+        if (addBtn && container) {
+            addBtn.addEventListener("click", () => {
+                cardCount++;
+                const cardDiv = document.createElement("div");
+                cardDiv.className = "card p-3 mb-2 bg-light border";
+                cardDiv.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <h6 class="font-weight-bold text-muted">Card ${cardCount}</h6>
+                        <button type="button" class="btn-close remove-card" aria-label="Remove"></button>
+                    </div>
+                    <label class="label-bold">Front</label>
+                    <textarea name="front" class="form-control mb-2" rows="2" required></textarea>
+                    <label class="label-bold">Back</label>
+                    <textarea name="back" class="form-control" rows="2" required></textarea>
+                `;
+                cardDiv.querySelector(".remove-card").addEventListener("click", () => cardDiv.remove());
+                container.appendChild(cardDiv);
+            });
+        }
+    });
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const toggle = document.getElementById("teacherModeToggle");
