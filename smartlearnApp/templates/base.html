@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <!-- ScrollReveal CDN -->
     <script src="https://unpkg.com/scrollreveal"></script>
-    
+
     <style>
         * {
             margin: 0;
@@ -234,38 +234,38 @@
         }
 
         .scroll-to-top-btn {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        background-color: var(--forest, #2b4c3f);
-        color: #ffffff;
-        border: none;
-        outline: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        box-shadow: 0 8px 20px rgba(43, 76, 63, 0.25);
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(20px);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1000;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--forest, #2b4c3f);
+            color: #ffffff;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 8px 20px rgba(43, 76, 63, 0.25);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
         }
+        /* Hover Effect */
 
-/* Hover Effect */
         .scroll-to-top-btn:hover {
             background-color: var(--matcha, #3f9d70);
             color: #ffffff;
             transform: translateY(-4px);
             box-shadow: 0 12px 24px rgba(63, 157, 112, 0.35);
         }
+        /* Active Class toggled by JavaScript */
 
-/* Active Class toggled by JavaScript */
         .scroll-to-top-btn.is-visible {
             opacity: 1;
             visibility: visible;
@@ -348,7 +348,7 @@
                             </li>
 
                             <li>
-                                <a class="dropdown-item py-2" href="{% url 'dashboard' %}">
+                                <a class="dropdown-item py-2" href="{% url 'view_profile' %}">
                                     <i class="fa-solid fa-user me-2 text-muted"></i> Profile
                                 </a>
                             </li>
@@ -478,7 +478,7 @@
     <button id="scrollToTopBtn" class="scroll-to-top-btn" title="Scroll to Top" aria-label="Scroll to Top">
         <i class="fa-solid fa-chevron-up"></i>
     </button>
-    
+
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
@@ -516,7 +516,7 @@
             const scrollToTopBtn = document.getElementById('scrollToTopBtn');
 
             if (scrollToTopBtn) {
-                window.addEventListener('scroll', function () {
+                window.addEventListener('scroll', function() {
                     if (window.scrollY > 300) {
                         scrollToTopBtn.classList.add('is-visible');
                     } else {
@@ -524,7 +524,7 @@
                     }
                 });
 
-                scrollToTopBtn.addEventListener('click', function () {
+                scrollToTopBtn.addEventListener('click', function() {
                     window.scrollTo({
                         top: 0,
                         behavior: 'smooth'
@@ -534,36 +534,36 @@
         });
 
         function applyTeacherMode(isTeacher) {
-    if (isTeacher) {
-        document.body.classList.add('teacher-mode-active');
-    } else {
-        document.body.classList.remove('teacher-mode-active');
-    }
-}
+            if (isTeacher) {
+                document.body.classList.add('teacher-mode-active');
+            } else {
+                document.body.classList.remove('teacher-mode-active');
+            }
+        }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Check initial state from localStorage
-    const isTeacher = localStorage.getItem('teacherMode') === 'true';
-    
-    // Set initial checkbox state if toggle switch exists on current page
-    const toggleInput = document.querySelector('#teacherModeToggle');
-    if (toggleInput) {
-        toggleInput.checked = isTeacher;
-        
-        // Listen for user toggling the switch
-        toggleInput.addEventListener('change', (e) => {
-            const enabled = e.target.checked;
-            localStorage.setItem('teacherMode', enabled);
-            applyTeacherMode(enabled);
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check initial state from localStorage
+            const isTeacher = localStorage.getItem('teacherMode') === 'true';
+
+            // Set initial checkbox state if toggle switch exists on current page
+            const toggleInput = document.querySelector('#teacherModeToggle');
+            if (toggleInput) {
+                toggleInput.checked = isTeacher;
+
+                // Listen for user toggling the switch
+                toggleInput.addEventListener('change', (e) => {
+                    const enabled = e.target.checked;
+                    localStorage.setItem('teacherMode', enabled);
+                    applyTeacherMode(enabled);
+                });
+            }
+
+            // Apply mode class on page load
+            applyTeacherMode(isTeacher);
         });
-    }
-
-    // Apply mode class on page load
-    applyTeacherMode(isTeacher);
-});
     </script>
     {% block extra_js %}{% endblock %}
-    
+
 </body>
 
 </html>

@@ -172,6 +172,9 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
+@login_required
+def view_profile(request):
+    return render(request, 'view_profile.html')
 
 # ==========================================
 # DASHBOARD & CLASSROOM MANAGEMENT
@@ -359,7 +362,7 @@ def classroom_detail(request, class_id):
     current_user, blocked_response = require_classroom_access(request, classroom)
     if blocked_response:
         return blocked_response
-    
+
     if request.user.is_authenticated and classroom.class_type == 'public' and classroom.owner != request.user:
         Enrollment.objects.get_or_create(
             student=request.user,
@@ -1218,7 +1221,7 @@ def create_topic_global(request, item_type):
         'classrooms': all_classes,
     })
 
-    
+
 @login_required(login_url='login')
 def manage_classroom_view(request, class_id):
     # Ensure only the owner can manage this class
@@ -1421,20 +1424,20 @@ def change_password(request):
 @login_required
 def teacher_materials_view(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
-    
+
     # Verify access permission
     current_user, blocked_response = require_classroom_access(request, classroom)
     if blocked_response:
         return blocked_response
 
     is_owner = (classroom.owner == request.user)
-    
+
     # Filter search and category
     search_query = request.GET.get('q', '').strip()
     selected_category = request.GET.get('category', '').strip()
 
     materials = TeacherMaterial.objects.filter(classroom=classroom)
-    
+
     # Non-owners only see published materials
     if not is_owner:
         materials = materials.filter(is_visible=True)
@@ -1550,7 +1553,7 @@ def edit_material(request, material_id):
 def community_notes_view(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
     is_owner = (classroom.owner == request.user)
-    
+
     search_query = request.GET.get('q', '').strip()
     filter_type = request.GET.get('filter', '')
 

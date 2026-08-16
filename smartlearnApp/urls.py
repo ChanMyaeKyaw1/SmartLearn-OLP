@@ -45,6 +45,7 @@ urlpatterns = [
     path('custom-admin/profile/update/', views.admin_update_profile, name='admin_update_profile'),
     path('custom-admin/password/change/', views.admin_change_password, name='admin_change_password'),
 
+    path('profile/', views.view_profile, name='view_profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('profile/change-password/', views.change_password, name='change_password'),
 
