@@ -418,9 +418,9 @@
                     <ul class="footer-links-list">
                         <li><a href="{% url 'home' %}">Home Base</a></li>
                         <li><a href="{% url 'dashboard' %}">Dashboard Control</a></li>
-                        <li><a href="#">Class Modules</a></li>
-                        <li><a href="#">Flashcard Decks</a></li>
-                        <li><a href="#">MCQ Testing Banks</a></li>
+                        <li><a href="{% url 'browse_classes' %}">Class Modules</a></li>
+                        <li><a href="{% url 'all_flashcards' %}">Flashcard Decks</a></li>
+                        <li><a href="{% url 'all_mcqs' %}">MCQ Testing Banks</a></li>
                     </ul>
                 </div>
 
@@ -439,7 +439,7 @@
                     <h5 class="footer-links-header">Central Support Contact</h5>
                     <div class="contact-info-item">
                         <i class="fa-solid fa-location-dot"></i>
-                        <span>Universities' Hlaing Campus, MICT Park Main Building, Hlaing Township, Yangon, Myanmar</span>
+                        <span>University of Computer Studies, Yangon (UCSY), Myanmar</span>
                     </div>
                     <div class="contact-info-item">
                         <i class="fa-solid fa-envelope"></i>
@@ -562,6 +562,8 @@
             applyTeacherMode(isTeacher);
         });
     </script>
+
+    
     {% block extra_js %}{% endblock %}
 
 </body>
