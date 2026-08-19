@@ -19,6 +19,7 @@ urlpatterns = [
     path('manage/<int:class_id>/', views.manage_enrollments, name='manage_enrollments'),
     path('enrollment-decision/<int:enrollment_id>/<str:action>/', views.update_enrollment_status, name='update_enrollment_status'),
     path('classroom/<int:class_id>/',views.classroom_detail,name='classroom_detail'),
+    path('classroom/<str:class_id>/joined-students/', views.joined_students_list, name='joined_students_list'),
     path('classroom/<int:class_id>/flashcards/', views.flashcards_view, name='flashcards'),
     path('classroom/<int:class_id>/flashcards/react/', views.toggle_flashcard_topic_reaction, name='toggle_flashcard_topic_reaction'),
     path('classroom/<int:class_id>/mcqs/', views.mcqs_view, name='mcqs'),

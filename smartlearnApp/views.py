@@ -363,20 +363,36 @@ def classroom_detail(request, class_id):
     if blocked_response:
         return blocked_response
 
-    if request.user.is_authenticated and classroom.class_type == 'public' and classroom.owner != request.user:
-        Enrollment.objects.get_or_create(
-            student=request.user,
-            classroom=classroom,
-            defaults={'status': 'approved'}
-        )
+    is_owner = (request.user.is_authenticated and classroom.owner == request.user)
+
+    
     return render(
         request,
         "classroom_detail.html",
         {
-            "classroom": classroom
+            "classroom": classroom,
+            "is_owner": is_owner,
+            
         }
     )
 
+def joined_students_list(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+    
+    # Ensure only the classroom owner/teacher can access
+    if request.user != classroom.owner:
+        return redirect('classroom_detail', class_id=class_id)
+
+    joined_students = Enrollment.objects.filter(classroom=classroom, status='approved')
+
+    return render(
+        request,
+        "joined_students.html",
+        {
+            "classroom": classroom,
+            "joined_students": joined_students,
+        }
+    )
 
 def serve_dashboard_page(request):
     user = get_mock_user(request)

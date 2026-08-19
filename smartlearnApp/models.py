@@ -66,6 +66,7 @@ class Enrollment(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     requested_at = models.DateTimeField(auto_now_add=True)
     rejection_reason = models.TextField(blank=True, null=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
     class Meta:
         unique_together = ('classroom', 'student')
 

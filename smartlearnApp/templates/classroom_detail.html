@@ -668,23 +668,6 @@ font-size:30px;
 </div>
 
 
-
-
-<div class="classroom-container">
-
-
-
-
-
-
-{% if is_owner %}
-{% endif %}
-</div>
-
-
-
-
-
 <!-- =========================
      MAIN CONTENT
 ========================= -->
@@ -766,8 +749,16 @@ Course Instructor
         <a href="{% url 'manage_enrollments' classroom.class_id %}" class="teacher-tool-card">
             <i class="fa-solid fa-users"></i>
             <div>
-                <strong>Student List</strong>
+                <strong>Requested Student List</strong>
                 <span>Manage pending requests and approved students</span>
+            </div>
+        </a>
+
+        <a href="{% url 'joined_students_list' classroom.class_id %}" class="teacher-tool-card">
+            <i class="fa-solid fa-users"></i>
+            <div>
+                <strong>Joined Student List</strong>
+                <span>View and manage students who have joined the class</span>
             </div>
         </a>
     </div>
