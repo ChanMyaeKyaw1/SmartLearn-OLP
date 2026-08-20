@@ -19,19 +19,6 @@
 }
 
 
-/* BACK BUTTON */
-/* .back-link {
-    display: inline-block;
-    margin-bottom: 30px;
-    color: #4CAF7D;
-    font-weight: 600;
-    text-decoration: none;
-    font-size: 15px;
-}
-
-.back-link:hover {
-    color: #2b4c3f;
-} */
 
 /* Back Arrow Icon Button Styling */
 .back-btn-icon {
@@ -300,31 +287,6 @@ textarea.form-control {
     }
 
 }
-/* .back-link {
-    display: inline-block;
-
-    padding: 10px 20px;
-
-    background-color: #ffffff;
-    color: #4CAF7D;
-
-    border: 2px solid #4CAF7D;
-    border-radius: 12px;
-
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 15px;
-
-    transition: 0.3s ease;
-} */
-
-
-/* .back-link:hover {
-    background-color: #4CAF7D;
-    color: white;
-    transform: translateY(-2px);
-} */
-
 
 
 /* ===========================
@@ -2188,3 +2150,143 @@ body.teacher-mode-active .teacher-only {
     transform: translate(0) scale(1);
 }
 
+/* =========================================
+   NAVIGATION THEME TOGGLE BUTTON
+========================================= */
+.nav-theme-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid #4CAF7D;
+    background-color: transparent;
+    color: #2f5d50;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+    transition: all 0.25s ease-in-out;
+    padding: 0;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* Light Mode Hover */
+.nav-theme-toggle:hover {
+    background-color: #4CAF7D;
+    color: #ffffff;
+    transform: scale(1.05);
+}
+/* ==========================================================================
+   THEME SWITCHING FIXES FOR FLASHCARDS, MCQS, CLASSROOM, & HOME PAGES
+   ========================================================================== */
+
+/* 1. Global Variable Overrides for Dark Mode */
+[data-theme="dark"] {
+    --bg-color: #121816;
+    --text-color: #e0ece7;
+    --card-bg: #1c2622;
+    --border-color: #2b3a34;
+    --light-matcha: #1e332a;
+    --forest: #80d9a5;
+    --text-muted: #9ba8a2;
+}
+
+/* Force body and generic text color in Dark Mode */
+[data-theme="dark"] body {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* 2. Modals and Bootstrap Dynamic Components */
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-body,
+[data-theme="dark"] .modal-footer {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* 3. Dynamic Card Hardcoded Overrides (Fixes `.bg-light`, `.card`, `.bg-white`)[cite: 32, 33, 35] */
+[data-theme="dark"] .bg-light,
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .card,
+[data-theme="dark"] .smart-card,
+[data-theme="dark"] .styled-card,
+[data-theme="dark"] .topic-collection-card {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* 4. Classroom Page (.classroom-container) Overrides[cite: 34] */
+[data-theme="dark"] .learning-panel,
+[data-theme="dark"] .course-header,
+[data-theme="dark"] .module-card,
+[data-theme="dark"] .note-section,
+[data-theme="dark"] .teacher-tool-card {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .brand-name,
+[data-theme="dark"] .course-title,
+[data-theme="dark"] .teacher-name,
+[data-theme="dark"] .module-card h5,
+[data-theme="dark"] .note-section h3,
+[data-theme="dark"] .teacher-tools__title,
+[data-theme="dark"] .teacher-tool-card strong {
+    color: var(--forest) !important;
+}
+
+[data-theme="dark"] .note-author,
+[data-theme="dark"] .module-icon,
+[data-theme="dark"] .level-badge,
+[data-theme="dark"] .teacher-tool-card i {
+    background-color: var(--light-matcha) !important;
+    color: var(--forest) !important;
+}
+
+/* 5. Home Page (.hero-section & callout rows) Overrides */
+[data-theme="dark"] .hero-section {
+    background-color: #161e1b !important;
+}
+
+[data-theme="dark"] .feature-callout-row {
+    background-color: var(--bg-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .hero-title,
+/* [data-theme="dark"] .text-dark, */
+[data-theme="dark"] h1, [data-theme="dark"] h2, 
+[data-theme="dark"] h3, [data-theme="dark"] h4, 
+[data-theme="dark"] h6 {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] .subtext-muted,
+[data-theme="dark"] .course-description,
+[data-theme="dark"] .bullet-point-list li {
+    color: var(--text-muted) !important;
+}
+
+/* 6. Form Inputs & Select Elements inside Modals */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] select {
+    background-color: #24312c !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .form-control::placeholder {
+    color: #72837b !important;
+}

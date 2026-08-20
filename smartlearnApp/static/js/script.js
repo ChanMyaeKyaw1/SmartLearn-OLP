@@ -366,3 +366,31 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('theme-toggle-btn');
+    const toggleIcon = document.getElementById('theme-toggle-icon');
+    
+    const savedTheme = localStorage.getItem('theme') || 'light';
+
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            if (toggleIcon) toggleIcon.className = 'fa-solid fa-moon';
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            if (toggleIcon) toggleIcon.className = 'fa-regular fa-sun';
+        }
+    }
+
+    applyTheme(savedTheme);
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const nextTheme = isDark ? 'light' : 'dark';
+            localStorage.setItem('theme', nextTheme);
+            applyTheme(nextTheme);
+        });
+    }
+});
