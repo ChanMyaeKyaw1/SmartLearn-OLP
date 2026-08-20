@@ -25,7 +25,8 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <!-- ScrollReveal CDN -->
     <script src="https://unpkg.com/scrollreveal"></script>
-
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
       * {
         margin: 0;
@@ -577,7 +578,7 @@
     <!-- FOOTER -->
     {% block footer %}
     <footer class="main-footer">
-<<<<<<< Updated upstream
+
         <div class="container">
             <div class="row g-4">
 
@@ -653,95 +654,7 @@
                     </div>
                 </div>
 
-=======
-      <div class="container">
-        <div class="row g-4">
-          <div class="col-lg-4 col-md-6">
-            <a href="#" class="footer-logo">
-              <i class="fa-solid fa-graduation-cap"></i> Smart<span>Learn</span>
-            </a>
-            <p
-              style="
-                color: #b2c4bc;
-                font-size: 15px;
-                max-width: 340px;
-                line-height: 1.6;
-              "
-              class="mb-4"
-            >
-              An advanced all-in-one educational environment engineered to
-              streamline personal class structures, self-assessment decks,
-              structured exam validation fields, and direct image transaction
-              auditing.
-            </p>
-            <div class="social-container">
-              <a href="#" class="social-icon-btn"
-                ><i class="fab fa-facebook-f"></i
-              ></a>
-              <a href="#" class="social-icon-btn"
-                ><i class="fab fa-linkedin-in"></i
-              ></a>
-              <a href="#" class="social-icon-btn"
-                ><i class="fab fa-github"></i
-              ></a>
-              <a href="#" class="social-icon-btn"
-                ><i class="fab fa-youtube"></i
-              ></a>
->>>>>>> Stashed changes
-            </div>
-          </div>
 
-          <div class="col-lg-2 col-md-6 col-6">
-            <h5 class="footer-links-header">Product Hub</h5>
-            <ul class="footer-links-list">
-              <li><a href="{% url 'home' %}">Home Base</a></li>
-              <li><a href="{% url 'dashboard' %}">Dashboard Control</a></li>
-              <li><a href="{% url 'browse_classes' %}">Class Modules</a></li>
-              <li><a href="{% url 'all_flashcards' %}">Flashcard Decks</a></li>
-              <li><a href="{% url 'all_mcqs' %}">MCQ Testing Banks</a></li>
-            </ul>
-          </div>
-
-          <div class="col-lg-2 col-md-6 col-6">
-            <h5 class="footer-links-header">Resources</h5>
-            <ul class="footer-links-list">
-              <li><a href="#">System Pricing</a></li>
-              <li><a href="#">Documentation</a></li>
-              <li><a href="#">User Guides</a></li>
-              <li><a href="#">API Integrations</a></li>
-              <li><a href="#">Server Status</a></li>
-            </ul>
-          </div>
-
-          <div class="col-lg-4 col-md-6">
-            <h5 class="footer-links-header">Central Support Contact</h5>
-            <div class="contact-info-item">
-              <i class="fa-solid fa-location-dot"></i>
-              <span
-                >University of Computer Studies, Yangon (UCSY), Myanmar</span
-              >
-            </div>
-            <div class="contact-info-item">
-              <i class="fa-solid fa-envelope"></i>
-              <div>
-                <span class="d-block">operations@smartlearn.edu.mm</span>
-                <span
-                  class="d-block text-muted small"
-                  style="color: #8fa69c !important"
-                  >Response time: Within 24 Hours</span
-                >
-              </div>
-            </div>
-            <div class="contact-info-item">
-              <i class="fa-solid fa-phone"></i>
-              <span>+95 9 123 456 789, +95 1 987 654</span>
-            </div>
-            <div class="contact-info-item">
-              <i class="fa-solid fa-clock"></i>
-              <span>Mon - Fri / 9:00 AM - 5:00 PM (MMT)</span>
-            </div>
-          </div>
-        </div>
 
         <div class="row footer-bottom-bar text-center text-md-start">
           <div class="col-md-6 mb-3 mb-md-0">
@@ -774,7 +687,35 @@
     >
       <i class="fa-solid fa-chevron-up"></i>
     </button>
+<!-- Floating AI Chatbot Button & Modal -->
+<div class="chatbot-wrapper">
+    <!-- Floating Trigger Button (Positioned above back-to-top) -->
+    <button id="chatbotToggleBtn" class="chatbot-toggle-btn" aria-label="Open Support Chat">
+        <i class="bi bi-chat-dots-fill"></i>
+    </button>
 
+    <!-- Chat Modal Window -->
+    <div id="chatbotModal" class="chatbot-modal hidden">
+        <div class="chatbot-header">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-robot fs-5"></i>
+                <h5 class="m-0 fs-6 fw-bold">SmartLearn Assistant</h5>
+            </div>
+            <button id="chatbotCloseBtn" class="btn-close-chat">&times;</button>
+        </div>
+        
+        <div id="chatbotMessages" class="chatbot-messages">
+            <div class="chat-bubble bot">
+                Hello! I can help with system questions about Flashcards, MCQs, or Classes. What would you like to know?
+            </div>
+        </div>
+
+        <form id="chatbotForm" class="chatbot-input-area">
+            <input type="text" id="chatbotInput" placeholder="Ask a question..." autocomplete="off" required>
+            <button type="submit" class="btn-send"><i class="bi bi-send-fill"></i></button>
+        </form>
+    </div>
+</div>
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
@@ -859,12 +800,59 @@
         // Apply mode class on page load
         applyTeacherMode(isTeacher);
       });
+
+      document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.getElementById("chatbotToggleBtn");
+    const closeBtn = document.getElementById("chatbotCloseBtn");
+    const modal = document.getElementById("chatbotModal");
+    const form = document.getElementById("chatbotForm");
+    const input = document.getElementById("chatbotInput");
+    const messages = document.getElementById("chatbotMessages");
+
+    // Toggle Modal Visibility
+    toggleBtn.addEventListener("click", () => modal.classList.toggle("hidden"));
+    closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
+
+    // Quick Automated Q&A Logic for System Questions
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const text = input.value.trim();
+        if (!text) return;
+
+        // Render User Message
+        appendBubble(text, "user");
+        input.value = "";
+
+        // Generate Bot Reply
+        setTimeout(() => {
+            const reply = getSystemResponse(text.toLowerCase());
+            appendBubble(reply, "bot");
+        }, 500);
+    });
+
+    function appendBubble(text, sender) {
+        const bubble = document.createElement("div");
+        bubble.className = `chat-bubble ${sender}`;
+        bubble.textContent = text;
+        messages.appendChild(bubble);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function getSystemResponse(query) {
+        if (query.includes("flashcard") || query.includes("study")) {
+            return "To study flashcards, go to the Flashcards tab and click 'Learn Topic' on any topic collection.";
+        } else if (query.includes("teacher") || query.includes("toggle")) {
+            return "Enable Teacher Mode using the toggle in the top navigation bar to access class creation and management tools.";
+        } else if (query.includes("mcq") || query.includes("quiz")) {
+            return "Multiple Choice Questions (MCQs) can be accessed from the MCQs navigation link.";
+        } else if (query.includes("dark mode") || query.includes("theme")) {
+            return "Click the moon/sun icon in the top right header to switch between Light and Dark mode.";
+        } else {
+            return "I am a basic system guide! For specific platform features, try asking about Flashcards, MCQs, Classes, or Teacher Mode.";
+        }
+    }
+});
     </script>
-
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
     {% block extra_js %}{% endblock %}
   </body>
 </html>
