@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}My Quiz History - SmartLearn{% endblock %}
+
+{% block content %}
+<div class="main-container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fa-solid fa-pen-to-square text-success me-2"></i>My Quiz History</h2>
+        <a href="{% url 'dashboard' %}" class="back-btn-icon"><i class="fa-solid fa-arrow-left"></i></a>
+    </div>
+
+
+
+    <div class="styled-card p-0">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Classroom</th>
+                        <th>Score</th>
+                        <th>Date Taken</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attempt in attempts %}
+                    <tr>
+                        <td class="fw-bold">{{ attempt.classroom.title }}</td>
+                        <td>
+                            <span class="badge {% if attempt.score >= 50 %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ attempt.score }}%
+                            </span>
+                        </td>
+                        <!-- Fixed field name to taken_at -->
+                        <td class="text-muted">{{ attempt.taken_at|date:"M d, Y - h:i A" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center py-4 text-muted">
+                            You haven't taken any quizzes yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

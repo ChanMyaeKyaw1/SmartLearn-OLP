@@ -39,16 +39,28 @@
     <div class="metrics-bar mb-5">
         <!-- Teacher View Metrics -->
         <div id="teacherMetrics" class="metrics-grid" style="display: none;">
-            <div class="styled-card metric-card">
-                <div class="metric-icon metric-icon-green">
-                    <i class="fa-solid fa-chalkboard-user"></i>
+            <a href="#teacherModeSection" class="styled-card metric-card metric-card-link text-decoration-none">
+                
+                    <div class="metric-icon metric-icon-green">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-value">{{ my_classes|length }}</span>
+                        <span class="metric-label">Created Classes</span>
+                    </div>
+                
+            </a>
+            {% if my_classes.0 %}
+            <a href="{% url 'manage_enrollments' my_classes.0.class_id %}" class="styled-card metric-card metric-card-link text-decoration-none">
+                <div class="metric-icon metric-icon-amber">
+                    <i class="fa-solid fa-user-clock"></i>
                 </div>
                 <div class="metric-info">
-                    <span class="metric-value">{{ my_classes|length }}</span>
-                    <span class="metric-label">Created Classes</span>
+                    <span class="metric-value">{{ total_teacher_pending|default:"0" }}</span>
+                    <span class="metric-label">Pending Approvals</span>
                 </div>
-            </div>
-
+            </a>
+            {% else %}
             <div class="styled-card metric-card">
                 <div class="metric-icon metric-icon-amber">
                     <i class="fa-solid fa-user-clock"></i>
@@ -58,11 +70,12 @@
                     <span class="metric-label">Pending Approvals</span>
                 </div>
             </div>
+            {% endif %}
         </div>
 
-        <!-- Student View Metrics -->
+<!-- Student View Metrics -->
         <div id="studentMetrics" class="metrics-grid">
-            <div class="styled-card metric-card">
+            <a href="#joinedClassesSection" class="styled-card metric-card metric-card-link text-decoration-none">
                 <div class="metric-icon metric-icon-green">
                     <i class="fa-solid fa-book-open"></i>
                 </div>
@@ -70,9 +83,9 @@
                     <span class="metric-value">{{ joined_classrooms|length }}</span>
                     <span class="metric-label">Joined Classes</span>
                 </div>
-            </div>
+            </a>
 
-            <div class="styled-card metric-card">
+            <a href="{% url 'quiz_history' %}" class="styled-card metric-card metric-card-link text-decoration-none">
                 <div class="metric-icon metric-icon-teal">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </div>
@@ -80,9 +93,9 @@
                     <span class="metric-value">{{ taken_quizzes_count }}</span>
                     <span class="metric-label">Taken Quizzes</span>
                 </div>
-            </div>
+            </a>
 
-            <div class="styled-card metric-card">
+            <a href="#" class="styled-card metric-card metric-card-link text-decoration-none">
                 <div class="metric-icon metric-icon-purple">
                     <i class="fa-solid fa-trophy"></i>
                 </div>
@@ -90,9 +103,9 @@
                     <span class="metric-value">{{ avg_score }}%</span>
                     <span class="metric-label">Average Score</span>
                 </div>
-            </div>
+            </a>
 
-            <div class="styled-card metric-card">
+            <a href="#pendingClassesSection" class="styled-card metric-card metric-card-link text-decoration-none">
                 <div class="metric-icon metric-icon-amber">
                     <i class="fa-solid fa-clock-rotate-left"></i>
                 </div>
@@ -100,7 +113,7 @@
                     <span class="metric-value">{{ pending_classrooms|length }}</span>
                     <span class="metric-label">Pending Review</span>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
@@ -205,7 +218,7 @@
         </div>
 
         <!-- MY JOINED CLASSES SECTION -->
-        <div class="dashboard-section-block mb-5">
+        <div  id="joinedClassesSection" class="dashboard-section-block mb-5">
             <div class="dashboard-section-header mb-3">
                 <h3 class="dashboard-section-title m-0">
                     <i class="fa-solid fa-graduation-cap text-success me-2"></i>My Joined Classes
@@ -240,7 +253,7 @@
         </div>
 
         <!-- PENDING APPROVAL CLASSES SECTION -->
-        <div class="dashboard-section-block mb-5">
+        <div id="pendingClassesSection" class="dashboard-section-block mb-5">
             <div class="dashboard-section-header mb-3">
                 <h3 class="dashboard-section-title m-0">
                     <i class="fa-solid fa-clock text-warning me-2"></i>Pending Approvals

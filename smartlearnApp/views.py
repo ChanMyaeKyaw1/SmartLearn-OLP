@@ -256,6 +256,17 @@ def dashboard_view(request):
         'avg_score': avg_score,
     })
 
+
+@login_required
+def quiz_history(request):
+    # Filter using 'student' and order using 'taken_at'
+    attempts = QuizAttempt.objects.filter(student=request.user).order_by('-taken_at')
+    
+    context = {
+        'attempts': attempts,
+    }
+    return render(request, 'quiz_history.html', context)
+
 @login_required(login_url='login')
 def my_classes(request):
     classes = Classroom.objects.filter(owner=request.user)

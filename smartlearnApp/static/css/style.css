@@ -1811,6 +1811,15 @@ body.teacher-mode-active .teacher-only {
     color: #6b756f;
     font-weight: 600;
 }
+.metric-card-link {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(43, 76, 63, 0.12);
+}
 
 /* Carousel Card Fixes */
 .carousel-card-item {
