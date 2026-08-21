@@ -267,6 +267,37 @@ def quiz_history(request):
     }
     return render(request, 'quiz_history.html', context)
 
+
+@login_required(login_url='login')
+def edit_classroom(request, class_id):
+    # Ensure only the class owner can edit
+    classroom = get_object_or_404(Classroom, class_id=class_id, owner=request.user)
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        subject = request.POST.get('subject')
+        description = request.POST.get('description')
+        class_type = request.POST.get('class_type', 'public')
+        price = request.POST.get('price', 0.00)
+
+        if class_type == 'public':
+            price = 0.00
+
+        # Update model fields
+        classroom.title = title
+        classroom.subject = subject
+        classroom.description = description if description else "No description provided."
+        classroom.class_type = class_type
+        classroom.price = price
+        classroom.save()
+
+        messages.success(request, "Classroom updated successfully!")
+        return redirect('classroom_detail', class_id=classroom.class_id)
+
+    return render(request, 'edit_classroom.html', {
+        'classroom': classroom
+    })
+
 @login_required(login_url='login')
 def my_classes(request):
     classes = Classroom.objects.filter(owner=request.user)

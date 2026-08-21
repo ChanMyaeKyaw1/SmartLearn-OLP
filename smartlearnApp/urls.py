@@ -12,6 +12,7 @@ urlpatterns = [
 
     path('browse/', views.browse_classes, name='browse_classes'),
     path('create/', views.create_class, name='create_class'),
+    path('classroom/<int:class_id>/edit/', views.edit_classroom, name='edit_classroom'),
     path('delete/<int:class_id>/', views.delete_class, name='delete_class'),
     path('join-request/<int:class_id>/', views.request_join_class, name='request_join_class'),
     # path('dashboard.html', views.serve_dashboard_page, name='dashboard_page'),

@@ -738,6 +738,15 @@ Course Instructor
 <div class="teacher-tools teacher-tools--inline">
     <div class="teacher-tools__title">Teacher Tools</div>
     <div class="teacher-tools__grid">
+
+        <a href="{% url 'edit_classroom' classroom.class_id %}" class="teacher-tool-card">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <div>
+                <strong>Edit Classroom</strong>
+                <span>Update title, subject, price, and access type</span>
+            </div>
+        </a>
+        
         <a href="{% url 'teacher_student_results' classroom.class_id %}" class="teacher-tool-card">
             <i class="fa-solid fa-chart-line"></i>
             <div>

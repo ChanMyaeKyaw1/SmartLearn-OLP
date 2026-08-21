@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Classroom - {{ classroom.title }}{% endblock %}
+
+{% block content %}
+<div class="centered-form-wrapper">
+    <a href="{% url 'classroom_detail' classroom.class_id %}" class="back-btn-icon">
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <br><br>
+    <h2 class="page-heading-large">Edit Classroom</h2>
+    <p class="subtext-muted">Update your classroom information below.</p>
+
+    <div class="styled-card">
+        <form method="POST" action="{% url 'edit_classroom' classroom.class_id %}">
+            {% csrf_token %}
+
+            <label class="label-bold">Class Title</label>
+            <input type="text" name="title" class="form-control" value="{{ classroom.title }}" required>
+
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <label class="label-bold">Subject Category</label>
+                    <select name="subject" class="form-control">
+                        <option value="math" {% if classroom.subject == 'math' %}selected{% endif %}>Mathematics</option>
+                        <option value="science" {% if classroom.subject == 'science' %}selected{% endif %}>Science</option>
+                        <option value="coding" {% if classroom.subject == 'coding' %}selected{% endif %}>Coding/IT</option>
+                        <option value="languages" {% if classroom.subject == 'languages' %}selected{% endif %}>Languages</option>
+                        <option value="arts" {% if classroom.subject == 'arts' %}selected{% endif %}>Arts & Design</option>
+                    </select>
+                </div>
+            </div>
+
+            <label class="label-bold">Description</label>
+            <textarea name="description" class="form-control" rows="4">{{ classroom.description }}</textarea>
+
+            <label class="label-bold">Class Access</label>
+            <div class="access-choice-row">
+                <label class="access-choice">
+                    <input type="radio" name="class_type" value="public" {% if classroom.class_type == 'public' %}checked{% endif %}>
+                    <span>
+                        <strong>Public</strong>
+                        <small>Anyone can open and join this class.</small>
+                    </span>
+                </label>
+
+                <label class="access-choice">
+                    <input type="radio" name="class_type" value="private" {% if classroom.class_type == 'private' %}checked{% endif %}>
+                    <span>
+                        <strong>Private</strong>
+                        <small>Students must request approval before entering.</small>
+                    </span>
+                </label>
+            </div>
+
+            <div id="priceWrapper" class="price-wrapper" style="display: {% if classroom.class_type == 'private' %}block{% else %}none{% endif %};">
+                <label class="label-bold">Private Class Price ($)</label>
+                <input type="number" name="price" class="form-control" min="0" step="0.01" value="{{ classroom.price }}">
+            </div>
+
+            <div class="form-actions-row">
+                <button type="submit" class="btn-primary">Save Changes</button>
+                <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const priceWrapper = document.getElementById('priceWrapper');
+    const accessChoices = document.querySelectorAll('input[name="class_type"]');
+
+    accessChoices.forEach((choice) => {
+        choice.addEventListener('change', function() {
+            priceWrapper.style.display = this.value === 'private' ? 'block' : 'none';
+        });
+    });
+</script>
+{% endblock %}
