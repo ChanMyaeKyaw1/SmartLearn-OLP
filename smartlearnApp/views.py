@@ -192,6 +192,11 @@ def dashboard_view(request):
         pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
     )
 
+    total_teacher_pending = Enrollment.objects.filter(
+        classroom__owner=request.user,
+        status='pending'
+    ).count()
+
     joined_classrooms = Classroom.objects.filter(
         enrollments__student=request.user,
         enrollments__status='approved'
@@ -240,6 +245,7 @@ def dashboard_view(request):
         avg_score = 0
     return render(request, 'dashboard.html', {
         'my_classes': my_classes,
+        'total_teacher_pending': total_teacher_pending,
         'joined_classrooms': joined_classrooms,
         'available_classes': available_classes,
         'pending_classrooms': pending_classrooms,
@@ -348,14 +354,19 @@ def create_class(request):
     return render(request, 'createClass.html')
 
 
+@login_required(login_url='login')
 def delete_class(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
-    current_user = get_mock_user(request)
 
-    if classroom.owner == current_user:
+    # Ensure only the actual owner can delete the classroom
+    if classroom.owner == request.user:
         classroom.delete()
-    return redirect(f"/classes/browse/?user={current_user.username}")
+        messages.success(request, "Classroom deleted successfully.")
+    else:
+        messages.error(request, "You do not have permission to delete this class.")
 
+    # Redirect safely back to dashboard or browse classes
+    return redirect('dashboard')
 
 def classroom_detail(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
