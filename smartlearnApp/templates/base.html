@@ -1,559 +1,501 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}SmartLearn - Ecosystem{% endblock %}</title>
 
     <!-- Bootstrap 5 CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- FontAwesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Raleway:wght@700;800;900&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Raleway:wght@700;800;900&display=swap" rel="stylesheet" />
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <!-- ScrollReveal CDN -->
     <script src="https://unpkg.com/scrollreveal"></script>
     <!-- Bootstrap Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- FontAwesome CDN (v6.x) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-      body {
-        font-family: "Open Sans", sans-serif;
-        background-color: #f8faf9;
-        color: #333;
-        overflow-x: hidden;
-      }
+        body {
+            font-family: "Open Sans", sans-serif;
+            background-color: #f8faf9;
+            color: #333;
+            overflow-x: hidden;
+        }
 
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        font-family: "Raleway", sans-serif;
-        font-weight: 700;
-        color: #2b4c3f;
-      }
-      /* Unified Navbar */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: "Raleway", sans-serif;
+            font-weight: 700;
+            color: #2b4c3f;
+        }
+        /* Unified Navbar */
 
-      .navbar {
-        background-color: #ffffff;
-        border-bottom: 1px solid #e4ebc6;
-        padding: 15px 0;
-        box-shadow: 0 2px 15px rgba(43, 76, 63, 0.02);
-      }
+        .navbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e4ebc6;
+            padding: 15px 0;
+            box-shadow: 0 2px 15px rgba(43, 76, 63, 0.02);
+        }
 
-      .logo {
-        font-family: "Raleway", sans-serif;
-        font-size: 25px;
-        font-weight: 900;
-        color: #4caf7d;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
+        .logo {
+            font-family: "Raleway", sans-serif;
+            font-size: 25px;
+            font-weight: 900;
+            color: #4caf7d;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-      .nav-link {
-        font-weight: 600;
-        color: #555c58 !important;
-        font-size: 15px;
-        transition: 0.2s ease-in-out;
-      }
+        .nav-link {
+            font-weight: 600;
+            color: #555c58 !important;
+            font-size: 15px;
+            transition: 0.2s ease-in-out;
+        }
 
-      .nav-link:hover,
-      .nav-link.active {
-        color: #4caf7d !important;
-      }
-      /* Teacher Toggle Button Styling */
+        .nav-link:hover,
+        .nav-link.active {
+            color: #4caf7d !important;
+        }
+        /* Teacher Toggle Button Styling */
 
-      .teacher-toggle-box {
-        background-color: #f1f0d9;
-        border: 1px solid #e4ebc6;
-        padding: 6px 12px;
-        border-radius: 20px;
-      }
-      /* Buttons */
+        .teacher-toggle-box {
+            background-color: #f1f0d9;
+            border: 1px solid #e4ebc6;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        /* Buttons */
 
-      .btn-matcha-primary {
-        background-color: #4caf7d;
-        color: #ffffff;
-        font-weight: 700;
-        border-radius: 12px;
-        padding: 10px 22px;
-        border: none;
-        transition: all 0.3s ease;
-      }
+        .btn-matcha-primary {
+            background-color: #4caf7d;
+            color: #ffffff;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 10px 22px;
+            border: none;
+            transition: all 0.3s ease;
+        }
 
-      .btn-matcha-primary:hover {
-        background-color: #3f9d70;
-        color: #ffffff;
-      }
+        .btn-matcha-primary:hover {
+            background-color: #3f9d70;
+            color: #ffffff;
+        }
 
-      .btn-matcha-outline {
-        background-color: transparent;
-        color: #4caf7d;
-        font-weight: 700;
-        border-radius: 12px;
-        padding: 9px 20px;
-        border: 2px solid #4caf7d;
-        transition: all 0.3s ease;
-      }
+        .btn-matcha-outline {
+            background-color: transparent;
+            color: #4caf7d;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 9px 20px;
+            border: 2px solid #4caf7d;
+            transition: all 0.3s ease;
+        }
 
-      .btn-matcha-outline:hover {
-        background-color: #4caf7d;
-        color: #ffffff;
-      }
-      /* FOOTER */
+        .btn-matcha-outline:hover {
+            background-color: #4caf7d;
+            color: #ffffff;
+        }
+        /* FOOTER */
 
-      .main-footer {
-        background-color: #2b4c3f;
-        color: #e2ebe7;
-        padding: 90px 0 0 0;
-        border-top: 6px solid #4caf7d;
-      }
+        .main-footer {
+            background-color: #2b4c3f;
+            color: #e2ebe7;
+            padding: 90px 0 0 0;
+            border-top: 6px solid #4caf7d;
+        }
 
-      .footer-logo {
-        font-family: "Raleway", sans-serif;
-        font-size: 28px;
-        font-weight: 900;
-        color: #ffffff;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 25px;
-        letter-spacing: -0.5px;
-      }
+        .footer-logo {
+            font-family: "Raleway", sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
+        }
 
-      .footer-logo span {
-        color: #4caf7d;
-      }
+        .footer-logo span {
+            color: #4caf7d;
+        }
 
-      .footer-links-header {
-        color: #ffffff;
-        font-size: 15px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        margin-bottom: 30px;
-        position: relative;
-        padding-bottom: 12px;
-      }
+        .footer-links-header {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 12px;
+        }
 
-      .footer-links-header::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 40px;
-        height: 2.5px;
-        background-color: #4caf7d;
-      }
+        .footer-links-header::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2.5px;
+            background-color: #4caf7d;
+        }
 
-      .footer-links-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
+        .footer-links-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-      .footer-links-list li {
-        margin-bottom: 14px;
-      }
+        .footer-links-list li {
+            margin-bottom: 14px;
+        }
 
-      .footer-links-list a {
-        color: #b2c4bc;
-        text-decoration: none;
-        transition: 0.25s ease;
-        font-weight: 500;
-        font-size: 15px;
-        display: inline-block;
-      }
+        .footer-links-list a {
+            color: #b2c4bc;
+            text-decoration: none;
+            transition: 0.25s ease;
+            font-weight: 500;
+            font-size: 15px;
+            display: inline-block;
+        }
 
-      .footer-links-list a:hover {
-        color: #ffffff;
-        transform: translateX(4px);
-      }
+        .footer-links-list a:hover {
+            color: #ffffff;
+            transform: translateX(4px);
+        }
 
-      .contact-info-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 15px;
-        margin-bottom: 22px;
-        color: #b2c4bc;
-        font-size: 15px;
-      }
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 22px;
+            color: #b2c4bc;
+            font-size: 15px;
+        }
 
-      .contact-info-item i {
-        color: #4caf7d;
-        font-size: 19px;
-        margin-top: 3px;
-      }
+        .contact-info-item i {
+            color: #4caf7d;
+            font-size: 19px;
+            margin-top: 3px;
+        }
 
-      .social-container {
-        display: flex;
-        gap: 12px;
-        margin-top: 30px;
-      }
+        .social-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
 
-      .social-icon-btn {
-        width: 42px;
-        height: 42px;
-        border-radius: 12px;
-        background-color: rgba(255, 255, 255, 0.05);
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.02);
-      }
+        .social-icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
 
-      .social-icon-btn:hover {
-        background-color: #4caf7d;
-        color: #ffffff;
-        transform: translateY(-4px);
-        box-shadow: 0 5px 15px rgba(76, 175, 125, 0.3);
-      }
+        .social-icon-btn:hover {
+            background-color: #4caf7d;
+            color: #ffffff;
+            transform: translateY(-4px);
+            box-shadow: 0 5px 15px rgba(76, 175, 125, 0.3);
+        }
 
-      .footer-bottom-bar {
-        border-top: 1px solid rgba(255, 255, 255, 0.07);
-        margin-top: 80px;
-        padding: 30px 0;
-        color: #8fa69c;
-        font-size: 14px;
-      }
+        .footer-bottom-bar {
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            margin-top: 80px;
+            padding: 30px 0;
+            color: #8fa69c;
+            font-size: 14px;
+        }
 
-      .scroll-to-top-btn {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        background-color: var(--forest, #2b4c3f);
-        color: #ffffff;
-        border: none;
-        outline: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        box-shadow: 0 8px 20px rgba(43, 76, 63, 0.25);
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(20px);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1000;
-      }
-      /* Hover Effect */
+        .scroll-to-top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--forest, #2b4c3f);
+            color: #ffffff;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 8px 20px rgba(43, 76, 63, 0.25);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+        /* Hover Effect */
 
-      .scroll-to-top-btn:hover {
-        background-color: var(--matcha, #3f9d70);
-        color: #ffffff;
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px rgba(63, 157, 112, 0.35);
-      }
-      /* Active Class toggled by JavaScript */
+        .scroll-to-top-btn:hover {
+            background-color: var(--matcha, #3f9d70);
+            color: #ffffff;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(63, 157, 112, 0.35);
+        }
+        /* Active Class toggled by JavaScript */
 
-      .scroll-to-top-btn.is-visible {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-      }
+        .scroll-to-top-btn.is-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        /* Force Dark Theme Overrides for Flashcards Grid & Cards */
 
-      /* Force Dark Theme Overrides for Flashcards Grid & Cards */
-      html[data-theme="dark"]
-        body
-        .topic-collection-grid
-        .topic-collection-card,
-      html[data-theme="dark"] body .topic-collection-grid article,
-      [data-theme="dark"] .topic-collection-card {
-        background-color: #1a231f !important;
-        background: #1a231f !important;
-        border: 1px solid #2b3a34 !important;
-        color: #e0ece7 !important;
-      }
+        html[data-theme="dark"] body .topic-collection-grid .topic-collection-card,
+        html[data-theme="dark"] body .topic-collection-grid article,
+        [data-theme="dark"] .topic-collection-card {
+            background-color: #1a231f !important;
+            background: #1a231f !important;
+            border: 1px solid #2b3a34 !important;
+            color: #e0ece7 !important;
+        }
+        /* Fix Hidden Heading Title (h4) */
 
-      /* Fix Hidden Heading Title (h4) */
-      html[data-theme="dark"] .topic-collection-card h4,
-      [data-theme="dark"] .topic-collection-card h4 {
-        color: #ffffff !important;
-      }
+        html[data-theme="dark"] .topic-collection-card h4,
+        [data-theme="dark"] .topic-collection-card h4 {
+            color: #ffffff !important;
+        }
+        /* Fix Preview Box Contrast */
 
-      /* Fix Preview Box Contrast */
-      html[data-theme="dark"] .topic-collection-card .topic-preview,
-      [data-theme="dark"] .topic-preview {
-        background-color: #111714 !important;
-        background: #111714 !important;
-        color: #d0e0d8 !important;
-        border: 1px solid #25332c !important;
-      }
+        html[data-theme="dark"] .topic-collection-card .topic-preview,
+        [data-theme="dark"] .topic-preview {
+            background-color: #111714 !important;
+            background: #111714 !important;
+            color: #d0e0d8 !important;
+            border: 1px solid #25332c !important;
+        }
+        /* Fix Metadata and Badges */
 
-      /* Fix Metadata and Badges */
-      html[data-theme="dark"] .topic-collection-card .topic-meta,
-      html[data-theme="dark"] .topic-collection-card .topic-card-count {
-        color: #9cb0a5 !important;
-      }
+        html[data-theme="dark"] .topic-collection-card .topic-meta,
+        html[data-theme="dark"] .topic-collection-card .topic-card-count {
+            color: #9cb0a5 !important;
+        }
 
-      html[data-theme="dark"] .topic-collection-card .status-badge {
-        background-color: #23362d !important;
-        color: #6ee7a8 !important;
-        border: 1px solid #314b3f !important;
-      }
-
-      /* ==========================================================================
+        html[data-theme="dark"] .topic-collection-card .status-badge {
+            background-color: #23362d !important;
+            color: #6ee7a8 !important;
+            border: 1px solid #314b3f !important;
+        }
+        /* ==========================================================================
    FLASHCARD LEARN TOPIC MODAL FIX (DARK MODE)
    ========================================================================== */
+        /* 1. Main Modal Dialog Box */
 
-      /* 1. Main Modal Dialog Box */
-      html[data-theme="dark"] .flashcard-modal__dialog,
-      [data-theme="dark"] .flashcard-modal__dialog {
-        background-color: #1a231f !important;
-        background: #1a231f !important;
-        border: 1px solid #2b3a34 !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-      }
+        html[data-theme="dark"] .flashcard-modal__dialog,
+        [data-theme="dark"] .flashcard-modal__dialog {
+            background-color: #1a231f !important;
+            background: #1a231f !important;
+            border: 1px solid #2b3a34 !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        }
+        /* 2. Modal Header Title ("Accounting Matrices for Engineers") */
 
-      /* 2. Modal Header Title ("Accounting Matrices for Engineers") */
-      html[data-theme="dark"] .flashcard-modal__header h3,
-      html[data-theme="dark"] #flashcard-learn-title,
-      [data-theme="dark"] #flashcard-learn-title {
-        color: #ffffff !important;
-      }
+        html[data-theme="dark"] .flashcard-modal__header h3,
+        html[data-theme="dark"] #flashcard-learn-title,
+        [data-theme="dark"] #flashcard-learn-title {
+            color: #ffffff !important;
+        }
+        /* 3. Close Button (x icon) */
 
-      /* 3. Close Button (x icon) */
-      html[data-theme="dark"] .flashcard-modal__close,
-      [data-theme="dark"] .flashcard-modal__close {
-        background-color: #23362d !important;
-        color: #6ee7a8 !important;
-        border: 1px solid #314b3f !important;
-      }
+        html[data-theme="dark"] .flashcard-modal__close,
+        [data-theme="dark"] .flashcard-modal__close {
+            background-color: #23362d !important;
+            color: #6ee7a8 !important;
+            border: 1px solid #314b3f !important;
+        }
+        /* 4. Flip Card Wrapper & Card Faces (Front/Back) */
 
-      /* 4. Flip Card Wrapper & Card Faces (Front/Back) */
-      html[data-theme="dark"] .study-flip-face,
-      html[data-theme="dark"] .study-flip-front,
-      html[data-theme="dark"] .study-flip-back,
-      [data-theme="dark"] .study-flip-face {
-        background-color: #111714 !important;
-        background: #111714 !important;
-        border: 1px solid #283830 !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
-      }
+        html[data-theme="dark"] .study-flip-face,
+        html[data-theme="dark"] .study-flip-front,
+        html[data-theme="dark"] .study-flip-back,
+        [data-theme="dark"] .study-flip-face {
+            background-color: #111714 !important;
+            background: #111714 !important;
+            border: 1px solid #283830 !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        }
+        /* 5. Flip Card Text Content (Questions & Answers) */
 
-      /* 5. Flip Card Text Content (Questions & Answers) */
-      html[data-theme="dark"] #flashcard-modal-front-text,
-      html[data-theme="dark"] #flashcard-modal-back-text,
-      [data-theme="dark"] .study-flip-face h4,
-      [data-theme="dark"] .study-flip-face p {
-        color: #e0ece7 !important;
-      }
+        html[data-theme="dark"] #flashcard-modal-front-text,
+        html[data-theme="dark"] #flashcard-modal-back-text,
+        [data-theme="dark"] .study-flip-face h4,
+        [data-theme="dark"] .study-flip-face p {
+            color: #e0ece7 !important;
+        }
+        /* 6. Side Navigation Arrows (< >) */
 
-      /* 6. Side Navigation Arrows (< >) */
-      html[data-theme="dark"] .flashcard-nav-arrow,
-      [data-theme="dark"] .flashcard-nav-arrow {
-        background-color: #23362d !important;
-        color: #6ee7a8 !important;
-        border: 1px solid #314b3f !important;
-      }
+        html[data-theme="dark"] .flashcard-nav-arrow,
+        [data-theme="dark"] .flashcard-nav-arrow {
+            background-color: #23362d !important;
+            color: #6ee7a8 !important;
+            border: 1px solid #314b3f !important;
+        }
 
-      html[data-theme="dark"] .flashcard-nav-arrow:hover,
-      [data-theme="dark"] .flashcard-nav-arrow:hover {
-        background-color: #2e473b !important;
-        color: #ffffff !important;
-      }
+        html[data-theme="dark"] .flashcard-nav-arrow:hover,
+        [data-theme="dark"] .flashcard-nav-arrow:hover {
+            background-color: #2e473b !important;
+            color: #ffffff !important;
+        }
+        /* 7. Footer Counter Text ("Card 1 of 2") */
 
-      /* 7. Footer Counter Text ("Card 1 of 2") */
-      html[data-theme="dark"] .modal-counter,
-      html[data-theme="dark"] #flashcard-modal-counter,
-      [data-theme="dark"] .flashcard-modal__footer {
-        color: #9cb0a5 !important;
-      }
-
+        html[data-theme="dark"] .modal-counter,
+        html[data-theme="dark"] #flashcard-modal-counter,
+        [data-theme="dark"] .flashcard-modal__footer {
+            color: #9cb0a5 !important;
+        }
     </style>
-    {% block extra_css %}{% endblock %}
-  </head>
 
-  <body>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
     <!-- SHARED GLOBAL NAVBAR -->
     <header class="navbar navbar-expand-lg navbar-light sticky-top">
-      <div class="container">
-        <a href="{% url 'home' %}" class="logo">
-          <i class="fa-solid fa-graduation-cap"></i> SmartLearn
-        </a>
+        <div class="container">
+            <a href="{% url 'home' %}" class="logo">
+                <i class="fa-solid fa-graduation-cap"></i> SmartLearn
+            </a>
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mainNavbar"
-        >
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="mainNavbar">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-2">
-            <!-- 1. Home Link -->
-            <li class="nav-item">
-              <a
-                class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
-                href="{% url 'home' %}"
-              >
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-2">
+                    <!-- 1. Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
                 Home
               </a>
-            </li>
+                    </li>
 
-            <!-- 2. Dashboard Link -->
-            <li class="nav-item">
-              <a
-                class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
-                href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}?next={% url 'dashboard' %}{% endif %}"
-              >
+                    <!-- 2. Dashboard Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}?next={% url 'dashboard' %}{% endif %}">
                 Dashboard
               </a>
-            </li>
+                    </li>
 
-            <!-- 3. Classes Link -->
-            <li class="nav-item">
-              <a
-                class="nav-link {% if request.resolver_match.url_name == 'browse_classes' %}active{% endif %}"
-                href="{% if user.is_authenticated %}{% url 'browse_classes' %}{% else %}{% url 'login' %}?next={% url 'browse_classes' %}{% endif %}"
-              >
+                    <!-- 3. Classes Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'browse_classes' %}active{% endif %}" href="{% if user.is_authenticated %}{% url 'browse_classes' %}{% else %}{% url 'login' %}?next={% url 'browse_classes' %}{% endif %}">
                 Classes
               </a>
-            </li>
+                    </li>
 
-            <!-- 4. Flashcards Link -->
-            <li class="nav-item">
-              <a
-                class="nav-link {% if request.resolver_match.url_name == 'all_flashcards' %}active{% endif %}"
-                href="{% if user.is_authenticated %}{% url 'all_flashcards' %}{% else %}{% url 'login' %}?next={% url 'all_flashcards' %}{% endif %}"
-              >
+                    <!-- 4. Flashcards Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'all_flashcards' %}active{% endif %}" href="{% if user.is_authenticated %}{% url 'all_flashcards' %}{% else %}{% url 'login' %}?next={% url 'all_flashcards' %}{% endif %}">
                 Flashcards
               </a>
-            </li>
+                    </li>
 
-            <!-- 5. MCQs Link -->
-            <li class="nav-item">
-              <a
-                class="nav-link {% if request.resolver_match.url_name == 'all_mcqs' %}active{% endif %}"
-                href="{% if user.is_authenticated %}{% url 'all_mcqs' %}{% else %}{% url 'login' %}?next={% url 'all_mcqs' %}{% endif %}"
-              >
+                    <!-- 5. MCQs Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'all_mcqs' %}active{% endif %}" href="{% if user.is_authenticated %}{% url 'all_mcqs' %}{% else %}{% url 'login' %}?next={% url 'all_mcqs' %}{% endif %}">
                 MCQs
               </a>
-            </li>
-          </ul>
+                    </li>
+                </ul>
 
-          <div class="d-flex align-items-center gap-3">
-            {% if user.is_authenticated %}
-            <div class="teacher-toggle-box d-flex align-items-center me-2">
-              <span class="fw-bold me-2 small text-dark">Teacher Mode</span>
-              <div class="form-check form-switch m-0">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="teacherModeToggle"
-                  style="cursor: pointer"
-                />
-              </div>
-            </div>
+                <div class="d-flex align-items-center gap-3">
+                    {% if user.is_authenticated %}
+                    <div class="teacher-toggle-box d-flex align-items-center me-2">
+                        <span class="fw-bold me-2 small text-dark">Teacher Mode</span>
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" id="teacherModeToggle" style="cursor: pointer" />
+                        </div>
+                    </div>
 
-            <div class="dropdown">
-              <a
-                href="#"
-                class="d-flex align-items-center text-decoration-none dropdown-toggle"
-                id="profileDropdown"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <div
-                  class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
-                  style="
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" style="
                     width: 42px;
                     height: 42px;
                     background-color: #2b4c3f;
                     border: 2px solid #4caf7d;
-                  "
-                >
-                  {{ request.user.username|slice:":2"|upper }}
-                </div>
-              </a>
+                  ">
+                                {{ request.user.username|slice:":2"|upper }}
+                            </div>
+                        </a>
 
-              <ul
-                class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2"
-                aria-labelledby="profileDropdown"
-              >
-                <li class="px-3 py-2 border-bottom mb-1">
-                  <span class="d-block small text-muted">Signed in as</span>
-                  <strong class="text-dark">{{ request.user.username }}</strong>
-                </li>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" aria-labelledby="profileDropdown">
+                            <li class="px-3 py-2 border-bottom mb-1">
+                                <span class="d-block small text-muted">Signed in as</span>
+                                <strong class="text-dark">{{ request.user.username }}</strong>
+                            </li>
 
-                <li>
-                  <a class="dropdown-item py-2" href="{% url 'view_profile' %}">
-                    <i class="fa-solid fa-user me-2 text-muted"></i> Profile
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item py-2" href="{% url 'edit_profile' %}">
-                    <i class="fa-solid fa-user-pen me-2 text-muted"></i> Update
-                    Profile
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item py-2"
-                    href="{% url 'change_password' %}"
-                  >
-                    <i class="fa-solid fa-key me-2 text-muted"></i> Change
-                    Password
-                  </a>
-                </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="{% url 'view_profile' %}">
+                                    <i class="fa-solid fa-user me-2 text-muted"></i> Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="{% url 'edit_profile' %}">
+                                    <i class="fa-solid fa-user-pen me-2 text-muted"></i> Update Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="{% url 'change_password' %}">
+                                    <i class="fa-solid fa-key me-2 text-muted"></i> Change Password
+                                </a>
+                            </li>
 
-                <li id="teacherPaymentMenuItem" style="display: none">
-                  <a
-                    class="dropdown-item py-2"
-                    href="{% url 'manage_payment_accounts' %}"
-                  >
-                    <i class="fa-solid fa-wallet me-2 text-muted"></i> Payment
-                    Methods
-                  </a>
-                </li>
+                            <li id="teacherPaymentMenuItem" style="display: none">
+                                <a class="dropdown-item py-2" href="{% url 'manage_payment_accounts' %}">
+                                    <i class="fa-solid fa-wallet me-2 text-muted"></i> Payment Methods
+                                </a>
+                            </li>
 
-                <li>
-                  <hr class="dropdown-divider my-1" />
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item py-2 text-danger"
-                    href="{% url 'logout' %}"
-                  >
-                    <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
-                  </a>
-                </li>
-              </ul>
-            </div>
-            {% else %}
-            <a href="{% url 'login' %}" class="btn btn-matcha-outline"
-              >Sign In</a
+                            <li>
+                                <hr class="dropdown-divider my-1" />
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2 text-danger" href="{% url 'logout' %}">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-matcha-outline">Sign In</a
             >
             <a href="{% url 'register' %}" class="btn btn-matcha-primary"
               >Get Started</a
@@ -590,9 +532,9 @@
                         An advanced all-in-one educational environment engineered to streamline personal class structures, self-assessment decks, structured exam validation fields, and direct image transaction auditing.
                     </p>
                     <div class="social-container">
-                        <a href="https://facebook.com/chanmyaekyaw" class="social-icon-btn" target="_blank" rel="noopener noreferrer">
+                        <!-- <a href="https://facebook.com/chanmyaekyaw" class="social-icon-btn" target="_blank" rel="noopener noreferrer">
                             <i class="fab fa-facebook-f"></i>
-                        </a>
+                        </a> -->
 
                         <a href="https://www.linkedin.com/in/chan-myae-kyaw-054105288" class="social-icon-btn" target="_blank" rel="noopener noreferrer">
                             <i class="fab fa-linkedin-in"></i>
@@ -602,7 +544,10 @@
                             <i class="fab fa-github"></i>
                         </a>
 
-                        <!-- <a href="https://t.me/charmedChan"><i class="fa-brands fa-telegram"></i></a> -->
+                        <a href="https://t.me/charmedChan" class="social-icon-btn" target="_blank" rel="noopener noreferrer">
+                            <i class="fa-brands fa-telegram"></i>
+                        </a>
+
                         <a href="mailto:cmk1622004@gmail.com" class="social-icon-btn" target="_blank" rel="noopener noreferrer">
                             <i class="fa-solid fa-envelope"></i>
                         </a>
@@ -646,7 +591,7 @@
                     </div>
                     <div class="contact-info-item">
                         <i class="fa-solid fa-phone"></i>
-                        <span>+95 9 123 456 789, +95 1 987 654</span>
+                        <span>+95 9 975897338, +95 1 987 654</span>
                     </div>
                     <div class="contact-info-item">
                         <i class="fa-solid fa-clock"></i>
@@ -656,16 +601,14 @@
 
 
 
-        <div class="row footer-bottom-bar text-center text-md-start">
-          <div class="col-md-6 mb-3 mb-md-0">
-            <p class="mb-0">
-              © 2026 SmartLearn Systems Ltd. Handcrafted for academic project
-              examination and hosting verification pipelines.
-            </p>
-          </div>
-          <div class="col-md-6 text-md-end">
-            <a href="#" class="text-decoration-none me-3" style="color: #8fa69c"
-              >Privacy Framework</a
+                <div class="row footer-bottom-bar text-center text-md-start">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <p class="mb-0">
+                            © 2026 SmartLearn Systems Ltd. Handcrafted for academic project examination and hosting verification pipelines.
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <a href="#" class="text-decoration-none me-3" style="color: #8fa69c">Privacy Framework</a
             >
             <a href="#" class="text-decoration-none me-3" style="color: #8fa69c"
               >Terms of Service</a
@@ -691,7 +634,9 @@
 <div class="chatbot-wrapper">
     <!-- Floating Trigger Button (Positioned above back-to-top) -->
     <button id="chatbotToggleBtn" class="chatbot-toggle-btn" aria-label="Open Support Chat">
-        <i class="bi bi-chat-dots-fill"></i>
+        <!-- <i class="bi bi-chat-dots-fill"></i> -->
+        <!-- <i class="fa-regular fa-robot"></i> -->
+        <i class="fa-solid fa-robot"></i>
     </button>
 
     <!-- Chat Modal Window -->
@@ -703,7 +648,7 @@
             </div>
             <button id="chatbotCloseBtn" class="btn-close-chat">&times;</button>
         </div>
-        
+
         <div id="chatbotMessages" class="chatbot-messages">
             <div class="chat-bubble bot">
                 Hello! I can help with system questions about Flashcards, MCQs, or Classes. What would you like to know?
@@ -873,7 +818,7 @@
 function sendQuickReply(text) {
     const input = document.getElementById("chatbotInput");
     const form = document.getElementById("chatbotForm");
-    
+
     if (input && form) {
         input.value = text;
         // Dispatch submit event so existing form handler runs
