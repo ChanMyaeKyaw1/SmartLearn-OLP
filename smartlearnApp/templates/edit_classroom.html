@@ -53,7 +53,6 @@
                 </label>
             </div>
 
-            <div id="priceWrapper" class="price-wrapper" style="display: {% if classroom.class_type == 'private' %}block{% else %}none{% endif %};">
                 <label class="label-bold">Private Class Price ($)</label>
                 <input type="number" name="price" class="form-control" min="0" step="0.01" value="{{ classroom.price }}">
             </div>

@@ -311,6 +311,10 @@ def my_classes(request):
 def browse_classes(request):
     current_user = request.user
 
+    classes_qs = Classroom.objects.annotate(
+            member_count=Count('enrollments', filter=Q(enrollments__status='approved')) + 1
+        )
+
     search_query = request.GET.get('search', '').strip()
     visibility = request.GET.get('visibility', '').strip()
     sorting = request.GET.get('sorting', '').strip()
@@ -446,6 +450,26 @@ def joined_students_list(request, class_id):
             "joined_students": joined_students,
         }
     )
+
+@login_required(login_url='login')
+def leave_classroom(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+    
+    # Do not allow owner/teacher to leave their own class
+    if classroom.owner == request.user:
+        messages.error(request, "As the classroom owner, you cannot leave this class.")
+        return redirect('classroom_detail', class_id=class_id)
+
+    # For public classes, remove enrollment if present or cleanup student access
+    if classroom.class_type == 'public':
+        Enrollment.objects.filter(classroom=classroom, student=request.user).delete()
+        messages.success(request, f"You have left {classroom.title}.")
+    else:
+        # Optional: handle leaving private classes if needed
+        Enrollment.objects.filter(classroom=classroom, student=request.user).delete()
+        messages.success(request, f"You have left {classroom.title}.")
+
+    return redirect('browse_classes')
 
 def serve_dashboard_page(request):
     user = get_mock_user(request)
