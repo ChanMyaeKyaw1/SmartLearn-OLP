@@ -679,6 +679,7 @@ font-size:30px;
 
 <div class="course-header">
 
+    
 
 <span class="level-badge">
 ADVANCED LEVEL TRACK
@@ -704,35 +705,24 @@ ADVANCED LEVEL TRACK
 
 
 
-<div class="teacher-box">
-
-
-<div class="teacher-avatar">
-
-{{ classroom.owner.username|slice:":1"|upper }}
-
+<div class="teacher-box d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-3">
+        <div class="teacher-avatar">
+            {{ classroom.owner.username|slice:":1"|upper }}
+        </div>
+        <div>
+            <div class="teacher-name">
+                Led by {{ classroom.owner.username }}
+            </div>
+            <small class="text-muted">Course Instructor</small>
+        </div>
+    </div>
+<!-- MEMBER COUNT BADGE -->
+    <div class="member-count-badge" style="background: var(--light-matcha); color: var(--forest); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 14px;">
+        <i class="fa-solid fa-users me-1"></i>
+        {{ classroom.member_count|default:1 }} {{ classroom.member_count|pluralize:"Member,Members" }}
+    </div>
 </div>
-
-
-<div>
-
-<div class="teacher-name">
-
-Led by {{ classroom.owner.username }}
-
-</div>
-
-
-<small class="text-muted">
-Course Instructor
-</small>
-
-
-</div>
-
-
-</div>
-
 
 {% if is_owner %}
 <div class="teacher-tools teacher-tools--inline">
@@ -746,7 +736,7 @@ Course Instructor
                 <span>Update title, subject, price, and access type</span>
             </div>
         </a>
-        
+
         <a href="{% url 'teacher_student_results' classroom.class_id %}" class="teacher-tool-card">
             <i class="fa-solid fa-chart-line"></i>
             <div>
@@ -880,7 +870,16 @@ View Public Note
 
 </a>
 
-
+{% if not is_owner %}
+    <div class="mt-4">
+        <a href="{% url 'leave_classroom' classroom.class_id %}" 
+           class="btn btn-outline-danger btn-sm" 
+           onclick="return confirm('Are you sure you want to leave this class?');"
+           style="border-radius: 10px; padding: 6px 14px; font-weight: 600;">
+            <i class="fa-solid fa-right-from-bracket me-1"></i> Leave Classroom
+        </a>
+    </div>
+{% endif %}
 
 
 </div>
