@@ -1645,3 +1645,86 @@ def toggle_pin_note(request, note_id):
         note.save()
         messages.success(request, "Pin status updated.")
     return redirect('community_notes', class_id=note.classroom.class_id)
+
+
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def chatbot_api(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            msg = data.get("message", "").strip().lower()
+
+            # 1. Greetings
+            if any(k in msg for k in ["hi", "hello", "hey", "start", "greetings", "bot", "ai"]):
+                reply = (
+                    "Hello! Welcome to SmartLearn Assistant. "
+                    "I can help you with Classes, Flashcards, MCQs, Theme settings, Profile details, or Teacher Mode. "
+                    "What would you like to explore?"
+                )
+
+            # 2. Account & Authentication
+            elif any(k in msg for k in ["account", "signup", "sign up", "login", "log in", "password", "register"]):
+                reply = (
+                    "Account Help: You can log in or register using the buttons at the top right of the navigation bar. "
+                    "If you forgot your password, click Forgot Password on the sign-in screen to reset it."
+                )
+
+            # 3. Classes & Courses
+            elif any(k in msg for k in ["class", "classes", "course", "courses", "lecture", "study"]):
+                reply = (
+                    "Classes: Access your video lectures, study materials, and track your learning progress directly from your Dashboard or the Classes tab."
+                )
+
+            # 4. Flashcards
+            elif any(k in msg for k in ["flashcard", "flashcards", "card", "deck", "memorize"]):
+                reply = (
+                    "Flashcards: Practice active recall with our flashcard decks. You can study existing subject decks or build your own custom sets from your dashboard."
+                )
+
+            # 5. MCQs & Quizzes
+            elif any(k in msg for k in ["mcq", "mcqs", "quiz", "quizzes", "test", "practice"]):
+                reply = (
+                    "MCQs & Quizzes: Test your knowledge with multiple-choice quizzes. Visit the MCQs section to take practice tests and get instant feedback."
+                )
+
+            # 6. Theme Settings (Dark/Light Mode)
+            elif any(k in msg for k in ["theme", "dark mode", "light mode", "color", "appearance"]):
+                reply = (
+                    "Theme Settings: Click the sun/moon icon in the top navigation bar to toggle between Light Mode and Dark Mode whenever you like."
+                )
+
+            # 7. User Profile
+            elif any(k in msg for k in ["profile", "avatar", "username", "bio", "details", "settings"]):
+                reply = (
+                    "Profile Settings: Click your profile icon at the top right to update your personal details, avatar, and password preferences."
+                )
+
+            # 8. Teacher Mode (Updated)
+            elif any(k in msg for k in ["teacher", "teacher mode", "educator", "instructor", "create course", "payment"]):
+                reply = (
+                    "Teacher Mode: Toggle Teacher Mode using the switch in the top bar. "
+                    "When enabled, it reveals the Payment Methods option in your profile dropdown, allowing you to manage educator payment accounts."
+                )
+
+            # 9. Support & Contact
+            elif any(k in msg for k in ["help", "support", "contact", "email", "issue", "bug"]):
+                reply = (
+                    "Support: Need extra assistance? Contact our support team anytime at support@smartlearn.com."
+                )
+
+            # Default Fallback
+            else:
+                reply = (
+                    "I am here to help! You can ask me about Accounts, Classes, Flashcards, MCQs, Theme settings, Profile, or Teacher Mode."
+                )
+
+            return JsonResponse({"reply": reply})
+
+        except Exception as e:
+            return JsonResponse({"reply": f"Error: {str(e)}"}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=400)

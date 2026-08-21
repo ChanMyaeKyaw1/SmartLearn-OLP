@@ -60,6 +60,8 @@ urlpatterns = [
     path('community-notes/<int:note_id>/upvote/', views.toggle_upvote_note, name='toggle_upvote_note'),
     path('community-notes/<int:note_id>/verify/', views.toggle_verify_note, name='toggle_verify_note'),
     path('community-notes/<int:note_id>/pin/', views.toggle_pin_note, name='toggle_pin_note'),
+
+    path('api/chatbot/', views.chatbot_api, name='chatbot_api'),
 ]
 
 

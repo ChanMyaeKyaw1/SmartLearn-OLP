@@ -2466,3 +2466,48 @@ html[data-theme="dark"] .chatbot-input-area input {
     color: #ffffff !important;
     border-color: #2b3a34 !important;
 }
+
+/* Quick Replies Horizontal Container */
+.quick-replies {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  scrollbar-width: thin; /* For Firefox */
+}
+
+/* Hide scrollbar for Webkit browsers */
+.quick-replies::-webkit-scrollbar {
+  height: 4px;
+}
+.quick-replies::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+/* Individual Chip Style */
+.chip {
+  background-color: #ffffff;
+  color: #2b6cb0;
+  border: 1px solid #cbd5e0;
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  flex-shrink: 0;
+}
+
+.chip:hover {
+  background-color: #ebf8ff;
+  border-color: #3182ce;
+  transform: translateY(-1px);
+}
+
+.chip:active {
+  transform: translateY(0);
+}

@@ -709,7 +709,13 @@
                 Hello! I can help with system questions about Flashcards, MCQs, or Classes. What would you like to know?
             </div>
         </div>
-
+        <div class="quick-replies d-flex gap-2 p-2 overflow-auto" style="white-space: nowrap; border-top: 1px solid #e2ebe7; background: #f8faf9;">
+            <button type="button" class="btn btn-sm btn-outline-success rounded-pill chip-btn" onclick="sendQuickReply('Classes')">🎓 Classes</button>
+            <button type="button" class="btn btn-sm btn-outline-success rounded-pill chip-btn" onclick="sendQuickReply('Flashcards')">🧠 Flashcards</button>
+            <button type="button" class="btn btn-sm btn-outline-success rounded-pill chip-btn" onclick="sendQuickReply('MCQs')">🎯 MCQs</button>
+            <button type="button" class="btn btn-sm btn-outline-success rounded-pill chip-btn" onclick="sendQuickReply('Theme')">🎨 Theme</button>
+            <button type="button" class="btn btn-sm btn-outline-success rounded-pill chip-btn" onclick="sendQuickReply('Teacher Mode')">👨‍🏫 Teacher Mode</button>
+        </div>
         <form id="chatbotForm" class="chatbot-input-area">
             <input type="text" id="chatbotInput" placeholder="Ask a question..." autocomplete="off" required>
             <button type="submit" class="btn-send"><i class="bi bi-send-fill"></i></button>
@@ -801,7 +807,7 @@
         applyTeacherMode(isTeacher);
       });
 
-      document.addEventListener("DOMContentLoaded", function () {
+   document.addEventListener("DOMContentLoaded", function () {
     const toggleBtn = document.getElementById("chatbotToggleBtn");
     const closeBtn = document.getElementById("chatbotCloseBtn");
     const modal = document.getElementById("chatbotModal");
@@ -809,26 +815,49 @@
     const input = document.getElementById("chatbotInput");
     const messages = document.getElementById("chatbotMessages");
 
-    // Toggle Modal Visibility
-    toggleBtn.addEventListener("click", () => modal.classList.toggle("hidden"));
-    closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
+    console.log("Chatbot Initialized:", { toggleBtn, modal, form, input });
 
-    // Quick Automated Q&A Logic for System Questions
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const text = input.value.trim();
-        if (!text) return;
+    if (toggleBtn) toggleBtn.addEventListener("click", () => modal.classList.toggle("hidden"));
+    if (closeBtn) closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
 
-        // Render User Message
-        appendBubble(text, "user");
-        input.value = "";
+    if (form) {
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            console.log("Form Submitted!"); // Check if this logs in F12 console
 
-        // Generate Bot Reply
-        setTimeout(() => {
-            const reply = getSystemResponse(text.toLowerCase());
-            appendBubble(reply, "bot");
-        }, 500);
-    });
+            const text = input.value.trim();
+            if (!text) return;
+
+            appendBubble(text, "user");
+            input.value = "";
+
+            const typingBubble = appendBubble("Thinking...", "bot");
+
+            try {
+                console.log("Sending fetch request to /api/chatbot/...");
+                const response = await fetch("/api/chatbot/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: text })
+                });
+
+                console.log("Response Status:", response.status);
+                const data = await response.json();
+                console.log("Response Data:", data);
+
+                if (response.ok) {
+                    typingBubble.textContent = data.reply;
+                } else {
+                    typingBubble.textContent = data.reply || ("Error: Status " + response.status);
+                }
+            } catch (err) {
+                console.error("Fetch Exception:", err);
+                typingBubble.textContent = "Client/Network Error: " + err.message;
+            }
+        });
+    } else {
+        console.error("Chatbot Form element (#chatbotForm) not found!");
+    }
 
     function appendBubble(text, sender) {
         const bubble = document.createElement("div");
@@ -836,22 +865,21 @@
         bubble.textContent = text;
         messages.appendChild(bubble);
         messages.scrollTop = messages.scrollHeight;
-    }
-
-    function getSystemResponse(query) {
-        if (query.includes("flashcard") || query.includes("study")) {
-            return "To study flashcards, go to the Flashcards tab and click 'Learn Topic' on any topic collection.";
-        } else if (query.includes("teacher") || query.includes("toggle")) {
-            return "Enable Teacher Mode using the toggle in the top navigation bar to access class creation and management tools.";
-        } else if (query.includes("mcq") || query.includes("quiz")) {
-            return "Multiple Choice Questions (MCQs) can be accessed from the MCQs navigation link.";
-        } else if (query.includes("dark mode") || query.includes("theme")) {
-            return "Click the moon/sun icon in the top right header to switch between Light and Dark mode.";
-        } else {
-            return "I am a basic system guide! For specific platform features, try asking about Flashcards, MCQs, Classes, or Teacher Mode.";
-        }
+        return bubble;
     }
 });
+
+// Add this helper function inside your <script> tag
+function sendQuickReply(text) {
+    const input = document.getElementById("chatbotInput");
+    const form = document.getElementById("chatbotForm");
+    
+    if (input && form) {
+        input.value = text;
+        // Dispatch submit event so existing form handler runs
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+    }
+}
     </script>
     {% block extra_js %}{% endblock %}
   </body>
