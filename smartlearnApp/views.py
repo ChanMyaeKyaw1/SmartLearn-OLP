@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 from django.views.decorators.cache import never_cache
 
-from .models import Classroom, CommunityNote, Enrollment, Flashcard, FlashcardTopicReaction, MCQQuestion, QuizAttempt, TeacherMaterial, UserProfile
+from .models import Classroom, CommunityNote, Enrollment, Flashcard, FlashcardTopicReaction, MCQQuestion, QuizAttempt, QuizSettings, TeacherMaterial, UserProfile
 
 from .models import PaymentAccount
 
@@ -876,12 +876,38 @@ def mcqs_view(request, class_id):
         return blocked_response
 
     can_create = user_can_create_learning_content(classroom, current_user)
+    
+    # Get or create quiz settings
+    quiz_settings = None
+    try:
+        from .models import QuizSettings
+        quiz_settings, created = QuizSettings.objects.get_or_create(classroom=classroom)
+    except Exception as e:
+        print(f"QuizSettings error in mcqs_view: {e}")
+        quiz_settings = None
 
     if request.method == 'POST':
         if not can_create:
             messages.error(request, "Only the private class owner can create MCQs for this classroom.")
             return redirect('mcqs', class_id=classroom.class_id)
 
+        # Save quiz settings
+        time_limit = request.POST.get('time_limit')
+        max_attempts = request.POST.get('max_attempts')
+        
+        if quiz_settings:
+            if time_limit and time_limit.strip():
+                quiz_settings.time_limit_minutes = int(time_limit)
+            else:
+                quiz_settings.time_limit_minutes = None
+                
+            if max_attempts and max_attempts.strip():
+                quiz_settings.max_attempts = int(max_attempts)
+            else:
+                quiz_settings.max_attempts = None
+            quiz_settings.save()
+
+        # Create MCQs
         shared_topic = request.POST.get('topic', '').strip()
         questions = request.POST.getlist('question') or [request.POST.get('question', '')]
         option_a_list = request.POST.getlist('option_a') or [request.POST.get('option_a', '')]
@@ -932,12 +958,14 @@ def mcqs_view(request, class_id):
 
         messages.error(request, "Please complete the topic, question, options, and correct answer for at least one MCQ.")
 
+    # Get questions grouped by topic for display
     questions = list(
         MCQQuestion.objects.filter(classroom=classroom)
         .select_related('created_by')
-        .order_by('topic', '-created_at')
+        .order_by('topic', 'question_id')
     )
 
+    # Group by topic
     topic_groups = []
     topic_map = OrderedDict()
 
@@ -959,6 +987,7 @@ def mcqs_view(request, class_id):
         if question_item.created_by.username not in group['contributors']:
             group['contributors'].append(question_item.created_by.username)
 
+    # Prepare payload
     topic_groups_payload = []
     for group in topic_groups:
         contributor_count = len(group['contributors'])
@@ -987,8 +1016,8 @@ def mcqs_view(request, class_id):
         'total_topics': total_topics,
         'can_create': can_create,
         'current_user': current_user,
+        'quiz_settings': quiz_settings,
     })
-
 
 def all_mcqs_view(request):
     current_user = request.user
@@ -997,12 +1026,18 @@ def all_mcqs_view(request):
 
     mcq_groups = []
     for classroom in accessible_classrooms:
+        # Get all questions for this classroom
         classroom_questions = list(
             MCQQuestion.objects.filter(classroom=classroom)
             .select_related('created_by')
-            .order_by('topic', '-created_at')
+            .order_by('topic', 'question_id')
         )
 
+        # Skip classrooms with no questions
+        if not classroom_questions:
+            continue
+
+        # Group by topic
         classroom_topic_map = OrderedDict()
         for question_item in classroom_questions:
             group_key = question_item.topic
@@ -1013,11 +1048,11 @@ def all_mcqs_view(request):
                     'classroom_title': classroom.title,
                     'class_type': classroom.class_type,
                     'topic': question_item.topic,
-                    'topic_slug': slugify(question_item.topic) or 'mcq-topic',
                     'preview_question': question_item.question,
                     'questions': [],
                     'contributors': [],
                     'primary_creator': question_item.created_by.username,
+                    'total_questions': 0,
                 }
                 classroom_topic_map[group_key] = group
 
@@ -1025,6 +1060,7 @@ def all_mcqs_view(request):
             if question_item.created_by.username not in group['contributors']:
                 group['contributors'].append(question_item.created_by.username)
 
+        # Calculate totals and add to mcq_groups
         for group in classroom_topic_map.values():
             contributor_count = len(group['contributors'])
             if contributor_count == 1:
@@ -1034,6 +1070,8 @@ def all_mcqs_view(request):
 
             group['total_questions'] = len(group['questions'])
             group['contributor_summary'] = contributor_summary
+            # Remove the questions list to keep the payload smaller
+            # del group['questions']  # Uncomment if you don't need questions in the template
             mcq_groups.append(group)
 
     return render(request, 'all_mcqs.html', {
@@ -1043,29 +1081,56 @@ def all_mcqs_view(request):
         'total_topics': len(mcq_groups),
         'can_create': can_create,
     })
+from django.utils import timezone
+from datetime import timedelta
+from django.db import IntegrityError
+import traceback
 
+# def take_quiz_view(request, class_id):
+#     classroom = get_object_or_404(Classroom, class_id=class_id)
+#     current_user, blocked_response = require_classroom_access(request, classroom)
+#     if blocked_response:
+#         return blocked_response
 
-def take_quiz_view(request, class_id):
-    classroom = get_object_or_404(Classroom, class_id=class_id)
-    current_user, blocked_response = require_classroom_access(request, classroom)
-    if blocked_response:
-        return blocked_response
+#     selected_topic = request.GET.get('topic', '').strip()
+#     questions = MCQQuestion.objects.filter(classroom=classroom).select_related('created_by').order_by('topic', 'question_id')
 
-    selected_topic = request.GET.get('topic', '').strip()
-    questions = MCQQuestion.objects.filter(classroom=classroom).select_related('created_by').order_by('topic', 'question_id')
+#     if selected_topic:
+#         questions = questions.filter(topic=selected_topic)
 
-    if selected_topic:
-        questions = questions.filter(topic=selected_topic)
+#     questions = list(questions)
 
-    questions = list(questions)
+#     # Get quiz settings
+#     try:
+#         quiz_settings = QuizSettings.objects.get(classroom=classroom)
+#     except QuizSettings.DoesNotExist:
+#         quiz_settings = QuizSettings.objects.create(classroom=classroom)
+#     except Exception as e:
+#         # If there's any other error, create a default one
+#         print(f"QuizSettings error: {e}")
+#         quiz_settings = None
 
-    return render(request, 'take_mcq_quiz.html', {
-        'classroom': classroom,
-        'questions': questions,
-        'selected_topic': selected_topic,
-        'question_count': len(questions),
-        'current_user': current_user,
-    })
+#     # Check max attempts
+#     if quiz_settings and quiz_settings.max_attempts:
+#         attempts_count = QuizAttempt.objects.filter(
+#             classroom=classroom,
+#             student=current_user
+#         ).count()
+        
+#         if attempts_count >= quiz_settings.max_attempts:
+#             messages.error(request, f"You have reached the maximum of {quiz_settings.max_attempts} attempts for this quiz.")
+#             return redirect('mcqs', class_id=classroom.class_id)
+
+#     context = {
+#         'classroom': classroom,
+#         'questions': questions,
+#         'selected_topic': selected_topic,
+#         'question_count': len(questions),
+#         'current_user': current_user,
+#         'quiz_settings': quiz_settings,
+#     }
+    
+#     return render(request, 'take_mcq_quiz.html', context)
 
 
 def submit_quiz(request, class_id):
@@ -1077,10 +1142,33 @@ def submit_quiz(request, class_id):
     if request.method != 'POST':
         return redirect('mcqs', class_id=classroom.class_id)
 
+    # Get the topic from the POST data
     selected_topic = request.POST.get('topic', '').strip()
-    questions = MCQQuestion.objects.filter(classroom=classroom).order_by('topic', 'question_id')
+    
+    # Get questions ONLY for this topic
     if selected_topic:
-        questions = questions.filter(topic=selected_topic)
+        questions = MCQQuestion.objects.filter(
+            classroom=classroom,
+            topic=selected_topic
+        ).order_by('question_id')
+    else:
+        # If no topic specified, get all questions (fallback)
+        questions = MCQQuestion.objects.filter(classroom=classroom).order_by('question_id')
+    
+    # Get quiz settings to check max attempts
+    try:
+        from .models import QuizSettings
+        quiz_settings = QuizSettings.objects.get(classroom=classroom)
+        if quiz_settings.max_attempts:
+            attempts_count = QuizAttempt.objects.filter(
+                classroom=classroom,
+                student=current_user
+            ).count()
+            if attempts_count >= quiz_settings.max_attempts:
+                messages.error(request, f"You have reached the maximum of {quiz_settings.max_attempts} attempts.")
+                return redirect('mcqs', class_id=classroom.class_id)
+    except QuizSettings.DoesNotExist:
+        pass
 
     answers = {}
     score = 0
@@ -1102,7 +1190,9 @@ def submit_quiz(request, class_id):
         student=current_user,
         score=score,
         total_questions=questions.count(),
-        answers=answers
+        answers=answers,
+        topic=selected_topic  # Save the topic
+
     )
 
     return redirect('quiz_result', attempt_id=attempt.attempt_id)
@@ -1117,6 +1207,66 @@ def my_results_view(request):
         'current_user': current_user,
     })
 
+def take_quiz_view(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+    current_user, blocked_response = require_classroom_access(request, classroom)
+    if blocked_response:
+        return blocked_response
+
+    # Get the topic from the URL parameter
+    selected_topic = request.GET.get('topic', '').strip()
+    
+    # If no topic is provided, show all topics or redirect
+    if not selected_topic:
+        messages.info(request, "Please select a specific topic to take a quiz.")
+        return redirect('all_mcqs')
+    
+    # Get questions for this classroom AND this specific topic
+    questions = MCQQuestion.objects.filter(
+        classroom=classroom,
+        topic=selected_topic  # Exact match on topic
+    ).select_related('created_by').order_by('question_id')
+    
+    # If no questions found, show error
+    if not questions.exists():
+        # Get all available topics for this classroom
+        all_topics = MCQQuestion.objects.filter(classroom=classroom).values_list('topic', flat=True).distinct()
+        topics_list = ', '.join(list(all_topics)) if all_topics else 'No topics available'
+        messages.warning(request, f"No questions found for topic: '{selected_topic}'. Available topics: {topics_list}")
+        return redirect('all_mcqs')
+
+    questions = list(questions)
+    
+    # Get quiz settings
+    quiz_settings = None
+    try:
+        from .models import QuizSettings
+        quiz_settings, created = QuizSettings.objects.get_or_create(classroom=classroom)
+    except Exception as e:
+        print(f"QuizSettings error: {e}")
+        quiz_settings = None
+    
+    # Check max attempts
+    if quiz_settings and quiz_settings.max_attempts:
+        attempts_count = QuizAttempt.objects.filter(
+            classroom=classroom,
+            student=current_user
+        ).count()
+        
+        if attempts_count >= quiz_settings.max_attempts:
+            messages.error(request, f"You have reached the maximum of {quiz_settings.max_attempts} attempts for this quiz.")
+            return redirect('mcqs', class_id=classroom.class_id)
+    
+    context = {
+        'classroom': classroom,
+        'questions': questions,
+        'selected_topic': selected_topic,
+        'question_count': len(questions),
+        'current_user': current_user,
+        'quiz_settings': quiz_settings,
+    }
+    
+    return render(request, 'take_mcq_quiz.html', context)
 
 def quiz_result(request, attempt_id):
     attempt = get_object_or_404(
@@ -1131,9 +1281,32 @@ def quiz_result(request, attempt_id):
         messages.error(request, "You can only view your own quiz result.")
         return redirect('mcqs', class_id=attempt.classroom.class_id)
 
-    questions = MCQQuestion.objects.filter(classroom=attempt.classroom).order_by('topic', 'question_id')
+    # Get the topic from the attempt (if stored)
+    topic = getattr(attempt, 'topic', None)
+    
+    # If topic is stored in attempt, filter questions by that topic
+    if topic:
+        questions = MCQQuestion.objects.filter(
+            classroom=attempt.classroom,
+            topic=topic
+        ).order_by('question_id')
+    else:
+        # Fallback: try to get topic from the first answered question
+        questions = MCQQuestion.objects.filter(classroom=attempt.classroom).order_by('question_id')
+        if attempt.answers:
+            first_question_id = list(attempt.answers.keys())[0] if attempt.answers else None
+            if first_question_id:
+                try:
+                    first_question = MCQQuestion.objects.get(question_id=first_question_id)
+                    topic = first_question.topic
+                    questions = MCQQuestion.objects.filter(
+                        classroom=attempt.classroom,
+                        topic=topic
+                    ).order_by('question_id')
+                except MCQQuestion.DoesNotExist:
+                    pass
+    
     reviewed_questions = []
-
     for question in questions:
         answer = attempt.answers.get(str(question.question_id), {})
         selected = answer.get('selected', '')
@@ -1152,8 +1325,8 @@ def quiz_result(request, attempt_id):
         'classroom': attempt.classroom,
         'reviewed_questions': reviewed_questions,
         'percentage': percentage,
+        'topic': topic,
     })
-
 
 @login_required(login_url='login')
 def teacher_student_results(request, class_id):

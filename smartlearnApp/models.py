@@ -163,11 +163,22 @@ class QuizAttempt(models.Model):
     score = models.IntegerField(default=0)
     total_questions = models.IntegerField(default=0)
     answers = models.JSONField(default=dict)
+    topic = models.CharField(max_length=120, blank=True, null=True)  # NEW: Store the topic
     taken_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.student.username} - {self.classroom.title} ({self.score}/{self.total_questions})"
 
+class QuizSettings(models.Model):
+    settings_id = models.AutoField(primary_key=True)
+    classroom = models.OneToOneField(Classroom, on_delete=models.CASCADE, related_name='quiz_settings')
+    time_limit_minutes = models.IntegerField(null=True, blank=True, help_text="Time limit in minutes (leave blank for no limit)")
+    max_attempts = models.IntegerField(null=True, blank=True, help_text="Maximum number of attempts per student (leave blank for unlimited)")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Quiz Settings for {self.classroom.title}"
 
 # Teacher Payment Accounts model (KPay, WavePay, etc.)
 class PaymentAccount(models.Model):

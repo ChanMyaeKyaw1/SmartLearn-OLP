@@ -44,8 +44,7 @@
             
 
             <div class="topic-collection-actions">
-                <a class="btn-primary" href="{% url 'take_quiz' group.classroom_id %}?topic={{ group.topic|urlencode }}">Take Quiz</a>
-            </div>
+                <a class="btn-primary" href="{% url 'take_quiz' group.classroom_id %}?topic={{ group.topic|urlencode }}">Take Quiz</a>            </div>
         </article>
         {% empty %}
         <div class="empty-study-state">No accessible MCQs yet.</div>

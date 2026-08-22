@@ -394,3 +394,73 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+// ==========================================
+// QUIZ TIMER FUNCTIONALITY
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if we're on a quiz page
+    const timerDisplay = document.getElementById('timeRemaining');
+    if (!timerDisplay) return; // Exit if not a quiz page
+    
+    const form = document.getElementById('quizForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Get time limit from the data attribute or hidden input
+    let timeLimitMinutes = 0;
+    const timeLimitInput = document.querySelector('input[name="time_limit"]');
+    if (timeLimitInput) {
+        timeLimitMinutes = parseInt(timeLimitInput.value) || 0;
+    }
+    
+    if (timeLimitMinutes <= 0) return; // No timer needed
+    
+    let timeRemaining = timeLimitMinutes * 60;
+    let timerStarted = false;
+    let timerInterval = null;
+    
+    function updateTimer() {
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        timerDisplay.textContent = minutes + ':' + seconds.toString().padStart(2, '0');
+        
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            alert('⏰ Time is up! Your quiz will be submitted automatically.');
+            if (form) form.submit();
+        }
+        timeRemaining--;
+    }
+    
+    function startTimer() {
+        if (!timerStarted && timeRemaining > 0) {
+            timerStarted = true;
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Warn at 1 minute remaining
+            if (timeLimitMinutes > 1) {
+                setTimeout(function() {
+                    alert('⚠️ 1 minute remaining!');
+                }, (timeLimitMinutes - 1) * 60 * 1000);
+            }
+        }
+    }
+    
+    // Start timer on first user interaction
+    document.addEventListener('click', startTimer);
+    document.addEventListener('keydown', startTimer);
+    document.addEventListener('scroll', startTimer);
+    
+    // Also start timer on page load if user is already active
+    if (document.visibilityState === 'visible') {
+        setTimeout(startTimer, 1000);
+    }
+    
+    // Handle page visibility change (user switching tabs)
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible' && !timerStarted) {
+            setTimeout(startTimer, 1000);
+        }
+    });
+});
+

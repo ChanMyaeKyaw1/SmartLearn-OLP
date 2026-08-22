@@ -3,37 +3,57 @@
 
 {% block content %}
 <div class="learning-page-header" style="margin-bottom: 18px;">
-    <a href="{% url 'all_mcqs'%}" class="back-btn-icon" >
+    <a href="{% url 'all_mcqs'%}" class="back-btn-icon">
         <i class="fa-solid fa-arrow-left"></i>
     </a>
 </div>
 
-    <div class="learning-title-row">
-        <div>
-            <h2 class="page-heading-large">Take Quiz</h2>
-            <p class="subtext-muted">
-                {% if selected_topic %}
-                    {{ selected_topic }} quiz with {{ question_count }} questions.
-                {% else %}
-                    Full class quiz with {{ question_count }} questions.
-                {% endif %}
-            </p>
-        </div>
-        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
-            {{ classroom.class_type|title }} Class
-        </span>
+<div class="learning-title-row">
+    <div>
+        <h2 class="page-heading-large">
+            {% if selected_topic %}
+                Quiz: {{ selected_topic }}
+            {% else %}
+                Take Quiz
+            {% endif %}
+        </h2>
+        <p class="subtext-muted">
+            {% if selected_topic %}
+                {{ selected_topic }} quiz with {{ question_count }} questions.
+            {% else %}
+                Full class quiz with {{ question_count }} questions.
+            {% endif %}
+        </p>
     </div>
+    <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+        {{ classroom.class_type|title }} Class
+    </span>
+</div>
 
-    <div class="learning-stats">
-        <span class="stat-chip">{{ question_count }} questions</span>
-        <span class="stat-chip">{{ classroom.title }}</span>
-    </div>
+<div class="learning-stats">
+    <span class="stat-chip">{{ question_count }} questions</span>
+    <span class="stat-chip">{{ classroom.title }}</span>
+    {% if quiz_settings and quiz_settings.time_limit_minutes %}
+        <span class="stat-chip" id="timerDisplay">
+            <i class="fa-solid fa-clock me-1"></i>
+            Time: <span id="timeRemaining">{{ quiz_settings.time_limit_minutes }}:00</span>
+        </span>
+    {% endif %}
+    {% if quiz_settings and quiz_settings.max_attempts %}
+        <span class="stat-chip">
+            <i class="fa-solid fa-repeat me-1"></i>
+            Attempts: {{ quiz_settings.max_attempts }} max
+        </span>
+    {% endif %}
 </div>
 
 {% if question_count %}
-    <form method="POST" action="{% url 'submit_quiz' classroom.class_id %}" class="quiz-form">
+    <form method="POST" action="{% url 'submit_quiz' classroom.class_id %}" class="quiz-form" id="quizForm">
         {% csrf_token %}
         <input type="hidden" name="topic" value="{{ selected_topic }}">
+        {% if quiz_settings and quiz_settings.time_limit_minutes %}
+            <input type="hidden" name="time_limit" value="{{ quiz_settings.time_limit_minutes }}">
+        {% endif %}
 
         {% for question in questions %}
             <article class="quiz-question-card">
@@ -44,7 +64,7 @@
                 <h4>{{ question.question }}</h4>
 
                 <label class="quiz-option">
-                    <input type="radio" name="question_{{ question.question_id }}" value="A">
+                    <input type="radio" name="question_{{ question.question_id }}" value="A" required>
                     <span>{{ question.option_a }}</span>
                 </label>
                 <label class="quiz-option">
@@ -62,7 +82,7 @@
             </article>
         {% endfor %}
 
-        <button type="submit" class="btn-primary">Submit Quiz</button>
+        <button type="submit" class="btn-primary" id="submitBtn">Submit Quiz</button>
     </form>
 {% else %}
     <div class="styled-card">
