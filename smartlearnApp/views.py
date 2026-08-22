@@ -498,12 +498,31 @@ def request_join_class(request, class_id):
     ).first()
 
     if not existing:
+        # For public classes, auto-approve the enrollment
+        if classroom.class_type == 'public':
+            status = 'approved'
+            messages.success(request, f"You have successfully joined {classroom.title}!")
+        else:
+            status = 'pending'
+            messages.info(request, f"Your request to join {classroom.title} has been sent for approval.")
+
         Enrollment.objects.create(
             student=current_user,
             classroom=classroom,
-            status='pending'
+            status=status
         )
-
+    else:
+        # If already exists but status is pending/rejected, update it for public classes
+        if classroom.class_type == 'public' and existing.status != 'approved':
+            existing.status = 'approved'
+            existing.save()
+            messages.success(request, f"You have successfully joined {classroom.title}!")
+        else:
+            messages.info(request, f"You already have a pending request for {classroom.title}.")
+            
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return redirect(referer)
     return redirect('browse_classes')
 
 

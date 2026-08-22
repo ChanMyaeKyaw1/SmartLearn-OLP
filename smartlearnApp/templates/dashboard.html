@@ -134,6 +134,9 @@
                         <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
                             {{ classroom.class_type|title }}
                         </span>
+                        <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
+                            <i class="fa-solid fa-user-group me-1"></i>{{ classroom.member_count|default:1 }}
+                        </span>
                     </div>
                     <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:20 }}</p>
                     <div class="class-card-footer">
@@ -195,7 +198,7 @@
                                 </div>
                                 <div class="card-actions">
                                     {% if classroom.class_type == 'public' %}
-                                        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">
+                                        <a href="{% url 'request_join_class' classroom.class_id %}" class="btn-primary card-action-btn-small">
                                             Join Class
                                         </a>
                                     {% else %}
