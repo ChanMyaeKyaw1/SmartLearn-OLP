@@ -1,23 +1,51 @@
-{% extends 'base.html' %} {% block title %}User Profile - SmartLearn{% endblock %} {% block content %}
+{% extends 'base.html' %} {% block title %}User Profile - SmartLearn{% endblock %} {% block extra_css %}
+<style>
+    .teacher-only-profile {
+        display: none !important;
+    }
+
+    body.teacher-mode-active .teacher-only-profile {
+        display: block !important;
+    }
+
+    .btn-matcha-primary {
+        background-color: #059669;
+        color: #ffffff;
+        border: none;
+    }
+
+    .btn-matcha-primary:hover {
+        background-color: #047857;
+        color: #ffffff;
+    }
+</style>
+{% endblock %} {% block content %}
 <div class="container py-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
+
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
                     <h5 class="m-0 font-weight-bold text-dark">
                         <i class="fa-solid fa-user me-2 text-success"></i>User Profile Details
                     </h5>
-                    <span class="badge bg-success">
-                        {% if request.user.is_superuser %}Superadmin{% elif request.user.is_staff %}Staff{% else %}Student{% endif %}
-                    </span>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-success teacher-only-profile">
+                            <i class="fa-solid fa-chalkboard-user me-1"></i>Teacher Mode Active
+                        </span>
+                        <!-- <span class="badge bg-success">
+                            {% if request.user.is_superuser %}Superadmin{% elif request.user.is_staff %}Staff{% else %}Student{% endif %}
+                        </span> -->
+                    </div>
                 </div>
+
                 <div class="card-body p-4">
-                    <div class="row align-items-center">
-                        <!-- Profile Picture Section -->
-                        <div class="col-md-4 text-center mb-4 mb-md-0 border-end">
-                            {% if request.user.profile_image %}
-                            <img class="img-profile img-thumbnail rounded-circle mb-3" src="{{ request.user.profile_image.url }}" style="width: 140px; height: 140px; object-fit: cover;"> {% else %}
-                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm mx-auto mb-3" style="width: 140px; height: 140px; font-size: 42px; background-color: #2b4c3f; border: 2px solid #4CAF7D;">
+                    <div class="row align-items-start">
+                        <!-- Left Column: Avatar -->
+                        <div class="col-md-4 text-center mb-4 mb-md-0 border-end pe-md-4">
+                            {% if request.user.profile.profile_image and request.user.profile.profile_image.name %}
+                            <img class="img-profile img-thumbnail rounded-circle mb-3" src="{{ request.user.profile.profile_image.url }}" style="width: 140px; height: 140px; object-fit: cover;" alt="Profile Picture" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ request.user.username }}&background=15803D&color=fff';">                            {% else %}
+                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm mx-auto mb-3" style="width: 140px; height: 140px; font-size: 42px; background-color: #15803D; border: 2px solid #34D399;">
                                 {{ request.user.username|slice:":2"|upper }}
                             </div>
                             {% endif %}
@@ -25,27 +53,76 @@
                             <p class="text-muted small mb-0">{{ request.user.email }}</p>
                         </div>
 
-                        <!-- Info Details Section -->
+                        <!-- Right Column: User Info & Teacher Profile Details -->
                         <div class="col-md-8 ps-md-4">
-                            <div class="mb-3">
-                                <label class="text-muted small d-block">Username / Name</label>
-                                <span class="fs-6 fw-semibold text-dark">{{ request.user.username }}</span>
+                            <div class="row mb-3">
+                                <div class="col-sm-6 mb-2 mb-sm-0">
+                                    <label class="text-muted small d-block">Username / Name</label>
+                                    <span class="fs-6 fw-semibold text-dark">{{ request.user.username }}</span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="text-muted small d-block">Email Address</label>
+                                    <span class="fs-6 fw-semibold text-dark">{{ request.user.email }}</span>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="text-muted small d-block">Email Address</label>
-                                <span class="fs-6 fw-semibold text-dark">{{ request.user.email }}</span>
+                            <div class="row mb-3">
+                                <div class="col-sm-6 mb-2 mb-sm-0">
+                                    <label class="text-muted small d-block">Account Status</label> {% if request.user.is_active %}
+                                    <span class="badge bg-success">Active</span> {% else %}
+                                    <span class="badge bg-secondary">Inactive</span> {% endif %}
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="text-muted small d-block">Date Joined</label>
+                                    <span class="fs-6 text-dark">{{ request.user.date_joined|date:"M d, Y" }}</span>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="text-muted small d-block">Account Status</label> {% if request.user.is_active %}
-                                <span class="badge bg-success">Active</span> {% else %}
-                                <span class="badge bg-secondary">Inactive</span> {% endif %}
-                            </div>
+                            <!-- TEACHER PROFILE DETAILS -->
+                            <div class="teacher-only-profile">
+                                <hr class="my-3">
 
-                            <div class="mb-3">
-                                <label class="text-muted small d-block">Date Joined</label>
-                                <span class="fs-6 text-dark">{{ request.user.date_joined|date:"M d, Y" }}</span>
+                                <div class="mb-3">
+                                    <label class="text-muted small d-block mb-1">
+                                        <i class="fa-solid fa-quote-left me-1 text-success"></i> Bio / About Instructor
+                                    </label>
+                                    <p class="text-dark bg-light p-3 rounded border mb-0 small">
+                                        {{ request.user.profile.bio|default:"No bio provided yet. Add a short introduction so students get to know you better!" }}
+                                    </p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="text-muted small d-block mb-2">
+                                        <i class="fa-solid fa-graduation-cap me-1 text-success"></i> Expertise & Qualifications
+                                    </label>
+
+                                    <!-- Container where JS will insert formatted badge pills -->
+                                    <div class="d-flex flex-wrap gap-2" id="expertiseBadgeContainer">
+                                        {% if not request.user.profile.expertise %}
+                                        <span class="badge bg-light text-secondary border px-3 py-2">No expertise added yet</span> {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="text-muted small d-block mb-2">
+                                        <i class="fa-solid fa-link me-1 text-success"></i> Connect & Social Links
+                                    </label>
+                                    <div class="d-flex gap-2">
+                                        {% if request.user.profile.linkedin_url %}
+                                        <a href="{{ request.user.profile.linkedin_url }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                            <i class="fa-brands fa-linkedin me-1"></i> LinkedIn
+                                        </a>
+                                        {% endif %} {% if request.user.profile.github_url %}
+                                        <a href="{{ request.user.profile.github_url }}" target="_blank" class="btn btn-outline-dark btn-sm rounded-pill px-3">
+                                            <i class="fa-brands fa-github me-1"></i> GitHub
+                                        </a>
+                                        {% endif %} {% if request.user.profile.website_url %}
+                                        <a href="{{ request.user.profile.website_url }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                                            <i class="fa-solid fa-globe me-1"></i> Portfolio
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
 
                             <hr class="my-3">
@@ -62,7 +139,26 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+{% endblock %} {% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const rawExpertise = "{{ request.user.profile.expertise|default:''|escapejs }}";
+        const container = document.getElementById("expertiseBadgeContainer");
+
+        if (rawExpertise.trim().length > 0 && container) {
+            const skills = rawExpertise.split(',').map(s => s.trim()).filter(Boolean);
+
+            skills.forEach(skill => {
+                const badge = document.createElement("span");
+                badge.className = "badge bg-light text-dark border px-3 py-2 fs-6 rounded-pill shadow-sm";
+                badge.innerHTML = `<i class="fa-solid fa-check me-1 text-success"></i>${skill}`;
+                container.appendChild(badge);
+            });
+        }
+    });
+</script>
 {% endblock %}

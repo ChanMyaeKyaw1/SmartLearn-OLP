@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home_view, name='home'),
@@ -65,6 +67,9 @@ urlpatterns = [
     path('community-notes/<int:note_id>/pin/', views.toggle_pin_note, name='toggle_pin_note'),
 
     path('api/chatbot/', views.chatbot_api, name='chatbot_api'),
+
+    path('toggle-teacher-mode/', views.toggle_teacher_mode, name='toggle_teacher_mode'),
 ]
 
-
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -8,7 +8,7 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 
-from .models import Classroom, CommunityNote, Enrollment, Flashcard, FlashcardTopicReaction, MCQQuestion, QuizAttempt, TeacherMaterial
+from .models import Classroom, CommunityNote, Enrollment, Flashcard, FlashcardTopicReaction, MCQQuestion, QuizAttempt, TeacherMaterial, UserProfile
 
 from .models import PaymentAccount
 
@@ -16,6 +16,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user_model
+
+from django.views.decorators.http import require_POST
 
 
 # ==========================================
@@ -261,7 +263,7 @@ def dashboard_view(request):
 def quiz_history(request):
     # Filter using 'student' and order using 'taken_at'
     attempts = QuizAttempt.objects.filter(student=request.user).order_by('-taken_at')
-    
+
     context = {
         'attempts': attempts,
     }
@@ -404,14 +406,16 @@ def create_class(request):
 def delete_class(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
 
-    # Ensure only the actual owner can delete the classroom
-    if classroom.owner == request.user:
+    # Check permissions
+    if request.user.is_superuser or (hasattr(classroom, 'owner') and classroom.owner == request.user):
         classroom.delete()
         messages.success(request, "Classroom deleted successfully.")
     else:
         messages.error(request, "You do not have permission to delete this class.")
 
-    # Redirect safely back to dashboard or browse classes
+    # Redirect directly to a named URL route (avoiding empty referer issues)
+    if request.user.is_superuser:
+        return redirect('custom_admin_dashboard')
     return redirect('dashboard')
 
 def classroom_detail(request, class_id):
@@ -422,20 +426,20 @@ def classroom_detail(request, class_id):
 
     is_owner = (request.user.is_authenticated and classroom.owner == request.user)
 
-    
+
     return render(
         request,
         "classroom_detail.html",
         {
             "classroom": classroom,
             "is_owner": is_owner,
-            
+
         }
     )
 
 def joined_students_list(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
-    
+
     # Ensure only the classroom owner/teacher can access
     if request.user != classroom.owner:
         return redirect('classroom_detail', class_id=class_id)
@@ -454,7 +458,7 @@ def joined_students_list(request, class_id):
 @login_required(login_url='login')
 def leave_classroom(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
-    
+
     # Do not allow owner/teacher to leave their own class
     if classroom.owner == request.user:
         messages.error(request, "As the classroom owner, you cannot leave this class.")
@@ -1470,25 +1474,29 @@ def admin_change_password(request):
     return render(request, 'custom_admin/change_password.html')
 
 
-
-
-
 @login_required
 def edit_profile(request):
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+
     if request.method == 'POST':
-        user = request.user
-        user.username = request.POST.get('username', user.username)
-        user.email = request.POST.get('email', user.email)
+        request.user.username = request.POST.get('username')
+        request.user.email = request.POST.get('email')
+        request.user.save()
 
+        # IMPORTANT: 'image' MUST match name="image" in your <input type="file" name="image">
         if 'image' in request.FILES:
-            user.profile_image = request.FILES['image']
+            profile.profile_image = request.FILES['image']
 
-        user.save()
-        messages.success(request, 'Profile updated successfully!')
-        return redirect('edit_profile')
+        profile.bio = request.POST.get('bio')
+        profile.expertise = request.POST.get('expertise')
+        profile.linkedin_url = request.POST.get('linkedin_url')
+        profile.github_url = request.POST.get('github_url')
+        profile.website_url = request.POST.get('website_url')
+        profile.save()
 
-    return render(request, 'edit_profile.html')
+        return redirect('view_profile')
 
+    return render(request, 'edit_profile.html', {'profile': profile})
 
 @login_required
 def change_password(request):
@@ -1805,3 +1813,14 @@ def chatbot_api(request):
             return JsonResponse({"reply": f"Error: {str(e)}"}, status=500)
 
     return JsonResponse({"error": "Invalid request method"}, status=400)
+
+@require_POST
+@login_required
+def toggle_teacher_mode(request):
+    """Toggles Teacher Mode on/off in the user session."""
+    current_state = request.session.get('is_teacher_mode', False)
+    request.session['is_teacher_mode'] = not current_state
+    return JsonResponse({
+        'status': 'success',
+        'is_teacher_mode': request.session['is_teacher_mode']
+    })

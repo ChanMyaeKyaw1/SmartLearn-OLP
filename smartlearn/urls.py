@@ -29,8 +29,3 @@ urlpatterns = [
 # This connects media folders inside your dev workspace server layout
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
-# ==========================================
-# Phase 1 done here by Chan
-# ==========================================
