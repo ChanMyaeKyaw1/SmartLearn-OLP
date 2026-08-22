@@ -1,4 +1,7 @@
-{% extends 'base.html' %} {% block title %}MCQs - SmartLearn{% endblock %} {% block content %}
+{% extends 'base.html' %}
+{% block title %}MCQs - SmartLearn{% endblock %}
+
+{% block content %}
 <div class="learning-page-header">
     <div class="learning-title-row d-flex justify-content-between align-items-center">
         <div>
@@ -8,7 +11,6 @@
 
         <div class="d-flex align-items-center gap-3">
             {% if request.user.is_authenticated %}
-            <!-- Modal Trigger Button -->
             <button type="button" class="btn-primary teacher-only" data-bs-toggle="modal" data-bs-target="#createMCQModal">
                 + Create New Quiz Topic
             </button>
@@ -30,9 +32,10 @@
         </div>
     </div>
 
-    <div class="topic-collection-grid">
+    <div class="topic-collection-grid" id="mcqGrid">
         {% for group in mcq_groups %}
-        <article class="topic-collection-card topic-item-card" data-owner="{{ group.primary_creator }}">
+        <article class="topic-collection-card topic-item-card {% if request.user.username == group.primary_creator %}teacher-owned{% endif %}" 
+                 data-owner="{{ group.primary_creator }}">
             <div class="topic-collection-topline">
                 <span class="status-badge {% if group.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">{{ group.classroom_title }}</span>
                 <span class="topic-card-count">{{ group.total_questions }} questions</span>
@@ -41,18 +44,36 @@
             <h4>{{ group.topic }}</h4>
             <p class="topic-preview">{{ group.preview_question }}</p>
             <p class="topic-meta">Created by {{ group.primary_creator }}</p>
-            
 
             <div class="topic-collection-actions">
-                <a class="btn-primary" href="{% url 'take_quiz' group.classroom_id %}?topic={{ group.topic|urlencode }}">Take Quiz</a>            </div>
+                <!-- Student mode: Take Quiz button -->
+                <a class="btn-primary student-action" href="{% url 'take_quiz' group.classroom_id %}?topic={{ group.topic|urlencode }}">Take Quiz</a>
+                
+                <!-- Teacher Mode: Edit/Delete buttons -->
+                {% if request.user.username == group.primary_creator %}
+                    <div class="teacher-actions">
+                        <a href="{% url 'edit_mcq' group.questions.0.question_id %}" class="btn-edit">
+                            <i class="fa-solid fa-pen"></i> Edit
+                        </a>
+                        <a href="{% url 'delete_mcq_topic' group.classroom_id %}?topic={{ group.topic|urlencode }}" 
+                           class="btn-delete"
+                           onclick="return confirm('Are you sure you want to delete this entire topic?');">
+                            <i class="fa-solid fa-trash"></i> Delete
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
         </article>
         {% empty %}
         <div class="empty-study-state">No accessible MCQs yet.</div>
         {% endfor %}
-
-        <div id="noTeacherMCQMsg" class="empty-study-state" style="display: none;">You haven't created any MCQ topics yet.</div>
+    </div>
+    
+    <div id="noTeacherMCQMsg" class="empty-study-state" style="display: none;">
+        You haven't created any MCQ topics yet.
     </div>
 </section>
+
 <!-- ========================================== -->
 <!-- CREATE MCQ MODAL -->
 <!-- ========================================== -->
@@ -153,111 +174,105 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        // Mode Toggle
-        const modeExisting = document.getElementById("mcqModeExisting");
-        const modeNew = document.getElementById("mcqModeNew");
-        const existingSec = document.getElementById("mcqExistingClassSec");
-        const newSec = document.getElementById("mcqNewClassSec");
+document.addEventListener("DOMContentLoaded", function() {
+    // Mode Toggle for modal
+    const modeExisting = document.getElementById("mcqModeExisting");
+    const modeNew = document.getElementById("mcqModeNew");
+    const existingSec = document.getElementById("mcqExistingClassSec");
+    const newSec = document.getElementById("mcqNewClassSec");
 
-        if (modeExisting && modeNew) {
-            modeExisting.addEventListener("change", () => {
-                existingSec.style.display = "block";
-                newSec.style.display = "none";
+    if (modeExisting && modeNew) {
+        modeExisting.addEventListener("change", function() {
+            existingSec.style.display = "block";
+            newSec.style.display = "none";
+        });
+        modeNew.addEventListener("change", function() {
+            existingSec.style.display = "none";
+            newSec.style.display = "block";
+        });
+    }
+
+    // Add dynamic MCQ question block
+    const container = document.getElementById("modalMcqContainer");
+    const addBtn = document.getElementById("addMcqRowBtn");
+    let qCount = 1;
+
+    if (addBtn && container) {
+        addBtn.addEventListener("click", function() {
+            qCount++;
+            const div = document.createElement("div");
+            div.className = "card p-3 mb-3 bg-light border";
+            div.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <h6 class="font-weight-bold text-muted">Question ${qCount}</h6>
+                    <button type="button" class="btn-close remove-mcq" aria-label="Remove"></button>
+                </div>
+                <textarea name="question" class="form-control mb-2" placeholder="Question prompt" rows="2" required></textarea>
+                
+                <div class="row g-2 mb-2">
+                    <div class="col-6"><input type="text" name="option_a" class="form-control" placeholder="Option A" required></div>
+                    <div class="col-6"><input type="text" name="option_b" class="form-control" placeholder="Option B" required></div>
+                    <div class="col-6"><input type="text" name="option_c" class="form-control" placeholder="Option C" required></div>
+                    <div class="col-6"><input type="text" name="option_d" class="form-control" placeholder="Option D" required></div>
+                </div>
+
+                <label class="label-bold">Correct Option</label>
+                <select name="correct_option" class="form-control mb-2" required>
+                    <option value="A">Option A</option>
+                    <option value="B">Option B</option>
+                    <option value="C">Option C</option>
+                    <option value="D">Option D</option>
+                </select>
+
+                <textarea name="explanation" class="form-control" placeholder="Explanation (Optional)" rows="1"></textarea>
+            `;
+            div.querySelector(".remove-mcq").addEventListener("click", function() {
+                div.remove();
             });
-            modeNew.addEventListener("change", () => {
-                existingSec.style.display = "none";
-                newSec.style.display = "block";
-            });
-        }
+            container.appendChild(div);
+        });
+    }
+});
 
-        // Add dynamic MCQ question block
-        const container = document.getElementById("modalMcqContainer");
-        const addBtn = document.getElementById("addMcqRowBtn");
-        let qCount = 1;
-
-        if (addBtn && container) {
-            addBtn.addEventListener("click", () => {
-                qCount++;
-                const div = document.createElement("div");
-                div.className = "card p-3 mb-3 bg-light border";
-                div.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <h6 class="font-weight-bold text-muted">Question ${qCount}</h6>
-                        <button type="button" class="btn-close remove-mcq" aria-label="Remove"></button>
-                    </div>
-                    <textarea name="question" class="form-control mb-2" placeholder="Question prompt" rows="2" required></textarea>
-                    
-                    <div class="row g-2 mb-2">
-                        <div class="col-6"><input type="text" name="option_a" class="form-control" placeholder="Option A" required></div>
-                        <div class="col-6"><input type="text" name="option_b" class="form-control" placeholder="Option B" required></div>
-                        <div class="col-6"><input type="text" name="option_c" class="form-control" placeholder="Option C" required></div>
-                        <div class="col-6"><input type="text" name="option_d" class="form-control" placeholder="Option D" required></div>
-                    </div>
-
-                    <label class="label-bold">Correct Option</label>
-                    <select name="correct_option" class="form-control mb-2" required>
-                        <option value="A">Option A</option>
-                        <option value="B">Option B</option>
-                        <option value="C">Option C</option>
-                        <option value="D">Option D</option>
-                    </select>
-
-                    <textarea name="explanation" class="form-control" placeholder="Explanation (Optional)" rows="1"></textarea>
-                `;
-                div.querySelector(".remove-mcq").addEventListener("click", () => div.remove());
-                container.appendChild(div);
-            });
+// Teacher Mode Toggle for MCQs
+document.addEventListener("DOMContentLoaded", function() {
+    const toggle = document.getElementById("teacherModeToggle");
+    const noTeacherCardsMsg = document.getElementById("noTeacherMCQMsg");
+    const topicCards = document.querySelectorAll(".topic-item-card");
+    const currentUser = "{{ request.user.username }}";
+    
+    let teacherCardCount = 0;
+    topicCards.forEach(function(card) {
+        if (card.classList.contains("teacher-owned")) {
+            teacherCardCount++;
         }
     });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const toggle = document.getElementById("teacherModeToggle");
-        const topicCards = document.querySelectorAll(".topic-item-card");
-        const noTeacherCardsMsg = document.getElementById("noTeacherCardsMsg") || document.getElementById("noTeacherMCQMsg");
 
-        // Fallback checks both current_user and request.user
-        const currentUser = ("{{ current_user.username|default:request.user.username|escapejs }}").trim().toLowerCase();
-
-        function applyTeacherMode(isTeacherMode) {
-            let visibleCount = 0;
-
-            topicCards.forEach(card => {
-                const owner = (card.getAttribute("data-owner") || "").trim().toLowerCase();
-
-                if (isTeacherMode) {
-                    // Match owner with current user
-                    if (owner && owner === currentUser) {
-                        card.style.display = "";
-                        visibleCount++;
-                    } else {
-                        card.style.display = "none";
-                    }
-                } else {
-                    card.style.display = "";
-                    visibleCount++;
-                }
-            });
-
-            if (isTeacherMode && visibleCount === 0) {
-                if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "block";
+    function applyTeacherMode(isTeacherMode) {
+        if (isTeacherMode) {
+            document.body.classList.add("teacher-mode-active");
+            if (teacherCardCount === 0 && noTeacherCardsMsg) {
+                noTeacherCardsMsg.style.display = "block";
             } else {
                 if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "none";
             }
+        } else {
+            document.body.classList.remove("teacher-mode-active");
+            if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "none";
         }
+    }
 
-        const savedMode = localStorage.getItem("teacherMode") === "true";
-        if (toggle) {
-            toggle.checked = savedMode;
-            applyTeacherMode(savedMode);
+    const savedMode = localStorage.getItem("teacherMode") === "true";
+    if (toggle) {
+        toggle.checked = savedMode;
+        applyTeacherMode(savedMode);
 
-            toggle.addEventListener("change", (e) => {
-                const isChecked = e.target.checked;
-                localStorage.setItem("teacherMode", isChecked);
-                applyTeacherMode(isChecked);
-            });
-        }
-    });
+        toggle.addEventListener("change", function(e) {
+            const isChecked = e.target.checked;
+            localStorage.setItem("teacherMode", isChecked);
+            applyTeacherMode(isChecked);
+        });
+    }
+});
 </script>
 {% endblock %}

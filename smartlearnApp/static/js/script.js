@@ -464,3 +464,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// In the theme toggle section of script.js, add this:
+function applyTeacherMode(isTeacher) {
+    if (isTeacher) {
+        document.body.classList.add('teacher-mode-active');
+    } else {
+        document.body.classList.remove('teacher-mode-active');
+    }
+}

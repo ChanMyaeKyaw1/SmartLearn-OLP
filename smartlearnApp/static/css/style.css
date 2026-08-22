@@ -2657,3 +2657,115 @@ html[data-theme="dark"] .chatbot-input-area input {
 .chip:active {
     transform: translateY(0);
 }
+
+
+/* Teacher actions - hidden by default */
+.teacher-actions {
+    display: none !important;
+}
+
+/* Show when teacher mode is active via body class */
+body.teacher-mode-active .teacher-actions {
+    display: inline-flex !important;
+}
+
+/* Hide student actions when teacher mode is active */
+body.teacher-mode-active .student-action {
+    display: none !important;
+}
+
+/* Show student actions normally */
+.student-action {
+    display: inline-block !important;
+}
+
+/* Hide non-teacher cards when teacher mode is active */
+body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
+    display: none !important;
+}
+
+/* ==========================================
+   TEACHER ACTION BUTTONS
+========================================== */
+.btn-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+    background: #4CAF7D;
+    color: white;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(76, 175, 125, 0.25);
+}
+
+.btn-edit:hover {
+    background: #3d8b6a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 125, 0.35);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-edit:active {
+    transform: translateY(0px);
+}
+
+.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+    background: #dc3545;
+    color: white;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.25);
+}
+
+.btn-delete:hover {
+    background: #b02a37;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.35);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-delete:active {
+    transform: translateY(0px);
+}
+
+/* Teacher actions container */
+.teacher-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+/* Show when teacher mode is active via body class */
+body.teacher-mode-active .teacher-actions {
+    display: inline-flex !important;
+}
+
+/* Hide student actions when teacher mode is active */
+body.teacher-mode-active .student-action {
+    display: none !important;
+}
+/* Show student actions normally */
+.student-action {
+    display: inline-block !important;
+}
+
+/* Hide non-teacher cards when teacher mode is active */
+body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
+    display: none !important;

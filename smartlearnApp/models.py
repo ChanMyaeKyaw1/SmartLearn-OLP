@@ -102,6 +102,12 @@ class Flashcard(models.Model):
 
     def __str__(self):
         return f"{self.topic} - {self.front[:40]}"
+    
+    def can_edit(self, user):
+        return self.created_by == user
+
+    def can_delete(self, user):
+        return self.created_by == user or user.is_superuser
 
 
 class FlashcardTopicReaction(models.Model):
@@ -155,6 +161,12 @@ class MCQQuestion(models.Model):
             'D': self.option_d,
         }.get(option, '')
 
+    
+    def can_edit(self, user):
+        return self.created_by == user
+
+    def can_delete(self, user):
+        return self.created_by == user or user.is_superuser
 
 class QuizAttempt(models.Model):
     attempt_id = models.AutoField(primary_key=True)

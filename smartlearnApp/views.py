@@ -665,7 +665,7 @@ def flashcards_view(request, class_id):
 
             Flashcard.objects.create(
                 classroom=classroom,
-                created_by=current_user,
+                created_by=current_user,  # Use current_user, not request.user
                 topic=shared_topic,
                 front=front,
                 back=back
@@ -760,14 +760,14 @@ def flashcards_view(request, class_id):
 
     return render(request, 'flashcards.html', {
         'classroom': classroom,
+        'class_id': classroom.class_id,
         'topic_groups': topic_groups,
         'topic_groups_payload': topic_groups_payload,
         'total_flashcards': total_flashcards,
         'total_topics': total_topics,
         'can_create': can_create,
-        'current_user': current_user,
+        'current_user': current_user,  # Pass current_user to template
     })
-
 
 def all_flashcards_view(request):
     current_user = request.user
@@ -775,12 +775,16 @@ def all_flashcards_view(request):
         Q(class_type='public') | Q(owner=current_user) | Q(enrollments__student=current_user, enrollments__status='approved')
     ).distinct()
     flashcard_groups = []
+    
     for classroom in accessible_classrooms:
         classroom_flashcards = list(
             Flashcard.objects.filter(classroom=classroom)
             .select_related('created_by')
             .order_by('topic', '-created_at')
         )
+
+        if not classroom_flashcards:
+            continue
 
         classroom_topic_map = OrderedDict()
         for flashcard in classroom_flashcards:
@@ -798,13 +802,17 @@ def all_flashcards_view(request):
                     'contributors': [],
                     'primary_creator': flashcard.created_by.username,
                     'preview_front': flashcard.front,
+                    'total_cards': 0,
                 }
                 classroom_topic_map[group_key] = group
 
+            # IMPORTANT: Make sure front and back are included
             group['cards'].append({
+                'flashcard_id': flashcard.flashcard_id,
                 'front': flashcard.front,
                 'back': flashcard.back,
             })
+            
             if flashcard.created_by.username not in group['contributors']:
                 group['contributors'].append(flashcard.created_by.username)
 
@@ -824,6 +832,7 @@ def all_flashcards_view(request):
         'flashcard_groups': flashcard_groups,
         'total_flashcards': sum(group['total_cards'] for group in flashcard_groups),
         'total_topics': len(flashcard_groups),
+        'can_create': request.user.is_authenticated,
     })
 
 
@@ -866,12 +875,160 @@ def toggle_flashcard_topic_reaction(request, class_id):
 
 
 # ==========================================
+# FLASHCARD EDIT & DELETE
+# ==========================================
+
+@login_required
+def edit_flashcard(request, flashcard_id):
+    flashcard = get_object_or_404(Flashcard, flashcard_id=flashcard_id)
+    
+    # Check permission
+    if flashcard.created_by != request.user:
+        messages.error(request, "You don't have permission to edit this flashcard.")
+        return redirect('flashcards', class_id=flashcard.classroom.class_id)
+    
+    if request.method == 'POST':
+        front = request.POST.get('front', '').strip()
+        back = request.POST.get('back', '').strip()
+        
+        if front and back:
+            flashcard.front = front
+            flashcard.back = back
+            flashcard.save()
+            messages.success(request, "Flashcard updated successfully!")
+        else:
+            messages.error(request, "Front and back fields are required.")
+        
+        return redirect('flashcards', class_id=flashcard.classroom.class_id)
+    
+    return render(request, 'edit_flashcard.html', {
+        'flashcard': flashcard,
+        'classroom': flashcard.classroom,
+    })
+
+@login_required
+def delete_flashcard(request, flashcard_id):
+    flashcard = get_object_or_404(Flashcard, flashcard_id=flashcard_id)
+    
+    # Check permission
+    if flashcard.created_by != request.user and not request.user.is_superuser:
+        messages.error(request, "You don't have permission to delete this flashcard.")
+        return redirect('flashcards', class_id=flashcard.classroom.class_id)
+    
+    classroom_id = flashcard.classroom.class_id
+    flashcard.delete()
+    messages.success(request, "Flashcard deleted successfully!")
+    return redirect('flashcards', class_id=classroom_id)
+
+@login_required
+def delete_flashcard_topic(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+    topic = request.GET.get('topic', '').strip()
+    
+    if not topic:
+        messages.error(request, "No topic specified.")
+        return redirect('flashcards', class_id=class_id)
+    
+    # Delete all flashcards with this topic that belong to the current user
+    deleted_count = Flashcard.objects.filter(
+        classroom=classroom,
+        topic=topic,
+        created_by=request.user
+    ).delete()
+    
+    if deleted_count[0] > 0:
+        messages.success(request, f"Deleted topic '{topic}' with {deleted_count[0]} flashcards.")
+    else:
+        messages.error(request, "No flashcards found for this topic or you don't have permission.")
+    
+    return redirect('flashcards', class_id=class_id)
+
+# ==========================================
+# MCQ EDIT & DELETE
+# ==========================================
+
+@login_required
+def edit_mcq(request, mcq_id):
+    mcq = get_object_or_404(MCQQuestion, question_id=mcq_id)
+    
+    # Check permission
+    if mcq.created_by != request.user:
+        messages.error(request, "You don't have permission to edit this MCQ.")
+        return redirect('mcqs', class_id=mcq.classroom.class_id)
+    
+    if request.method == 'POST':
+        question = request.POST.get('question', '').strip()
+        option_a = request.POST.get('option_a', '').strip()
+        option_b = request.POST.get('option_b', '').strip()
+        option_c = request.POST.get('option_c', '').strip()
+        option_d = request.POST.get('option_d', '').strip()
+        correct_option = request.POST.get('correct_option', '').strip()
+        explanation = request.POST.get('explanation', '').strip()
+        
+        if question and option_a and option_b and option_c and option_d and correct_option:
+            mcq.question = question
+            mcq.option_a = option_a
+            mcq.option_b = option_b
+            mcq.option_c = option_c
+            mcq.option_d = option_d
+            mcq.correct_option = correct_option
+            mcq.explanation = explanation
+            mcq.save()
+            messages.success(request, "MCQ updated successfully!")
+        else:
+            messages.error(request, "All fields are required.")
+        
+        return redirect('mcqs', class_id=mcq.classroom.class_id)
+    
+    return render(request, 'edit_mcq.html', {
+        'mcq': mcq,
+        'classroom': mcq.classroom,
+    })
+
+@login_required
+def delete_mcq(request, mcq_id):
+    mcq = get_object_or_404(MCQQuestion, question_id=mcq_id)
+    
+    # Check permission
+    if mcq.created_by != request.user and not request.user.is_superuser:
+        messages.error(request, "You don't have permission to delete this MCQ.")
+        return redirect('mcqs', class_id=mcq.classroom.class_id)
+    
+    classroom_id = mcq.classroom.class_id
+    mcq.delete()
+    messages.success(request, "MCQ deleted successfully!")
+    return redirect('mcqs', class_id=classroom_id)
+
+@login_required
+def delete_mcq_topic(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+    topic = request.GET.get('topic', '').strip()
+    
+    if not topic:
+        messages.error(request, "No topic specified.")
+        return redirect('mcqs', class_id=class_id)
+    
+    # Delete all MCQs with this topic that belong to the current user
+    deleted_count = MCQQuestion.objects.filter(
+        classroom=classroom,
+        topic=topic,
+        created_by=request.user
+    ).delete()
+    
+    if deleted_count[0] > 0:
+        messages.success(request, f"Deleted topic '{topic}' with {deleted_count[0]} questions.")
+    else:
+        messages.error(request, "No MCQs found for this topic or you don't have permission.")
+    
+    return redirect('mcqs', class_id=class_id)
+
+# ==========================================
 # MCQS & QUIZZES
 # ==========================================
 
 def mcqs_view(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
-    current_user, blocked_response = require_classroom_access(request, classroom)
+    current_user=request.user, blocked_response = require_classroom_access(request, classroom)
     if blocked_response:
         return blocked_response
 
@@ -1010,6 +1167,7 @@ def mcqs_view(request, class_id):
 
     return render(request, 'mcqs.html', {
         'classroom': classroom,
+        'class_id': classroom.class_id,  # Added
         'topic_groups': topic_groups,
         'topic_groups_payload': topic_groups_payload,
         'total_questions': total_questions,
@@ -1018,6 +1176,170 @@ def mcqs_view(request, class_id):
         'current_user': current_user,
         'quiz_settings': quiz_settings,
     })
+def mcqs_view(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+    current_user, blocked_response = require_classroom_access(request, classroom)
+    if blocked_response:
+        return blocked_response
+
+    can_create = user_can_create_learning_content(classroom, current_user)
+    
+    # Get or create quiz settings
+    quiz_settings = None
+    try:
+        from .models import QuizSettings
+        quiz_settings, created = QuizSettings.objects.get_or_create(classroom=classroom)
+    except Exception as e:
+        print(f"QuizSettings error in mcqs_view: {e}")
+        quiz_settings = None
+
+    if request.method == 'POST':
+        if not can_create:
+            messages.error(request, "Only the private class owner can create MCQs for this classroom.")
+            return redirect('mcqs', class_id=classroom.class_id)
+
+        # Save quiz settings
+        time_limit = request.POST.get('time_limit')
+        max_attempts = request.POST.get('max_attempts')
+        
+        if quiz_settings:
+            if time_limit and time_limit.strip():
+                quiz_settings.time_limit_minutes = int(time_limit)
+            else:
+                quiz_settings.time_limit_minutes = None
+                
+            if max_attempts and max_attempts.strip():
+                quiz_settings.max_attempts = int(max_attempts)
+            else:
+                quiz_settings.max_attempts = None
+            quiz_settings.save()
+
+        # Create MCQs
+        shared_topic = request.POST.get('topic', '').strip()
+        questions = request.POST.getlist('question') or [request.POST.get('question', '')]
+        option_a_list = request.POST.getlist('option_a') or [request.POST.get('option_a', '')]
+        option_b_list = request.POST.getlist('option_b') or [request.POST.get('option_b', '')]
+        option_c_list = request.POST.getlist('option_c') or [request.POST.get('option_c', '')]
+        option_d_list = request.POST.getlist('option_d') or [request.POST.get('option_d', '')]
+        correct_options = request.POST.getlist('correct_option') or [request.POST.get('correct_option', '')]
+        explanations = request.POST.getlist('explanation') or [request.POST.get('explanation', '')]
+
+        created_count = 0
+        for question, option_a, option_b, option_c, option_d, correct_option, explanation in zip(
+            questions,
+            option_a_list,
+            option_b_list,
+            option_c_list,
+            option_d_list,
+            correct_options,
+            explanations,
+        ):
+            question = question.strip()
+            option_a = option_a.strip()
+            option_b = option_b.strip()
+            option_c = option_c.strip()
+            option_d = option_d.strip()
+            correct_option = correct_option.strip()
+            explanation = explanation.strip()
+
+            if not shared_topic or not question or not option_a or not option_b or not option_c or not option_d or not correct_option:
+                continue
+
+            MCQQuestion.objects.create(
+                classroom=classroom,
+                created_by=current_user,
+                topic=shared_topic,
+                question=question,
+                option_a=option_a,
+                option_b=option_b,
+                option_c=option_c,
+                option_d=option_d,
+                correct_option=correct_option,
+                explanation=explanation
+            )
+            created_count += 1
+
+        if created_count:
+            messages.success(request, f"Shared {created_count} MCQ{'s' if created_count != 1 else ''} with this classroom.")
+            return redirect('mcqs', class_id=classroom.class_id)
+
+        messages.error(request, "Please complete the topic, question, options, and correct answer for at least one MCQ.")
+
+    # Get questions grouped by topic for display
+    questions = list(
+        MCQQuestion.objects.filter(classroom=classroom)
+        .select_related('created_by')
+        .order_by('topic', 'question_id')
+    )
+
+    # Group by topic
+    topic_groups = []
+    topic_map = OrderedDict()
+
+    for question_item in questions:
+        group = topic_map.get(question_item.topic)
+        if not group:
+            group = {
+                'topic': question_item.topic,
+                'topic_slug': slugify(question_item.topic) or 'mcq-topic',
+                'questions': [],
+                'contributors': [],
+                'primary_creator': question_item.created_by.username,
+                'preview_question': question_item.question,
+            }
+            topic_map[question_item.topic] = group
+            topic_groups.append(group)
+
+        group['questions'].append(question_item)
+        if question_item.created_by.username not in group['contributors']:
+            group['contributors'].append(question_item.created_by.username)
+
+    # Prepare payload
+    topic_groups_payload = []
+    for group in topic_groups:
+        contributor_count = len(group['contributors'])
+        if contributor_count == 1:
+            contributor_summary = group['contributors'][0]
+        else:
+            contributor_summary = f"{group['contributors'][0]} + {contributor_count - 1} more"
+
+        topic_groups_payload.append({
+            'topic': group['topic'],
+            'topic_slug': group['topic_slug'],
+            'total_questions': len(group['questions']),
+            'primary_creator': group['primary_creator'],
+            'contributor_summary': contributor_summary,
+            'preview_question': group['preview_question'],
+            'questions': [
+                {
+                    'question_id': q.question_id,
+                    'question': q.question,
+                    'option_a': q.option_a,
+                    'option_b': q.option_b,
+                    'option_c': q.option_c,
+                    'option_d': q.option_d,
+                    'correct_option': q.correct_option,
+                    'explanation': q.explanation,
+                }
+                for q in group['questions']
+            ],
+        })
+
+    total_questions = len(questions)
+    total_topics = len(topic_groups)
+
+    return render(request, 'mcqs.html', {
+        'classroom': classroom,
+        'class_id': classroom.class_id,
+        'topic_groups': topic_groups,
+        'topic_groups_payload': topic_groups_payload,
+        'total_questions': total_questions,
+        'total_topics': total_topics,
+        'can_create': can_create,
+        'current_user': current_user,
+        'quiz_settings': quiz_settings,
+    })
+
 
 def all_mcqs_view(request):
     current_user = request.user
@@ -1048,6 +1370,7 @@ def all_mcqs_view(request):
                     'classroom_title': classroom.title,
                     'class_type': classroom.class_type,
                     'topic': question_item.topic,
+                    'topic_slug': slugify(question_item.topic) or 'mcq-topic',
                     'preview_question': question_item.question,
                     'questions': [],
                     'contributors': [],
@@ -1056,7 +1379,16 @@ def all_mcqs_view(request):
                 }
                 classroom_topic_map[group_key] = group
 
-            group['questions'].append(question_item)
+            group['questions'].append({
+                'question_id': question_item.question_id,
+                'question': question_item.question,
+                'option_a': question_item.option_a,
+                'option_b': question_item.option_b,
+                'option_c': question_item.option_c,
+                'option_d': question_item.option_d,
+                'correct_option': question_item.correct_option,
+                'explanation': question_item.explanation,
+            })
             if question_item.created_by.username not in group['contributors']:
                 group['contributors'].append(question_item.created_by.username)
 
@@ -1070,8 +1402,6 @@ def all_mcqs_view(request):
 
             group['total_questions'] = len(group['questions'])
             group['contributor_summary'] = contributor_summary
-            # Remove the questions list to keep the payload smaller
-            # del group['questions']  # Uncomment if you don't need questions in the template
             mcq_groups.append(group)
 
     return render(request, 'all_mcqs.html', {
@@ -1081,6 +1411,7 @@ def all_mcqs_view(request):
         'total_topics': len(mcq_groups),
         'can_create': can_create,
     })
+
 from django.utils import timezone
 from datetime import timedelta
 from django.db import IntegrityError

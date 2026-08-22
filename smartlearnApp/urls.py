@@ -36,6 +36,16 @@ urlpatterns = [
     path('mcqs/', views.all_mcqs_view, name='all_mcqs'),
     path('classroom/<int:class_id>/student-results/', views.teacher_student_results, name='teacher_student_results'),
 
+    # Flashcard edit/delete
+    path('flashcard/<int:flashcard_id>/edit/', views.edit_flashcard, name='edit_flashcard'),
+    path('flashcard/<int:flashcard_id>/delete/', views.delete_flashcard, name='delete_flashcard'),
+    path('classroom/<int:class_id>/flashcards/topic/delete/', views.delete_flashcard_topic, name='delete_flashcard_topic'),
+    
+    # MCQ edit/delete
+    path('mcq/<int:mcq_id>/edit/', views.edit_mcq, name='edit_mcq'),
+    path('mcq/<int:mcq_id>/delete/', views.delete_mcq, name='delete_mcq'),
+    path('classroom/<int:class_id>/mcqs/topic/delete/', views.delete_mcq_topic, name='delete_mcq_topic'),
+
     path('classes/<int:class_id>/payment/', views.payment_upload_view, name='payment_upload'),
 
     path('payments/manage/', views.manage_payment_accounts, name='manage_payment_accounts'),

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Edit Flashcard - {{ classroom.title }}{% endblock %}
+
+{% block content %}
+<div class="centered-form-wrapper">
+    <a href="{% url 'flashcards' classroom.class_id %}" class="back-btn-icon">
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <br><br>
+    <h2 class="page-heading-large">Edit Flashcard</h2>
+    <p class="subtext-muted">{{ classroom.title }} - {{ flashcard.topic }}</p>
+
+    <div class="styled-card">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <label class="label-bold">Topic</label>
+            <input type="text" class="form-control" value="{{ flashcard.topic }}" disabled>
+            
+            <label class="label-bold">Front</label>
+            <textarea name="front" class="form-control" rows="4" required>{{ flashcard.front }}</textarea>
+            
+            <label class="label-bold">Back</label>
+            <textarea name="back" class="form-control" rows="4" required>{{ flashcard.back }}</textarea>
+            
+            <div class="form-actions-row">
+                <button type="submit" class="btn-primary">Save Changes</button>
+                <a href="{% url 'flashcards' classroom.class_id %}" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

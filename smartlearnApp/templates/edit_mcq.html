@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Edit MCQ - {{ classroom.title }}{% endblock %}
+
+{% block content %}
+<div class="centered-form-wrapper">
+    <a href="{% url 'mcqs' classroom.class_id %}" class="back-btn-icon">
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <br><br>
+    <h2 class="page-heading-large">Edit MCQ</h2>
+    <p class="subtext-muted">{{ classroom.title }} - {{ mcq.topic }}</p>
+
+    <div class="styled-card">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <label class="label-bold">Topic</label>
+            <input type="text" class="form-control" value="{{ mcq.topic }}" disabled>
+            
+            <label class="label-bold">Question</label>
+            <textarea name="question" class="form-control" rows="3" required>{{ mcq.question }}</textarea>
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="label-bold">Option A</label>
+                    <input type="text" name="option_a" class="form-control" value="{{ mcq.option_a }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="label-bold">Option B</label>
+                    <input type="text" name="option_b" class="form-control" value="{{ mcq.option_b }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="label-bold">Option C</label>
+                    <input type="text" name="option_c" class="form-control" value="{{ mcq.option_c }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="label-bold">Option D</label>
+                    <input type="text" name="option_d" class="form-control" value="{{ mcq.option_d }}" required>
+                </div>
+            </div>
+            
+            <label class="label-bold">Correct Answer</label>
+            <select name="correct_option" class="form-control" required>
+                <option value="A" {% if mcq.correct_option == 'A' %}selected{% endif %}>A</option>
+                <option value="B" {% if mcq.correct_option == 'B' %}selected{% endif %}>B</option>
+                <option value="C" {% if mcq.correct_option == 'C' %}selected{% endif %}>C</option>
+                <option value="D" {% if mcq.correct_option == 'D' %}selected{% endif %}>D</option>
+            </select>
+            
+            <label class="label-bold">Explanation (Optional)</label>
+            <textarea name="explanation" class="form-control" rows="3">{{ mcq.explanation }}</textarea>
+            
+            <div class="form-actions-row">
+                <button type="submit" class="btn-primary">Save Changes</button>
+                <a href="{% url 'mcqs' classroom.class_id %}" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

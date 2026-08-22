@@ -23,6 +23,13 @@
     </div>
 </div>
 
+{% if messages %}
+    <div class="message-stack">
+        {% for message in messages %}
+            <div class="message-card">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
 
 <div class="learning-layout">
     <section class="styled-card">
@@ -33,9 +40,10 @@
             </div>
         </div>
 
-        <div class="topic-collection-grid">
+        <div class="topic-collection-grid" id="mcqGrid">
             {% for group in topic_groups %}
-                <article class="topic-collection-card">
+                <article class="topic-collection-card topic-item-card {% if request.user.username == group.primary_creator %}teacher-owned{% endif %}" 
+                         data-owner="{{ group.primary_creator }}">
                     <div class="topic-collection-topline">
                         <span class="topic-label">{{ group.topic }}</span>
                         <span class="topic-card-count">{{ group.questions|length }} questions</span>
@@ -44,10 +52,25 @@
                     <h4>{{ group.topic }}</h4>
                     <p class="topic-preview">{{ group.preview_question }}</p>
                     <p class="topic-meta">Created by {{ group.primary_creator }}</p>
-                    <p class="topic-meta muted">Contributors: {{ group.contributor_summary }}</p>
+                    
 
                     <div class="topic-collection-actions">
-                        <a class="btn-primary" href="{% url 'take_quiz' classroom.class_id %}?topic={{ group.topic|urlencode }}">Take Quiz</a>
+                        <!-- Student mode: Take Quiz button -->
+                        <a class="btn-primary student-action" href="{% url 'take_quiz' class_id %}?topic={{ group.topic|urlencode }}">Take Quiz</a>
+                        
+                        <!-- Teacher Mode: Edit/Delete buttons -->
+                        {% if request.user.username == group.primary_creator %}
+                            <div class="teacher-actions">
+                                <a href="{% url 'edit_mcq' group.questions.0.question_id %}" class="btn-edit">
+                                    <i class="fa-solid fa-pen"></i> Edit
+                                </a>
+                                <a href="{% url 'delete_mcq_topic' class_id %}?topic={{ group.topic|urlencode }}" 
+                                   class="btn-delete"
+                                   onclick="return confirm('Are you sure you want to delete this entire topic?');">
+                                    <i class="fa-solid fa-trash"></i> Delete
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
                 </article>
             {% empty %}
@@ -55,6 +78,10 @@
                     No MCQs yet. Create the first topic set and then start a quiz from here.
                 </div>
             {% endfor %}
+        </div>
+        
+        <div id="noTeacherMCQMsg" class="empty-study-state" style="display: none;">
+            You haven't created any MCQ topics yet.
         </div>
     </section>
 
@@ -70,26 +97,26 @@
 
             <form method="POST" id="mcq-create-form" class="flashcard-create-form">
                 {% csrf_token %}
-            <!-- Quiz Settings -->
-            {% if quiz_settings %}
-            <div class="quiz-settings-box" style="background: #f8faf9; border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #e4ebc6;">
-                <h4 style="font-size: 16px; font-weight: 700; color: #2b4c3f; margin-bottom: 12px;">
-                    <i class="fa-solid fa-gear me-2"></i>Quiz Settings (Optional)
-                </h4>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="label-bold" style="font-size: 13px;">Time Limit (minutes)</label>
-                        <input type="number" name="time_limit" class="form-control" min="1" placeholder="No limit" value="{{ quiz_settings.time_limit_minutes|default:'' }}">
-                        <small class="text-muted">Leave blank for no time limit</small>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="label-bold" style="font-size: 13px;">Max Attempts Allowed</label>
-                        <input type="number" name="max_attempts" class="form-control" min="1" placeholder="Unlimited" value="{{ quiz_settings.max_attempts|default:'' }}">
-                        <small class="text-muted">Leave blank for unlimited attempts</small>
+                <!-- Quiz Settings -->
+                {% if quiz_settings %}
+                <div class="quiz-settings-box" style="background: #f8faf9; border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #e4ebc6;">
+                    <h4 style="font-size: 16px; font-weight: 700; color: #2b4c3f; margin-bottom: 12px;">
+                        <i class="fa-solid fa-gear me-2"></i>Quiz Settings (Optional)
+                    </h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="label-bold" style="font-size: 13px;">Time Limit (minutes)</label>
+                            <input type="number" name="time_limit" class="form-control" min="1" placeholder="No limit" value="{{ quiz_settings.time_limit_minutes|default:'' }}">
+                            <small class="text-muted">Leave blank for no time limit</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="label-bold" style="font-size: 13px;">Max Attempts Allowed</label>
+                            <input type="number" name="max_attempts" class="form-control" min="1" placeholder="Unlimited" value="{{ quiz_settings.max_attempts|default:'' }}">
+                            <small class="text-muted">Leave blank for unlimited attempts</small>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {% endif %}
+                {% endif %}
                 
                 <label class="label-bold">Topic</label>
                 <input type="text" name="topic" class="form-control" placeholder="e.g. Python Functions" required>
@@ -130,4 +157,101 @@
         {% endif %}
     </aside>
 </div>
+
+<script>
+// Add MCQ functionality
+document.addEventListener("DOMContentLoaded", function() {
+    const addBtn = document.querySelector("[data-add-mcq-row]");
+    const creatorList = document.querySelector("[data-mcq-creator-list]");
+
+    if (addBtn && creatorList) {
+        addBtn.addEventListener("click", function() {
+            const questionCount = creatorList.children.length + 1;
+            const newQuestion = document.createElement("article");
+            newQuestion.className = "flashcard-entry-card";
+            newQuestion.style.marginTop = "1rem";
+            
+            newQuestion.innerHTML = `
+                <div class="flashcard-entry-card__topline" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="topic-card-count">Question ${questionCount}</span>
+                    <button type="button" class="btn-close remove-question-btn" aria-label="Remove" style="font-size: 10px;"></button>
+                </div>
+
+                <label class="label-bold">Question</label>
+                <textarea name="question" class="form-control" rows="3" required></textarea>
+
+                <label class="label-bold">Options</label>
+                <input type="text" name="option_a" class="form-control compact-input" placeholder="Option A" required>
+                <input type="text" name="option_b" class="form-control compact-input" placeholder="Option B" required>
+                <input type="text" name="option_c" class="form-control compact-input" placeholder="Option C" required>
+                <input type="text" name="option_d" class="form-control compact-input" placeholder="Option D" required>
+
+                <label class="label-bold">Correct Answer</label>
+                <select name="correct_option" class="form-control" required>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>   
+                </select>
+
+                <label class="label-bold">Explanation</label>
+                <textarea name="explanation" class="form-control" rows="3" placeholder="Optional answer explanation"></textarea>
+            `;
+
+            newQuestion.querySelector(".remove-question-btn").addEventListener("click", function() {
+                newQuestion.remove();
+                const remainingQuestions = creatorList.querySelectorAll(".flashcard-entry-card");
+                remainingQuestions.forEach(function(card, idx) {
+                    const badge = card.querySelector(".topic-card-count");
+                    if (badge) badge.textContent = `Question ${idx + 1}`;
+                });
+            });
+
+            creatorList.appendChild(newQuestion);
+        });
+    }
+});
+
+// Teacher Mode Toggle for MCQs
+document.addEventListener("DOMContentLoaded", function() {
+    const toggle = document.getElementById("teacherModeToggle");
+    const noTeacherCardsMsg = document.getElementById("noTeacherMCQMsg");
+    const topicCards = document.querySelectorAll(".topic-item-card");
+    const currentUser = "{{ request.user.username }}";
+    
+    // Count how many teacher-owned cards exist
+    let teacherCardCount = 0;
+    topicCards.forEach(function(card) {
+        if (card.classList.contains("teacher-owned")) {
+            teacherCardCount++;
+        }
+    });
+
+    function applyTeacherMode(isTeacherMode) {
+        if (isTeacherMode) {
+            document.body.classList.add("teacher-mode-active");
+            if (teacherCardCount === 0 && noTeacherCardsMsg) {
+                noTeacherCardsMsg.style.display = "block";
+            } else {
+                if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "none";
+            }
+        } else {
+            document.body.classList.remove("teacher-mode-active");
+            if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "none";
+        }
+    }
+
+    const savedMode = localStorage.getItem("teacherMode") === "true";
+    if (toggle) {
+        toggle.checked = savedMode;
+        applyTeacherMode(savedMode);
+
+        toggle.addEventListener("change", function(e) {
+            const isChecked = e.target.checked;
+            localStorage.setItem("teacherMode", isChecked);
+            applyTeacherMode(isChecked);
+        });
+    }
+});
+</script>
 {% endblock %}
