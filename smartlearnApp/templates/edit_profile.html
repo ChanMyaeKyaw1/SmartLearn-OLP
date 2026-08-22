@@ -1,50 +1,188 @@
-{% extends 'base.html' %} {% block title %}Update Profile - SmartLearn{% endblock %} {% block content %}
+{% extends 'base.html' %} {% block title %}Update Profile - SmartLearn{% endblock %} {% block extra_css %}
+<style>
+    .teacher-only-profile {
+        display: none !important;
+    }
+
+    body.teacher-mode-active .teacher-only-profile {
+        display: block !important;
+    }
+
+    .btn-matcha-primary {
+        background-color: #059669;
+        color: #ffffff;
+        border: none;
+    }
+
+    .btn-matcha-primary:hover {
+        background-color: #047857;
+        color: #ffffff;
+    }
+    /* Clean Tag Input Styling */
+
+    .tag-input-container {
+        min-height: 52px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        background-color: #f8fafc !important;
+    }
+
+    .tag-input-container:focus-within {
+        border-color: #059669 !important;
+        box-shadow: 0 0 0 0.25rem rgba(5, 150, 105, 0.15) !important;
+        background-color: #ffffff !important;
+    }
+    /* Tag Badge Design */
+
+    .custom-tag-badge {
+        background-color: #059669 !important;
+        color: #ffffff;
+        font-weight: 500;
+        letter-spacing: 0.2px;
+        transition: transform 0.15s ease;
+    }
+
+    .custom-tag-badge:hover {
+        transform: translateY(-1px);
+    }
+
+    .tag-remove-btn {
+        cursor: pointer;
+        opacity: 0.75;
+        transition: opacity 0.15s ease;
+    }
+
+    .tag-remove-btn:hover {
+        opacity: 1;
+    }
+    /* Preset Buttons Transition */
+
+    .transition-all {
+        transition: all 0.2s ease-in-out;
+    }
+</style>
+{% endblock %} {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-sm border-0">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-success">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-success fs-5">
                         <i class="fa-solid fa-user-pen me-2"></i>Update Profile
                     </h6>
+                    <span class="badge bg-success teacher-only-profile">
+                        <i class="fa-solid fa-chalkboard-user me-1"></i>Teacher Mode Active
+                    </span>
                 </div>
+
                 <form action="{% url 'edit_profile' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="card-body p-4">
-                        <div class="row">
+                        <div class="row align-items-start">
 
                             <!-- Profile Image Upload Section -->
-                            <div class="col-md-4 text-center mb-4 mb-md-0 border-end">
-                                {% if request.user.profile_image %}
-                                <img class="img-profile img-thumbnail rounded-circle mb-3" id="output" src="{{ request.user.profile_image.url }}" style="width: 140px; height: 140px; object-fit: cover;"> {% else %}
-                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold bg-success shadow-sm mx-auto mb-3" style="width: 140px; height: 140px; font-size: 42px;">
+                            <div class="col-md-4 text-center mb-4 mb-md-0 border-end pe-md-4">
+                                {% if request.user.profile.profile_image and request.user.profile.profile_image.name %}
+                                <img class="img-profile img-thumbnail rounded-circle mb-3" src="{{ request.user.profile.profile_image.url }}" style="width: 140px; height: 140px; object-fit: cover;" alt="Profile Picture" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ request.user.username }}&background=15803D&color=fff';">                                {% else %}
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm mx-auto mb-3" style="width: 140px; height: 140px; font-size: 42px; background-color: #15803D; border: 2px solid #34D399;">
                                     {{ request.user.username|slice:":2"|upper }}
                                 </div>
                                 {% endif %}
 
-                                <input type="file" name="image" accept="image/*" class="form-control form-control-sm mt-2" onchange="loadFile(event)"> {% if form.image.errors %}
-                                <small class="text-danger d-block mt-1">{{ form.image.errors.0 }}</small> {% endif %}
+                                <label class="form-label small text-muted d-block">Change Profile Image</label>
+                                <input type="file" name="image" accept="image/*" class="form-control form-control-sm mt-1" onchange="loadFile(event)">
                             </div>
 
                             <!-- Form Details Section -->
                             <div class="col-md-8 ps-md-4">
+                                <!-- Standard User Fields -->
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">Username / Name</label>
-                                    <input type="text" name="username" class="form-control" placeholder="Enter username..." value="{{ form.username.value|default:request.user.username }}"> {% if form.username.errors %}
-                                    <small class="text-danger d-block mt-1">{{ form.username.errors.0 }}</small> {% endif %}
+                                    <input type="text" name="username" class="form-control" placeholder="Enter username..." value="{{ request.user.username }}" required>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">Email Address</label>
-                                    <input type="email" name="email" class="form-control" placeholder="Enter email..." value="{{ form.email.value|default:request.user.email }}"> {% if form.email.errors %}
-                                    <small class="text-danger d-block mt-1">{{ form.email.errors.0 }}</small> {% endif %}
+                                    <input type="email" name="email" class="form-control" placeholder="Enter email..." value="{{ request.user.email }}" required>
                                 </div>
 
-                                <div class="d-flex justify-content-between align-items-center mt-4">
-                                    <a href="{% url 'change_password' %}" class="text-decoration-none">
+                                <!-- EXPANDABLE TEACHER FIELDS -->
+                                <div class="teacher-only-profile">
+                                    <hr class="my-4">
+
+                                    <h6 class="fw-bold text-dark mb-3">
+                                        <i class="fa-solid fa-chalkboard-teacher me-2 text-success"></i>Instructor Details
+                                    </h6>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Bio / About Instructor</label>
+                                        <textarea name="bio" class="form-control" rows="3" placeholder="Write a short summary about your background...">{{ request.user.profile.bio|default:'' }}</textarea>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label fw-semibold text-dark">
+                                            <i class="fa-solid fa-graduation-cap me-1 text-success"></i> Expertise & Qualifications
+                                        </label>
+
+                                        <!-- Quick Select Preset Pills -->
+                                        <div class="mb-3">
+                                            <small class="text-muted d-block mb-2 font-weight-medium">Quick Select Presets:</small>
+                                            <div class="d-flex flex-wrap gap-2" id="presetContainer">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 transition-all" data-preset="Python" onclick="togglePreset('Python')">
+                                                    <i class="fa-solid fa-plus me-1"></i>Python
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 transition-all" data-preset="Django" onclick="togglePreset('Django')">
+                                                    <i class="fa-solid fa-plus me-1"></i>Django
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 transition-all" data-preset="Web Development" onclick="togglePreset('Web Development')">
+                                                    <i class="fa-solid fa-plus me-1"></i>Web Development
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 transition-all" data-preset="Data Structures" onclick="togglePreset('Data Structures')">
+                                                    <i class="fa-solid fa-plus me-1"></i>Data Structures
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 transition-all" data-preset="Database Management" onclick="togglePreset('Database Management')">
+                                                    <i class="fa-solid fa-plus me-1"></i>Database Management
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Interactive Clean Tag Box Container -->
+                                        <div class="tag-input-container form-control bg-light d-flex flex-wrap align-items-center gap-2 p-2 shadow-sm rounded-3 border" id="tagBox" onclick="document.getElementById('customTagInput').focus()">
+                                            <!-- Dynamic Badges Inserted Here -->
+                                            <input type="text" id="customTagInput" class="bg-transparent border-0 flex-grow-1 text-dark" style="outline: none; min-width: 160px; font-size: 0.9rem;" placeholder="Type custom tag & press Enter...">
+                                        </div>
+
+                                        <!-- Hidden Input for Django Form Submission -->
+                                        <input type="hidden" name="expertise" id="expertiseHiddenInput" value="{{ request.user.profile.expertise|default:'' }}">
+                                        <small class="form-text text-muted mt-1 d-block">Press <b>Enter</b> or <b>comma</b> to add custom tags. Click 'x' to remove.</small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold"><i class="fa-brands fa-linkedin text-primary me-1"></i> LinkedIn Profile URL</label>
+                                        <input type="url" name="linkedin_url" class="form-control" placeholder="https://linkedin.com/in/username" value="{{ request.user.profile.linkedin_url|default:'' }}">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold"><i class="fa-brands fa-github text-dark me-1"></i> GitHub Profile URL</label>
+                                        <input type="url" name="github_url" class="form-control" placeholder="https://github.com/username" value="{{ request.user.profile.github_url|default:'' }}">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold"><i class="fa-solid fa-globe text-secondary me-1"></i> Website / Portfolio URL</label>
+                                        <input type="url" name="website_url" class="form-control" placeholder="https://yourportfolio.com" value="{{ request.user.profile.website_url|default:'' }}">
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <!-- Action Buttons -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'change_password' %}" class="btn btn-outline-secondary btn-sm">
                                         <i class="fa-solid fa-key me-1"></i> Change Password
                                     </a>
-                                    <button type="submit" class="btn btn-primary px-4">Update Profile</button>
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'view_profile' %}" class="btn btn-light border">Cancel</a>
+                                        <button type="submit" class="btn btn-matcha-primary px-4">Update Profile</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -57,11 +195,76 @@
 </div>
 {% endblock %} {% block extra_js %}
 <script>
-    function loadFile(event) {
-        const output = document.getElementById('output');
-        if (output && event.target.files && event.target.files[0]) {
-            output.src = URL.createObjectURL(event.target.files[0]);
+    let tags = [];
+    const hiddenInput = document.getElementById('expertiseHiddenInput');
+    const tagBox = document.getElementById('tagBox');
+    const customTagInput = document.getElementById('customTagInput');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialVal = hiddenInput.value.trim();
+        if (initialVal) {
+            tags = initialVal.split(',').map(s => s.trim()).filter(Boolean);
         }
+        updateAll();
+    });
+
+    function togglePreset(presetValue) {
+        if (!tags.includes(presetValue)) {
+            tags.push(presetValue);
+        } else {
+            tags = tags.filter(t => t !== presetValue);
+        }
+        updateAll();
+    }
+
+    customTagInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const val = this.value.replace(',', '').trim();
+            if (val && !tags.includes(val)) {
+                tags.push(val);
+                this.value = '';
+                updateAll();
+            }
+        }
+    });
+
+    function removeTag(tagToRemove) {
+        tags = tags.filter(t => t !== tagToRemove);
+        updateAll();
+    }
+
+    function updateAll() {
+        renderTags();
+        updatePresetButtons();
+        hiddenInput.value = tags.join(',');
+    }
+
+    function renderTags() {
+        const existingBadges = tagBox.querySelectorAll('.custom-tag-badge');
+        existingBadges.forEach(b => b.remove());
+
+        tags.forEach(tag => {
+            const badge = document.createElement('span');
+            badge.className = 'badge custom-tag-badge rounded-pill px-3 py-2 fs-6 d-inline-flex align-items-center gap-2 shadow-sm';
+            badge.innerHTML = `<span>${tag}</span> <i class="fa-solid fa-xmark tag-remove-btn" onclick="removeTag('${tag}')"></i>`;
+            tagBox.insertBefore(badge, customTagInput);
+        });
+    }
+
+    // Dynamic UI styling for active preset buttons
+    function updatePresetButtons() {
+        const presetButtons = document.querySelectorAll('#presetContainer button');
+        presetButtons.forEach(btn => {
+            const presetVal = btn.getAttribute('data-preset');
+            if (tags.includes(presetVal)) {
+                btn.className = 'btn btn-sm btn-success rounded-pill px-3 transition-all shadow-sm';
+                btn.innerHTML = `<i class="fa-solid fa-check me-1"></i>${presetVal}`;
+            } else {
+                btn.className = 'btn btn-sm btn-outline-secondary rounded-pill px-3 transition-all';
+                btn.innerHTML = `<i class="fa-solid fa-plus me-1"></i>${presetVal}`;
+            }
+        });
     }
 </script>
 {% endblock %}

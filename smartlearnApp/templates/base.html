@@ -60,7 +60,7 @@
             font-family: "Raleway", sans-serif;
             font-size: 25px;
             font-weight: 900;
-            color: #4caf7d;
+            color: #15803D;
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -76,7 +76,7 @@
 
         .nav-link:hover,
         .nav-link.active {
-            color: #4caf7d !important;
+            color: #15803D !important;
         }
         /* Teacher Toggle Button Styling */
 
@@ -89,7 +89,7 @@
         /* Buttons */
 
         .btn-matcha-primary {
-            background-color: #4caf7d;
+            background-color: #15803D;
             color: #ffffff;
             font-weight: 700;
             border-radius: 12px;
@@ -105,16 +105,16 @@
 
         .btn-matcha-outline {
             background-color: transparent;
-            color: #4caf7d;
+            color: #15803D;
             font-weight: 700;
             border-radius: 12px;
             padding: 9px 20px;
-            border: 2px solid #4caf7d;
+            border: 2px solid #15803D;
             transition: all 0.3s ease;
         }
 
         .btn-matcha-outline:hover {
-            background-color: #4caf7d;
+            background-color: #15803D;
             color: #ffffff;
         }
         /* FOOTER */
@@ -123,7 +123,7 @@
             background-color: #2b4c3f;
             color: #e2ebe7;
             padding: 90px 0 0 0;
-            border-top: 6px solid #4caf7d;
+            border-top: 6px solid #15803D;
         }
 
         .footer-logo {
@@ -140,7 +140,7 @@
         }
 
         .footer-logo span {
-            color: #4caf7d;
+            color: #15803D;
         }
 
         .footer-links-header {
@@ -161,7 +161,7 @@
             bottom: 0;
             width: 40px;
             height: 2.5px;
-            background-color: #4caf7d;
+            background-color: #15803D;
         }
 
         .footer-links-list {
@@ -198,7 +198,7 @@
         }
 
         .contact-info-item i {
-            color: #4caf7d;
+            color: #15803D;
             font-size: 19px;
             margin-top: 3px;
         }
@@ -224,7 +224,7 @@
         }
 
         .social-icon-btn:hover {
-            background-color: #4caf7d;
+            background-color: #15803D;
             color: #ffffff;
             transform: translateY(-4px);
             box-shadow: 0 5px 15px rgba(76, 175, 125, 0.3);
@@ -380,6 +380,45 @@
         [data-theme="dark"] .flashcard-modal__footer {
             color: #9cb0a5 !important;
         }
+        /* magnifying-glass search icon */
+
+        .hero-search-container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .hero-search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        /* Style and position the icon */
+
+        .hero-search-input-wrapper .search-icon {
+            position: absolute;
+            left: 16px;
+            color: #6B7280;
+            /* Neutral gray */
+            color: white;
+            font-size: 1.1rem;
+            pointer-events: none;
+            z-index: 2;
+        }
+        /* Adjust input padding so text doesn't overlap icon */
+
+        .hero-search-field {
+            padding-left: 48px !important;
+            height: 48px;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            font-size: 0.95rem;
+        }
+
+        .hero-search-field:focus {
+            border-color: #15803D;
+            /* SmartLearn Green */
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.15);
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -450,7 +489,7 @@
                     width: 42px;
                     height: 42px;
                     background-color: #2b4c3f;
-                    border: 2px solid #4caf7d;
+                    border: 2px solid #15803D;
                   ">
                                 {{ request.user.username|slice:":2"|upper }}
                             </div>
@@ -644,7 +683,7 @@
         <div class="chatbot-header">
             <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-robot fs-5"></i>
-                <h5 class="m-0 fs-6 fw-bold">SmartLearn Assistant</h5>
+                <h5 class="m-0 fs-6 fw-bold">SmartLearn AI Assistant</h5>
             </div>
             <button id="chatbotCloseBtn" class="btn-close-chat">&times;</button>
         </div>
