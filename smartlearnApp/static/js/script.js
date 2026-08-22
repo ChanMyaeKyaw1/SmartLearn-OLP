@@ -376,10 +376,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyTheme(theme) {
         if (theme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
-            if (toggleIcon) toggleIcon.className = 'fa-solid fa-moon';
+            if (toggleIcon) toggleIcon.className = 'fa-solid fa-sun';
         } else {
             document.documentElement.removeAttribute('data-theme');
-            if (toggleIcon) toggleIcon.className = 'fa-regular fa-sun';
+            if (toggleIcon) toggleIcon.className = 'fa-regular fa-moon';
         }
     }
 
