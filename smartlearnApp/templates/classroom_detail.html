@@ -1,663 +1,326 @@
-{% extends 'base.html' %}
-
-{% block title %}{{ classroom.title }} - SmartLearn{% endblock %}
-
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}{{ classroom.title }} - SmartLearn{% endblock %} {% block content %}
 
 <style>
-
-:root {
-    --matcha: #3f9d70;
-    --forest: #2b4c3f;
-    --light-matcha: #eef7f2;
-    --border: #dcebdc;
-    --text: #555c58;
-}
-
-
-/* =========================
+     :root {
+        --matcha: #3f9d70;
+        --forest: #2b4c3f;
+        --light-matcha: #eef7f2;
+        --border: #dcebdc;
+        --text: #555c58;
+    }
+    /* =========================
    PAGE LAYOUT
 ========================= */
 
-.classroom-container {
-
-    display:grid;
-
-    grid-template-columns:260px 1fr;
-
-    gap:30px;
-
-    padding:30px 0;
-
-}
-
-
-
-/* =========================
+    .classroom-container {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 30px;
+        padding: 30px 0;
+    }
+    /* =========================
    LEFT LEARNING PANEL
 ========================= */
 
-
-.learning-panel {
-
-    background:white;
-
-    border-radius:25px;
-
-    padding:25px;
-
-    height:fit-content;
-
-    border:1px solid var(--border);
-
-    box-shadow:
-    0 10px 30px rgba(43,76,63,.06);
-
-}
-
-
-.brand-name {
-
-    font-size:25px;
-
-    font-weight:900;
-
-    color:var(--forest);
-
-    margin-bottom:30px;
-
-}
-
-
-.brand-name span {
-
-    color:var(--matcha);
-
-}
-
-
-
-.menu-item {
-
-    display:block;
-
-    padding:14px 15px;
-
-    border-radius:14px;
-
-    margin-bottom:10px;
-
-    color:var(--text);
-
-    font-weight:600;
-
-    text-decoration:none;
-
-    transition:.3s;
-
-    cursor:pointer;
-
-}
-
-
-
-.menu-item:hover {
-
-    background:var(--light-matcha);
-
-    color:var(--forest);
-
-}
-
-
-
-.menu-item.active {
-
-    background:var(--forest);
-
-    color:white;
-
-}
-
-
-.teacher-tools {
-
-    margin-top:25px;
-
-    padding-top:18px;
-
-    border-top:1px solid var(--border);
-
-}
-
-
-.teacher-tools__title {
-
-    color:var(--forest);
-
-    font-size:14px;
-
-    font-weight:900;
-
-    letter-spacing:.4px;
-
-    margin-bottom:14px;
-
-    text-transform:uppercase;
-
-}
-
-
-.teacher-tools__grid {
-
-    display:grid;
-
-    gap:12px;
-
-}
-
-
-.teacher-tool-card {
-
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    padding:14px 16px;
-
-    border-radius:16px;
-
-    border:1px solid var(--border);
-
-    background:#fff;
-
-    text-decoration:none;
-
-    color:var(--text);
-
-    transition:.25s ease;
-
-}
-
-
-.teacher-tool-card i {
-
-    width:38px;
-
-    height:38px;
-
-    border-radius:12px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    background:var(--light-matcha);
-
-    color:var(--matcha);
-
-    flex:0 0 auto;
-
-}
-
-
-.teacher-tool-card strong {
-
-    display:block;
-
-    color:var(--forest);
-
-    font-size:15px;
-
-}
-
-
-.teacher-tool-card span {
-
-    display:block;
-
-    font-size:13px;
-
-    color:#6b756f;
-
-    margin-top:2px;
-
-}
-
-
-.teacher-tool-card:hover {
-
-    transform:translateX(4px);
-
-    border-color:var(--matcha);
-
-    box-shadow:0 12px 24px rgba(63,157,112,.12);
-
-}
-
-
-.teacher-tool-card:hover i {
-
-    background:var(--forest);
-
-    color:white;
-
-}
-
-
-
-
-
-/* =========================
+    .learning-panel {
+        background: white;
+        border-radius: 25px;
+        padding: 25px;
+        height: fit-content;
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 30px rgba(43, 76, 63, .06);
+    }
+
+    .brand-name {
+        font-size: 25px;
+        font-weight: 900;
+        color: var(--forest);
+        margin-bottom: 30px;
+    }
+
+    .brand-name span {
+        color: var(--matcha);
+    }
+
+    .menu-item {
+        display: block;
+        padding: 14px 15px;
+        border-radius: 14px;
+        margin-bottom: 10px;
+        color: var(--text);
+        font-weight: 600;
+        text-decoration: none;
+        transition: .3s;
+        cursor: pointer;
+    }
+
+    .menu-item:hover {
+        background: var(--light-matcha);
+        color: var(--forest);
+    }
+
+    .menu-item.active {
+        background: var(--forest);
+        color: white;
+    }
+
+    .teacher-tools {
+        margin-top: 25px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+    }
+
+    .teacher-tools__title {
+        color: var(--forest);
+        font-size: 14px;
+        font-weight: 900;
+        letter-spacing: .4px;
+        margin-bottom: 14px;
+        text-transform: uppercase;
+    }
+
+    .teacher-tools__grid {
+        display: grid;
+        gap: 12px;
+    }
+
+    .teacher-tool-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: #fff;
+        text-decoration: none;
+        color: var(--text);
+        transition: .25s ease;
+    }
+
+    .teacher-tool-card i {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--light-matcha);
+        color: var(--matcha);
+        flex: 0 0 auto;
+    }
+
+    .teacher-tool-card strong {
+        display: block;
+        color: var(--forest);
+        font-size: 15px;
+    }
+
+    .teacher-tool-card span {
+        display: block;
+        font-size: 13px;
+        color: #6b756f;
+        margin-top: 2px;
+    }
+
+    .teacher-tool-card:hover {
+        transform: translateX(4px);
+        border-color: var(--matcha);
+        box-shadow: 0 12px 24px rgba(63, 157, 112, .12);
+    }
+
+    .teacher-tool-card:hover i {
+        background: var(--forest);
+        color: white;
+    }
+    /* =========================
    COURSE HEADER
 ========================= */
 
+    .course-header {
+        background: white;
+        border-radius: 30px;
+        padding: 45px;
+        border: 1px solid var(--border);
+        box-shadow: 0 15px 40px rgba(43, 76, 63, .08);
+    }
 
-.course-header {
+    .level-badge {
+        display: inline-block;
+        background: var(--light-matcha);
+        color: var(--matcha);
+        font-weight: 800;
+        font-size: 13px;
+        padding: 8px 18px;
+        border-radius: 50px;
+        letter-spacing: .5px;
+    }
 
-    background:white;
+    .course-title {
+        margin-top: 25px;
+        font-size: 42px;
+        font-weight: 900;
+        color: var(--forest);
+    }
 
-    border-radius:30px;
-
-    padding:45px;
-
-    border:1px solid var(--border);
-
-    box-shadow:
-    0 15px 40px rgba(43,76,63,.08);
-
-}
-
-
-
-.level-badge {
-
-
-    display:inline-block;
-
-    background:var(--light-matcha);
-
-    color:var(--matcha);
-
-    font-weight:800;
-
-    font-size:13px;
-
-    padding:8px 18px;
-
-    border-radius:50px;
-
-    letter-spacing:.5px;
-
-}
-
-
-
-.course-title {
-
-    margin-top:25px;
-
-    font-size:42px;
-
-    font-weight:900;
-
-    color:var(--forest);
-
-}
-
-
-
-.course-description {
-
-    margin-top:20px;
-
-    color:#666;
-
-    font-size:17px;
-
-    line-height:1.8;
-
-    max-width:900px;
-
-}
-
-
-
-/* =========================
+    .course-description {
+        margin-top: 20px;
+        color: #666;
+        font-size: 17px;
+        line-height: 1.8;
+        max-width: 900px;
+    }
+    /* =========================
    TEACHER
 ========================= */
 
+    .teacher-box {
+        margin-top: 30px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
 
-.teacher-box {
+    .teacher-avatar {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background: var(--forest);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 900;
+        font-size: 20px;
+    }
 
-    margin-top:30px;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:15px;
-
-}
-
-
-
-.teacher-avatar {
-
-    width:55px;
-
-    height:55px;
-
-    border-radius:50%;
-
-    background:var(--forest);
-
-    color:white;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    font-weight:900;
-
-    font-size:20px;
-
-}
-
-
-
-.teacher-name {
-
-    color:var(--forest);
-
-    font-weight:800;
-
-}
-
-
-
-/* =========================
+    .teacher-name {
+        color: var(--forest);
+        font-weight: 800;
+    }
+    /* =========================
    BUTTON
 ========================= */
 
+    .join-btn {
+        display: inline-block;
+        margin-top: 35px;
+        padding: 14px 35px;
+        background: var(--matcha);
+        color: white;
+        border-radius: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: .3s;
+    }
 
-.join-btn {
-
-
-    display:inline-block;
-
-    margin-top:35px;
-
-    padding:14px 35px;
-
-    background:var(--matcha);
-
-    color:white;
-
-    border-radius:15px;
-
-    font-weight:700;
-
-    text-decoration:none;
-
-    transition:.3s;
-
-}
-
-
-
-.join-btn:hover {
-
-    background:var(--forest);
-
-    color:white;
-
-}
-
-
-
-
-
-/* =========================
+    .join-btn:hover {
+        background: var(--forest);
+        color: white;
+    }
+    /* =========================
    MODULE CARDS
 ========================= */
 
-
-.module-grid {
-
-
-    margin-top:30px;
-
-    display:grid;
-
-    grid-template-columns:repeat(4,1fr);
-
-    gap:20px;
-
-}
-
-
-
-.module-card {
-
-
-    display:block;
-
-    background:white;
-
-    border-radius:22px;
-
-    padding:30px 20px;
-
-    text-align:center;
-
-    text-decoration:none;
-
-    border:1px solid var(--border);
-
-    transition:.3s;
-
-
-}
-
-
-
-.module-card:hover {
-
-
-    transform:translateY(-6px);
-
-
-    border-color:var(--matcha);
-
-
-    box-shadow:
-    0 15px 30px rgba(63,157,112,.15);
-
-
-}
-
-
-
-.module-icon {
-
-
-    width:60px;
-
-    height:60px;
-
-    margin:auto;
-
-    border-radius:18px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    background:var(--light-matcha);
-
-    color:var(--matcha);
-
-    font-size:25px;
-
-    margin-bottom:18px;
-
-}
-
-
-
-.module-card h5 {
-
-
-    color:var(--forest);
-
-    font-weight:800;
-
-
-}
-
-
-
-
-.module-card p {
-
-    color:#777;
-
-    font-size:14px;
-
-}
-
-
-
-
-
-/* =========================
+    .module-grid {
+        margin-top: 30px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .module-card {
+        display: block;
+        background: white;
+        border-radius: 22px;
+        padding: 30px 20px;
+        text-align: center;
+        text-decoration: none;
+        border: 1px solid var(--border);
+        transition: .3s;
+    }
+
+    .module-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--matcha);
+        box-shadow: 0 15px 30px rgba(63, 157, 112, .15);
+    }
+
+    .module-icon {
+        width: 60px;
+        height: 60px;
+        margin: auto;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--light-matcha);
+        color: var(--matcha);
+        font-size: 25px;
+        margin-bottom: 18px;
+    }
+
+    .module-card h5 {
+        color: var(--forest);
+        font-weight: 800;
+    }
+
+    .module-card p {
+        color: #777;
+        font-size: 14px;
+    }
+    /* =========================
    COMMUNITY NOTE
 ========================= */
 
-
-.note-section {
-
-
-    margin-top:30px;
-
-    background:white;
-
-    padding:35px;
-
-    border-radius:25px;
-
-    border:1px solid var(--border);
-
-
-}
-
-
-
-.note-section h3 {
-
-    color:var(--forest);
-
-    font-weight:900;
-
-}
-
-
-
-.note-author {
-
-
-    margin-top:25px;
-
-    padding:18px;
-
-    background:var(--light-matcha);
-
-    border-radius:15px;
-
-}
-
-
-
-.view-note {
-
-
-    margin-top:20px;
-
-    display:inline-block;
-
-    padding:12px 25px;
-
-    border-radius:12px;
-
-    background:var(--forest);
-
-    color:white;
-
-    text-decoration:none;
-
-    font-weight:700;
-
-}
-
-
-
-
-/* RESPONSIVE */
-
-
-@media(max-width:992px){
-
-
-.classroom-container{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-.module-grid{
-
-grid-template-columns:repeat(2,1fr);
-
-}
-
-
-}
-
-
-
-@media(max-width:600px){
-
-
-.module-grid{
-
-grid-template-columns:1fr;
-
-}
-
-
-.course-title{
-
-font-size:30px;
-
-}
-
-
-}
-
-
-
+    .note-section {
+        margin-top: 30px;
+        background: white;
+        padding: 35px;
+        border-radius: 25px;
+        border: 1px solid var(--border);
+    }
+
+    .note-section h3 {
+        color: var(--forest);
+        font-weight: 900;
+    }
+
+    .note-author {
+        margin-top: 25px;
+        padding: 18px;
+        background: var(--light-matcha);
+        border-radius: 15px;
+    }
+
+    .view-note {
+        margin-top: 20px;
+        display: inline-block;
+        padding: 12px 25px;
+        border-radius: 12px;
+        background: var(--forest);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+    }
+    /* RESPONSIVE */
+
+    @media(max-width:992px) {
+        .classroom-container {
+            grid-template-columns: 1fr;
+        }
+        .module-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media(max-width:600px) {
+        .module-grid {
+            grid-template-columns: 1fr;
+        }
+        .course-title {
+            font-size: 30px;
+        }
+    }
 </style>
 
 
@@ -677,140 +340,139 @@ font-size:30px;
 
 
 
-<div class="course-header">
+    <div class="course-header">
 
-    
 
-<span class="level-badge">
+
+        <span class="level-badge">
 ADVANCED LEVEL TRACK
 </span>
 
 
 
-<h1 class="course-title">
+        <h1 class="course-title">
 
-{{ classroom.title }}
+            {{ classroom.title }}
 
-</h1>
-
-
-
-<p class="course-description">
-
-{{ classroom.description }}
-
-</p>
+        </h1>
 
 
 
+        <p class="course-description">
+
+            {{ classroom.description }}
+
+        </p>
 
 
-<div class="teacher-box d-flex align-items-center justify-content-between">
-    <div class="d-flex align-items-center gap-3">
-        <div class="teacher-avatar">
-            {{ classroom.owner.username|slice:":1"|upper }}
+
+
+
+        <div class="teacher-box d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <div class="teacher-avatar">
+                    {{ classroom.owner.username|slice:":1"|upper }}
+                </div>
+                <div>
+                    <div class="teacher-name">
+                        Led by {{ classroom.owner.username }}
+                    </div>
+                    <small class="text-muted">Course Instructor</small>
+                </div>
+            </div>
+            <!-- MEMBER COUNT BADGE -->
+            <div class="member-count-badge" style="background: var(--light-matcha); color: var(--forest); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 14px;">
+                <i class="fa-solid fa-users me-1"></i> {{ classroom.member_count|default:1 }} {{ classroom.member_count|pluralize:"Member,Members" }}
+            </div>
         </div>
-        <div>
-            <div class="teacher-name">
-                Led by {{ classroom.owner.username }}
+
+        {% if is_owner %}
+        <div class="teacher-tools teacher-tools--inline">
+            <div class="teacher-tools__title">Teacher Tools</div>
+            <div class="teacher-tools__grid">
+
+                <a href="{% url 'edit_classroom' classroom.class_id %}" class="teacher-tool-card">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <div>
+                        <strong>Edit Classroom</strong>
+                        <span>Update title, subject, price, and access type</span>
+                    </div>
+                </a>
+
+                <a href="{% url 'teacher_student_results' classroom.class_id %}" class="teacher-tool-card">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <div>
+                        <strong>Student Results</strong>
+                        <span>Review quiz attempts and score breakdowns</span>
+                    </div>
+                </a>
+
+                <a href="{% url 'manage_enrollments' classroom.class_id %}" class="teacher-tool-card">
+                    <i class="fa-solid fa-users"></i>
+                    <div>
+                        <strong>Requested Student List</strong>
+                        <span>Manage pending requests and approved students</span>
+                    </div>
+                </a>
+
+                <a href="{% url 'joined_students_list' classroom.class_id %}" class="teacher-tool-card">
+                    <i class="fa-solid fa-users"></i>
+                    <div>
+                        <strong>Joined Student List</strong>
+                        <span>View and manage students who have joined the class</span>
+                    </div>
+                </a>
             </div>
-            <small class="text-muted">Course Instructor</small>
         </div>
-    </div>
-<!-- MEMBER COUNT BADGE -->
-    <div class="member-count-badge" style="background: var(--light-matcha); color: var(--forest); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 14px;">
-        <i class="fa-solid fa-users me-1"></i>
-        {{ classroom.member_count|default:1 }} {{ classroom.member_count|pluralize:"Member,Members" }}
-    </div>
-</div>
+        {% endif %}
 
-{% if is_owner %}
-<div class="teacher-tools teacher-tools--inline">
-    <div class="teacher-tools__title">Teacher Tools</div>
-    <div class="teacher-tools__grid">
 
-        <a href="{% url 'edit_classroom' classroom.class_id %}" class="teacher-tool-card">
-            <i class="fa-solid fa-pen-to-square"></i>
-            <div>
-                <strong>Edit Classroom</strong>
-                <span>Update title, subject, price, and access type</span>
+
+    </div>
+
+
+
+
+
+
+    <!-- MODULES -->
+
+
+    <div class="module-grid">
+
+        <a href="{% url 'teacher_materials' classroom.class_id %}" class="module-card">
+            <div class="module-icon">
+                <i class="fa-solid fa-folder-open"></i>
             </div>
+            <h5>Teacher Materials</h5>
+            <p>Learning resources and course files.</p>
         </a>
 
-        <a href="{% url 'teacher_student_results' classroom.class_id %}" class="teacher-tool-card">
-            <i class="fa-solid fa-chart-line"></i>
-            <div>
-                <strong>Student Results</strong>
-                <span>Review quiz attempts and score breakdowns</span>
+        <a href="{% url 'community_notes' classroom.class_id %}" class="module-card">
+            <div class="module-icon">
+                <i class="fa-solid fa-users"></i>
             </div>
+            <h5>Community Notes</h5>
+            <p>Student shared knowledge.</p>
         </a>
 
-        <a href="{% url 'manage_enrollments' classroom.class_id %}" class="teacher-tool-card">
-            <i class="fa-solid fa-users"></i>
-            <div>
-                <strong>Requested Student List</strong>
-                <span>Manage pending requests and approved students</span>
+        <a href="{% url 'flashcards' classroom.class_id %}" class="module-card">
+            <div class="module-icon">
+                <i class="fa-solid fa-layer-group"></i>
             </div>
+            <h5>Flashcards</h5>
+            <p>Memory learning system.</p>
         </a>
 
-        <a href="{% url 'joined_students_list' classroom.class_id %}" class="teacher-tool-card">
-            <i class="fa-solid fa-users"></i>
-            <div>
-                <strong>Joined Student List</strong>
-                <span>View and manage students who have joined the class</span>
+        <a href="{% url 'mcqs' classroom.class_id %}" class="module-card">
+            <div class="module-icon">
+                <i class="fa-solid fa-clipboard-question"></i>
             </div>
+            <h5>MCQs</h5>
+            <p>Exam preparation practice.</p>
         </a>
+
     </div>
-</div>
-{% endif %}
-
-
-
-</div>
-
-
-
-
-
-
-<!-- MODULES -->
-
-
-<div class="module-grid">
-
-<a href="{% url 'teacher_materials' classroom.class_id %}" class="module-card">
-    <div class="module-icon">
-        <i class="fa-solid fa-folder-open"></i>
-    </div>
-    <h5>Teacher Materials</h5>
-    <p>Learning resources and course files.</p>
-</a>
-
-<a href="{% url 'community_notes' classroom.class_id %}" class="module-card">
-    <div class="module-icon">
-        <i class="fa-solid fa-users"></i>
-    </div>
-    <h5>Community Notes</h5>
-    <p>Student shared knowledge.</p>
-</a>
-
-<a href="{% url 'flashcards' classroom.class_id %}" class="module-card">
-<div class="module-icon">
-<i class="fa-solid fa-layer-group"></i>
-</div>
-<h5>Flashcards</h5>
-<p>Memory learning system.</p>
-</a>
-
-<a href="{% url 'mcqs' classroom.class_id %}" class="module-card">
-<div class="module-icon">
-<i class="fa-solid fa-clipboard-question"></i>
-</div>
-<h5>MCQs</h5>
-<p>Exam preparation practice.</p>
-</a>
-
-</div>
 
 
 
@@ -819,78 +481,65 @@ ADVANCED LEVEL TRACK
 
 
 
-<!-- NOTE SECTION -->
+    <!-- NOTE SECTION -->
+    <!-- <div class="note-section">
 
 
-<div class="note-section">
-
-
-<h3>
-Comprehensive Exam Review Notes
-</h3>
+        <h3>
+            Comprehensive Exam Review Notes
+        </h3>
 
 
 
-<p class="text-muted">
+        <p class="text-muted">
 
-Crowdsourced study summaries breaking down important concepts,
-discussion points and learning materials.
+            Crowdsourced study summaries breaking down important concepts, discussion points and learning materials.
 
-</p>
+        </p>
 
 
 
 
-<div class="note-author">
+        <div class="note-author">
 
 
-<strong>
+            <strong>
 Student Anon
 </strong>
 
 
-<br>
+            <br>
 
 
-<span class="text-muted">
+            <span class="text-muted">
 
 Community Contributor
 
 </span>
 
 
-</div>
+        </div>
 
 
 
 
-<a href="#" class="view-note">
+        <a href="#" class="view-note">
 
 View Public Note
 
-</a>
+</a> {% if not is_owner %}
+        <div class="mt-4">
+            <a href="{% url 'leave_classroom' classroom.class_id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to leave this class?');" style="border-radius: 10px; padding: 6px 14px; font-weight: 600;">
+                <i class="fa-solid fa-right-from-bracket me-1"></i> Leave Classroom
+            </a>
+        </div>
+        {% endif %}
 
-{% if not is_owner %}
-    <div class="mt-4">
-        <a href="{% url 'leave_classroom' classroom.class_id %}" 
-           class="btn btn-outline-danger btn-sm" 
-           onclick="return confirm('Are you sure you want to leave this class?');"
-           style="border-radius: 10px; padding: 6px 14px; font-weight: 600;">
-            <i class="fa-solid fa-right-from-bracket me-1"></i> Leave Classroom
-        </a>
-    </div>
-{% endif %}
 
+    </div> -->
 
 </div>
 
-
-
-
 </div>
-
-
-</div>
-
 
 {% endblock %}

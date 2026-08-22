@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-{% block title %}Browse Classes - SmartLearn{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}Browse Classes - SmartLearn{% endblock %} {% block content %}
 
 <!-- UNIFIED HERO & FILTER HEADER CARD -->
 <div class="styled-card mb-4 p-4">
@@ -9,15 +6,11 @@
         <div>
             <div class="d-flex align-items-center gap-2">
                 <h2 class="page-heading-large m-0" style="font-size: 28px; font-weight: 700;">Explore Classes</h2>
-                
+
                 <!-- TINY JUMP TO JOINED CLASSES BUTTON -->
-                <a href="#joinedClassesSection" 
-                   id="joinedJumpBtn"
-                   class="btn btn-sm btn-light border text-secondary d-inline-flex align-items-center gap-1 ms-2" 
-                   style="font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; transition: all 0.2s ease-in-out;"
-                   title="Jump to My Joined Classes">
-                    <i class="fa-solid fa-arrow-down" style="font-size: 10px;"></i>
-                    Joined Classes ({{ joined_classes|length }})
+                <a href="#joinedClassesSection" id="joinedJumpBtn" class="btn btn-sm btn-light border text-secondary d-inline-flex align-items-center gap-1 ms-2" style="font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; transition: all 0.2s ease-in-out;"
+                    title="Jump to My Joined Classes">
+                    <i class="fa-solid fa-arrow-down" style="font-size: 10px;"></i> Joined Classes ({{ joined_classes|length }})
                 </a>
             </div>
             <p class="text-muted mb-0 mt-1" style="font-size: 14px;">Find new subjects or access your enrolled classes.</p>
@@ -32,17 +25,7 @@
         <div class="row g-3">
             <div class="col-md-6">
                 <div class="position-relative">
-                    <input
-                        type="text"
-                        name="search"
-                        id="searchInput"
-                        class="form-control"
-                        placeholder="Search by class name..."
-                        value="{{ search_query }}"
-                        oninput="triggerInstantSearch()"
-                        autocomplete="off"
-                        style="padding-left: 38px; border-radius: 10px; height: 44px;"
-                    >
+                    <input type="text" name="search" id="searchInput" class="form-control" placeholder="Search by class name..." value="{{ search_query }}" oninput="triggerInstantSearch()" autocomplete="off" style="padding-left: 38px; border-radius: 10px; height: 44px;">
                     <i class="fa-solid fa-magnifying-glass position-absolute text-muted" style="left: 14px; top: 14px;"></i>
                 </div>
             </div>
@@ -79,37 +62,37 @@
 
     <div class="cards-grid">
         {% for classroom in owned_classes %}
-            <article class="styled-card class-card">
-                <div class="class-card-header">
-                    <h3 class="class-card-title">{{ classroom.title }}</h3>
-                    <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+        <article class="styled-card class-card">
+            <div class="class-card-header">
+                <h3 class="class-card-title">{{ classroom.title }}</h3>
+                <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
                         {{ classroom.class_type|title }}
                     </span>
-                    <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
+                <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
                         <i class="fa-solid fa-user-group me-1"></i>{{ classroom.member_count|default:1 }}
 
                         {% if classroom.class_type == 'private' and classroom.member_limit %}
                         / {{ classroom.member_limit }}
                     {% endif %}
                     </span>
+            </div>
+            <p class="class-card-desc">{{ classroom.description|default:"No description provided."|truncatewords:20 }}</p>
+            <div class="class-card-footer">
+                <div class="teacher-info">
+                    <span class="footer-text-small">Teacher</span>
+                    <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
                 </div>
-                <p class="class-card-desc">{{ classroom.description|default:"No description provided."|truncatewords:20 }}</p>
-                <div class="class-card-footer">
-                    <div class="teacher-info">
-                        <span class="footer-text-small">Teacher</span>
-                        <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
-                    </div>
-                    <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
-                        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
-                        <a href="{% url 'manage_enrollments' classroom.class_id %}" class="btn-primary card-action-btn-small" style="background-color: #f59e0b; border-color: #f59e0b;">
+                <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
+                    <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
+                    <!-- <a href="{% url 'manage_enrollments' classroom.class_id %}" class="btn-primary card-action-btn-small" style="background-color: #f59e0b; border-color: #f59e0b;">
                             Manage
-                        </a>
-                        <a href="{% url 'delete_class' classroom.class_id %}" class="delete-link" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
-                    </div>
+                        </a> -->
+                    <a href="{% url 'delete_class' classroom.class_id %}" class="delete-link" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
                 </div>
-            </article>
+            </div>
+        </article>
         {% empty %}
-            <p class="empty-text-centered text-muted py-3">You haven't created any classrooms yet.</p>
+        <p class="empty-text-centered text-muted py-3">You haven't created any classrooms yet.</p>
         {% endfor %}
     </div>
 </div>
@@ -124,38 +107,88 @@
             <h3 class="m-0" style="font-size: 22px; font-weight: 700; color: #111827;">
                 Available Classes
             </h3>
-            
         </div>
 
         <div class="cards-grid">
             {% for classroom in available_classes %}
-                <article class="styled-card class-card">
-                    <div class="class-card-header">
-                        <h3 class="class-card-title">{{ classroom.title }}</h3>
-                        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
-                            {{ classroom.class_type|title }}
-                        </span>
-                        <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
-                            <i class="fa-solid fa-user-group"></i>&nbsp;{{ classroom.member_count|default:1 }}
-                        </span>
+            <article class="styled-card class-card">
+                <div class="class-card-header">
+                    <h3 class="class-card-title">{{ classroom.title }}</h3>
+                    <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+                        {{ classroom.class_type|title }}
+                    </span>
+                    <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
+                        <i class="fa-solid fa-user-group"></i>&nbsp;{{ classroom.member_count|default:1 }}
+                    </span>
+                </div>
+                <p class="class-card-desc">{{ classroom.description|default:"No description provided."|truncatewords:20 }}</p>
+                <div class="class-card-footer">
+                    <div class="teacher-info">
+                        <span class="footer-text-small">Teacher</span>
+                        <!-- Trigger Button for Teacher Modal -->
+                        <button type="button" class="btn btn-link text-decoration-none p-0 footer-text-bold border-0 bg-transparent text-start" data-bs-toggle="modal" data-bs-target="#teacherModal{{ classroom.class_id }}">
+                            {{ classroom.owner.username|default:"Unknown" }} <i class="fa-solid fa-circle-info ms-1 text-success small"></i>
+                        </button>
                     </div>
-                    <p class="class-card-desc">{{ classroom.description|default:"No description provided."|truncatewords:20 }}</p>
-                    <div class="class-card-footer">
-                        <div class="teacher-info">
-                            <span class="footer-text-small">Teacher</span>
-                            <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
+                    <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
+                        {% if classroom.class_type == 'public' %}
+                        <a href="{% url 'request_join_class' classroom.class_id %}" class="btn-primary card-action-btn-small">Join Class</a> {% else %}
+                        <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">Request Entry (${{ classroom.price }})</a> {% endif %}
+                    </div>
+                </div>
+            </article>
+
+            <!-- TEACHER DETAILS MODAL -->
+            <div class="modal fade" id="teacherModal{{ classroom.class_id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content rounded-4 border-0 shadow">
+                        <div class="modal-header border-0 pb-0">
+                            <h5 class="modal-title fw-bold" style="color: #2b4c3f;"> <i class="fa-solid fa-circle-user"></i> Instructor Profile</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
-                            {% if classroom.class_type == 'public' %}
-                                <a href="{% url 'request_join_class' classroom.class_id %}" class="btn-primary card-action-btn-small">Join Class</a>
-                            {% else %}
-                                <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">Request Entry (${{ classroom.price }})</a>
+                        <div class="modal-body text-center p-4">
+                            <!-- Profile Image or Avatar Fallback -->
+                            {% if classroom.owner.profile.profile_image %}
+                            <img src="{{ classroom.owner.profile.profile_image.url }}" class="rounded-circle mb-3 shadow-sm" style="width: 85px; height: 85px; object-fit: cover;"> {% else %}
+                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm mx-auto mb-3" style="width: 85px; height: 85px; font-size: 28px; background-color: #3f9d70;">
+                                {{ classroom.owner.username|slice:":2"|upper }}
+                            </div>
                             {% endif %}
+
+                            <h4 class="fw-bold mb-1" style="color: #2b4c3f;">{{ classroom.owner.username }}</h4>
+                            <p class="text-muted small mb-3">{{ classroom.owner.email }}</p>
+
+                            <!-- Teacher Bio -->
+                            {% if classroom.owner.profile.bio %}
+                            <div class="p-3 rounded-3 text-start mb-3" style="background: #eef7f2; color: #555c58;">
+                                <small class="fw-bold text-uppercase d-block mb-1" style="color: #2b4c3f; font-size: 11px;">Bio / Experience</small>
+                                <p class="mb-0 small">{{ classroom.owner.profile.bio }}</p>
+                            </div>
+                            {% else %}
+                            <p class="text-muted small italic">No bio provided by teacher.</p>
+                            {% endif %}
+
+                            <!-- Expertise & Qualifications -->
+                            {% if classroom.owner.profile.expertise %}
+                            <div class="text-start mb-3">
+                                <small class="fw-bold text-uppercase d-block mb-1 text-muted" style="font-size: 11px;">Expertise</small>
+                                <span class="badge bg-light text-dark border px-2 py-1">{{ classroom.owner.profile.expertise }}</span>
+                            </div>
+                            {% endif %}
+
+                            <!-- Social & External Links -->
+                            <div class="d-flex justify-content-center gap-2 mt-3">
+                                {% if classroom.owner.profile.linkedin_url %}
+                                <a href="{{ classroom.owner.profile.linkedin_url }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fa-brands fa-linkedin"></i> LinkedIn</a> {% endif %} {% if classroom.owner.profile.github_url %}
+                                <a href="{{ classroom.owner.profile.github_url }}" target="_blank" class="btn btn-sm btn-outline-dark"><i class="fa-brands fa-github"></i> GitHub</a> {% endif %} {% if classroom.owner.profile.website_url %}
+                                <a href="{{ classroom.owner.profile.website_url }}" target="_blank" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-globe"></i> Website</a> {% endif %}
+                            </div>
                         </div>
                     </div>
-                </article>
+                </div>
+            </div>
             {% empty %}
-                <p class="empty-text-centered text-muted py-3">No available classrooms match your criteria.</p>
+            <p class="empty-text-centered text-muted py-3">No available classrooms match your criteria.</p>
             {% endfor %}
         </div>
     </div>
@@ -173,26 +206,26 @@
 
         <div class="cards-grid">
             {% for classroom in joined_classes %}
-                <article class="styled-card class-card">
-                    <div class="class-card-header">
-                        <h3 class="class-card-title">{{ classroom.title }}</h3>
-                        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+            <article class="styled-card class-card">
+                <div class="class-card-header">
+                    <h3 class="class-card-title">{{ classroom.title }}</h3>
+                    <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
                             {{ classroom.class_type|title }}
                         </span>
+                </div>
+                <p class="class-card-desc">{{ classroom.description|default:"No description provided."|truncatewords:20 }}</p>
+                <div class="class-card-footer">
+                    <div class="teacher-info">
+                        <span class="footer-text-small">Teacher</span>
+                        <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
                     </div>
-                    <p class="class-card-desc">{{ classroom.description|default:"No description provided."|truncatewords:20 }}</p>
-                    <div class="class-card-footer">
-                        <div class="teacher-info">
-                            <span class="footer-text-small">Teacher</span>
-                            <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
-                        </div>
-                        <div class="card-actions">
-                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open Class</a>
-                        </div>
+                    <div class="card-actions">
+                        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open Class</a>
                     </div>
-                </article>
+                </div>
+            </article>
             {% empty %}
-                <p class="empty-text-centered text-muted py-3">You haven't joined any classes yet.</p>
+            <p class="empty-text-centered text-muted py-3">You haven't joined any classes yet.</p>
             {% endfor %}
         </div>
     </div>

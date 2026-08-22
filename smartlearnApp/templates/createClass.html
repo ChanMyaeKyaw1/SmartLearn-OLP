@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-{% block title %}Create Classroom - EduSage{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}Create Classroom - EduSage{% endblock %} {% block content %}
 <div class="centered-form-wrapper">
     <a href="{% url 'browse_classes' %}?user={{ request.GET.user|default:'TestUser' }}" class="back-btn-icon"><i class="fa-solid fa-arrow-left"></i></a>
     <br><br>

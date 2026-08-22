@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-{% block title %}Dashboard - SmartLearn{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}Dashboard - SmartLearn{% endblock %} {% block content %}
 <div class="main-container dashboard-wrapper">
 
     <!-- 1. GREETING HERO SECTION -->
@@ -18,37 +15,29 @@
                     Ready to achieve your learning goals today? Browse your classes below.
                 </p>
             </div>
-            
+
             <!-- Hero Search Input -->
             <div class="hero-search-container">
                 <div class="hero-search-input-wrapper">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input 
-                        type="text" 
-                        id="classSearchInput" 
-                        class="form-control hero-search-field" 
-                        placeholder="Search classes, subjects, or instructors..." 
-                        aria-label="Search classes"
-                    >
+                    <input type="text" id="classSearchInput" class="form-control hero-search-field" placeholder="Search classes, subjects, or instructors..." aria-label="Search classes">
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 2. METRICS BAR (MORE SPACING & GAP) -->
+    <!-- 2. METRICS BAR -->
     <div class="metrics-bar mb-5">
         <!-- Teacher View Metrics -->
         <div id="teacherMetrics" class="metrics-grid" style="display: none;">
             <a href="#teacherModeSection" class="styled-card metric-card metric-card-link text-decoration-none">
-                
-                    <div class="metric-icon metric-icon-green">
-                        <i class="fa-solid fa-chalkboard-user"></i>
-                    </div>
-                    <div class="metric-info">
-                        <span class="metric-value">{{ my_classes|length }}</span>
-                        <span class="metric-label">Created Classes</span>
-                    </div>
-                
+                <div class="metric-icon metric-icon-green">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <div class="metric-info">
+                    <span class="metric-value">{{ my_classes|length }}</span>
+                    <span class="metric-label">Created Classes</span>
+                </div>
             </a>
             {% if my_classes.0 %}
             <a href="{% url 'manage_enrollments' my_classes.0.class_id %}" class="styled-card metric-card metric-card-link text-decoration-none">
@@ -73,7 +62,7 @@
             {% endif %}
         </div>
 
-<!-- Student View Metrics -->
+        <!-- Student View Metrics -->
         <div id="studentMetrics" class="metrics-grid">
             <a href="#joinedClassesSection" class="styled-card metric-card metric-card-link text-decoration-none">
                 <div class="metric-icon metric-icon-green">
@@ -128,38 +117,30 @@
 
         <div class="cards-grid mb-5">
             {% for classroom in my_classes %}
-                <article class="styled-card class-card">
-                    <div class="class-card-header mb-2">
-                        <h3 class="class-card-title">{{ classroom.title }}</h3>
-                        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
-                            {{ classroom.class_type|title }}
-                        </span>
-                        <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
-                            <i class="fa-solid fa-user-group me-1">{{ classroom.member_count|default:1 }}</i>
-                        </span>
+            <article class="styled-card class-card">
+                <div class="class-card-header mb-2">
+                    <h3 class="class-card-title">{{ classroom.title }}</h3>
+                    <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+                        {{ classroom.class_type|title }}
+                    </span>
+                    <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
+                        <i class="fa-solid fa-user-group me-1"></i>{{ classroom.member_count|default:1 }}
+                    </span>
+                </div>
+                <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:20 }}</p>
+                <div class="class-card-footer">
+                    <div class="teacher-info">
+                        <span class="footer-text-small">Subject</span>
+                        <span class="footer-text-bold">{{ classroom.subject|default:"General" }}</span>
                     </div>
-                    <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:20 }}</p>
-                    <div class="class-card-footer">
-                        <div class="teacher-info">
-                            <span class="footer-text-small">Subject</span>
-                            <span class="footer-text-bold">{{ classroom.subject|default:"General" }}</span>
-                        </div>
-                        <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
-                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
-                            <a href="{% url 'manage_enrollments' classroom.class_id %}" class="btn-primary card-action-btn-small" style="background-color: #f59e0b; border-color: #f59e0b; display: inline-flex; align-items: center; gap: 4px;">
-                                Manage
-                                {% if classroom.pending_count %}
-                                    <span style="background: #dc2626; color: #ffffff; padding: 1px 5px; border-radius: 10px; font-size: 10px; line-height: 1;">
-                                        {{ classroom.pending_count }}
-                                    </span>
-                                {% endif %}
-                            </a>
-                            <a href="{% url 'delete_class' classroom.class_id %}" class="delete-link" onclick="return confirm('Delete this class?');">Delete</a>
-                        </div>
+                    <div class="card-actions d-flex align-items-center flex-nowrap" style="gap: 6px;">
+                        <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">Open</a>
+                        <a href="{% url 'delete_class' classroom.class_id %}" class="delete-link" onclick="return confirm('Delete this class?');">Delete</a>
                     </div>
-                </article>
+                </div>
+            </article>
             {% empty %}
-                <p class="empty-text-centered">You haven't created any classes yet.</p>
+            <p class="empty-text-centered">You haven't created any classes yet.</p>
             {% endfor %}
         </div>
     </div>
@@ -183,37 +164,38 @@
 
                 <div class="class-carousel-container d-flex gap-4 overflow-x-auto py-3 px-2" id="availableClassesCarousel">
                     {% for classroom in available_classes %}
-                        <article class="styled-card class-card carousel-card-item flex-shrink-0">
-                            <div class="class-card-header mb-2">
-                                <h3 class="class-card-title">{{ classroom.title }}</h3>
-                                <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
-                                    {{ classroom.class_type|title }}
-                                </span>
-                                <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
-                                    <i class="fa-solid fa-user-group"></i>&nbsp;{{ classroom.member_count|default:1 }}
-                                </span>
+                    <article class="styled-card class-card carousel-card-item flex-shrink-0">
+                        <div class="class-card-header mb-2">
+                            <h3 class="class-card-title">{{ classroom.title }}</h3>
+                            <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+                                {{ classroom.class_type|title }}
+                            </span>
+                            <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
+                                <i class="fa-solid fa-user-group"></i>&nbsp;{{ classroom.member_count|default:1 }}
+                            </span>
+                        </div>
+                        <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:15 }}</p>
+                        <div class="class-card-footer">
+                            <div class="teacher-info">
+                                <span class="footer-text-small">Teacher</span>
+                                <!-- Trigger Button for Teacher Modal -->
+                                <button type="button" class="btn btn-link text-decoration-none p-0 footer-text-bold border-0 bg-transparent text-start" data-bs-toggle="modal" data-bs-target="#carouselTeacherModal{{ classroom.class_id }}">
+                                    {{ classroom.owner.username|default:"Unknown" }} <i class="fa-solid fa-circle-info ms-1 text-success small"></i>
+                                </button>
                             </div>
-                            <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:15 }}</p>
-                            <div class="class-card-footer">
-                                <div class="teacher-info">
-                                    <span class="footer-text-small">Teacher</span>
-                                    <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
-                                </div>
-                                <div class="card-actions">
-                                    {% if classroom.class_type == 'public' %}
-                                        <a href="{% url 'request_join_class' classroom.class_id %}" class="btn-primary card-action-btn-small">
-                                            Join Class
-                                        </a>
-                                    {% else %}
-                                        <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">
-                                            Request Entry (${{ classroom.price }})
-                                        </a>
-                                    {% endif %}
-                                </div>
+                            <div class="card-actions">
+                                {% if classroom.class_type == 'public' %}
+                                <a href="{% url 'request_join_class' classroom.class_id %}" class="btn-primary card-action-btn-small">
+                                    Join Class
+                                </a> {% else %}
+                                <a href="{% url 'payment_upload' classroom.class_id %}" class="btn-primary card-action-btn-small">
+                                    Request Entry (${{ classroom.price }})
+                                </a> {% endif %}
                             </div>
-                        </article>
+                        </div>
+                    </article>
                     {% empty %}
-                        <p class="empty-text-centered w-100 my-4">No available classes to explore right now.</p>
+                    <p class="empty-text-centered w-100 my-4">No available classes to explore right now.</p>
                     {% endfor %}
                 </div>
 
@@ -224,7 +206,7 @@
         </div>
 
         <!-- MY JOINED CLASSES SECTION -->
-        <div  id="joinedClassesSection" class="dashboard-section-block mb-5">
+        <div id="joinedClassesSection" class="dashboard-section-block mb-5">
             <div class="dashboard-section-header mb-3">
                 <h3 class="dashboard-section-title m-0">
                     <i class="fa-solid fa-graduation-cap text-success me-2"></i>My Joined Classes
@@ -232,31 +214,31 @@
             </div>
             <div class="cards-grid">
                 {% for classroom in joined_classrooms %}
-                    <article class="styled-card class-card">
-                        <div class="class-card-header mb-2">
-                            <h3 class="class-card-title">{{ classroom.title }}</h3>
-                            <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
-                                {{ classroom.class_type|title }}
-                            </span>
-                            <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
-                                <i class="fa-solid fa-user-group"></i>&nbsp;{{ classroom.member_count|default:1 }}
-                            </span>
+                <article class="styled-card class-card">
+                    <div class="class-card-header mb-2">
+                        <h3 class="class-card-title">{{ classroom.title }}</h3>
+                        <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
+                            {{ classroom.class_type|title }}
+                        </span>
+                        <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
+                            <i class="fa-solid fa-user-group"></i>&nbsp;{{ classroom.member_count|default:1 }}
+                        </span>
+                    </div>
+                    <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:20 }}</p>
+                    <div class="class-card-footer">
+                        <div class="teacher-info">
+                            <span class="footer-text-small">Subject</span>
+                            <span class="footer-text-bold">{{ classroom.subject|default:"General" }}</span>
                         </div>
-                        <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:20 }}</p>
-                        <div class="class-card-footer">
-                            <div class="teacher-info">
-                                <span class="footer-text-small">Subject</span>
-                                <span class="footer-text-bold">{{ classroom.subject|default:"General" }}</span>
-                            </div>
-                            <div class="card-actions">
-                                <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">
-                                    Open Class
-                                </a>
-                            </div>
+                        <div class="card-actions">
+                            <a href="{% url 'classroom_detail' classroom.class_id %}" class="btn-primary card-action-btn-small">
+                                Open Class
+                            </a>
                         </div>
-                    </article>
+                    </div>
+                </article>
                 {% empty %}
-                    <p class="empty-text-centered">You haven't joined any classes yet.</p>
+                <p class="empty-text-centered">You haven't joined any classes yet.</p>
                 {% endfor %}
             </div>
         </div>
@@ -270,26 +252,26 @@
             </div>
             <div class="cards-grid">
                 {% for classroom in pending_classrooms %}
-                    <article class="styled-card class-card pending-card">
-                        <div class="class-card-header mb-2">
-                            <h3 class="class-card-title">{{ classroom.title }}</h3>
-                            <span class="status-badge badge-pending">Pending</span>
+                <article class="styled-card class-card pending-card">
+                    <div class="class-card-header mb-2">
+                        <h3 class="class-card-title">{{ classroom.title }}</h3>
+                        <span class="status-badge badge-pending">Pending</span>
+                    </div>
+                    <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:15 }}</p>
+                    <div class="class-card-footer">
+                        <div class="teacher-info">
+                            <span class="footer-text-small">Teacher</span>
+                            <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
                         </div>
-                        <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:15 }}</p>
-                        <div class="class-card-footer">
-                            <div class="teacher-info">
-                                <span class="footer-text-small">Teacher</span>
-                                <span class="footer-text-bold">{{ classroom.owner.username|default:"Unknown" }}</span>
-                            </div>
-                            <div class="card-actions">
-                                <span class="badge bg-warning-subtle text-warning border border-warning px-2 py-1" style="font-size: 12px; font-weight: 600;">
-                                    <i class="fa-solid fa-clock me-1"></i> Awaiting Review
-                                </span>
-                            </div>
+                        <div class="card-actions">
+                            <span class="badge bg-warning-subtle text-warning border border-warning px-2 py-1" style="font-size: 12px; font-weight: 600;">
+                                <i class="fa-solid fa-clock me-1"></i> Awaiting Review
+                            </span>
                         </div>
-                    </article>
+                    </div>
+                </article>
                 {% empty %}
-                    <p class="empty-text-centered">You have no pending class requests.</p>
+                <p class="empty-text-centered">You have no pending class requests.</p>
                 {% endfor %}
             </div>
         </div>
@@ -297,6 +279,51 @@
     </div>
 </div>
 
+<!-- TEACHER DETAILS MODALS (Rendered outside the carousel loop) -->
+{% for classroom in available_classes %}
+<div class="modal fade" id="carouselTeacherModal{{ classroom.class_id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" style="color: #2b4c3f;"> <i class="fa-solid fa-circle-user"></i> Instructor Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                {% if classroom.owner.profile.profile_image %}
+                <img src="{{ classroom.owner.profile.profile_image.url }}" class="rounded-circle mb-3 shadow-sm" style="width: 85px; height: 85px; object-fit: cover;"> {% else %}
+                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm mx-auto mb-3" style="width: 85px; height: 85px; font-size: 28px; background-color: #3f9d70;">
+                    {{ classroom.owner.username|slice:":2"|upper }}
+                </div>
+                {% endif %}
+
+                <h4 class="fw-bold mb-1" style="color: #2b4c3f;">{{ classroom.owner.username }}</h4>
+                <p class="text-muted small mb-3">{{ classroom.owner.email }}</p>
+
+                {% if classroom.owner.profile.bio %}
+                <div class="p-3 rounded-3 text-start mb-3" style="background: #eef7f2; color: #555c58;">
+                    <small class="fw-bold text-uppercase d-block mb-1" style="color: #2b4c3f; font-size: 11px;">Bio / Experience</small>
+                    <p class="mb-0 small">{{ classroom.owner.profile.bio }}</p>
+                </div>
+                {% else %}
+                <p class="text-muted small italic">No bio provided by teacher.</p>
+                {% endif %} {% if classroom.owner.profile.expertise %}
+                <div class="text-start mb-3">
+                    <small class="fw-bold text-uppercase d-block mb-1 text-muted" style="font-size: 11px;">Expertise</small>
+                    <span class="badge bg-light text-dark border px-2 py-1">{{ classroom.owner.profile.expertise }}</span>
+                </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-center gap-2 mt-3">
+                    {% if classroom.owner.profile.linkedin_url %}
+                    <a href="{{ classroom.owner.profile.linkedin_url }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fa-brands fa-linkedin"></i> LinkedIn</a> {% endif %} {% if classroom.owner.profile.github_url %}
+                    <a href="{{ classroom.owner.profile.github_url }}" target="_blank" class="btn btn-sm btn-outline-dark"><i class="fa-brands fa-github"></i> GitHub</a> {% endif %} {% if classroom.owner.profile.website_url %}
+                    <a href="{{ classroom.owner.profile.website_url }}" target="_blank" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-globe"></i> Website</a> {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         // Dynamic Time Greeting & Clock
@@ -313,7 +340,10 @@
             }
 
             if (liveClock) {
-                liveClock.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                liveClock.textContent = now.toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
             }
         }
         updateGreeting();
@@ -359,10 +389,16 @@
 
         if (carousel && leftBtn && rightBtn) {
             rightBtn.addEventListener("click", () => {
-                carousel.scrollBy({ left: 360, behavior: "smooth" });
+                carousel.scrollBy({
+                    left: 360,
+                    behavior: "smooth"
+                });
             });
             leftBtn.addEventListener("click", () => {
-                carousel.scrollBy({ left: -360, behavior: "smooth" });
+                carousel.scrollBy({
+                    left: -360,
+                    behavior: "smooth"
+                });
             });
         }
 

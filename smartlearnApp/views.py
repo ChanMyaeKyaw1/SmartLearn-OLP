@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 from django.views.decorators.cache import never_cache
@@ -20,6 +20,8 @@ from django.contrib.auth import get_user_model
 
 from django.views.decorators.http import require_POST
 import time
+
+from django.views.decorators.vary import vary_on_headers
 
 # ==========================================
 # HELPER FUNCTIONS & ACCESS CONTROL
@@ -198,7 +200,7 @@ def dashboard_view(request):
     classes_with_count = Classroom.objects.annotate(
             member_count=Count('enrollments', filter=Q(enrollments__status='approved')) + 1
         )
-    
+
     total_teacher_pending = Enrollment.objects.filter(
         classroom__owner=request.user,
         status='pending'
@@ -319,10 +321,6 @@ def my_classes(request):
     })
 
 
-from django.db.models import Count, Q
-from django.views.decorators.cache import never_cache
-from django.views.decorators.vary import vary_on_headers
-
 @login_required(login_url='login')
 @never_cache  # Prevent caching
 def browse_classes(request):
@@ -434,16 +432,21 @@ def create_class(request):
 def delete_class(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
 
-    # Check permissions
+    # Check permissions (Superadmin OR Owner)
     if request.user.is_superuser or (hasattr(classroom, 'owner') and classroom.owner == request.user):
         classroom.delete()
         messages.success(request, "Classroom deleted successfully.")
     else:
         messages.error(request, "You do not have permission to delete this class.")
 
-    # Redirect directly to a named URL route (avoiding empty referer issues)
+    # Redirect back to the exact URL the request came from
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return redirect(referer)
+
+    # Fallback if referer is unavailable
     if request.user.is_superuser:
-        return redirect('custom_admin_dashboard')
+        return redirect('custom_admin')
     return redirect('dashboard')
 
 def classroom_detail(request, class_id):
@@ -453,7 +456,7 @@ def classroom_detail(request, class_id):
     classroom_with_count = Classroom.objects.annotate(
         member_count=Count('enrollments', filter=Q(enrollments__status='approved')) + 1
     ).get(class_id=class_id)
-    
+
     current_user, blocked_response = require_classroom_access(request, classroom)
     if blocked_response:
         return blocked_response
@@ -528,7 +531,7 @@ def request_join_class(request, class_id):
     if classroom.class_type == 'private' and not classroom.has_capacity():
         messages.error(request, f"This class has reached its maximum capacity of {classroom.member_limit} members.")
         return redirect('browse_classes')
-    
+
     # Prevent duplicate requests
     existing = Enrollment.objects.filter(
         student=current_user,
@@ -563,7 +566,7 @@ def request_join_class(request, class_id):
             messages.success(request, f"You have successfully joined {classroom.title}!")
         else:
             messages.info(request, f"You already have a pending request for {classroom.title}.")
-            
+
     from django.urls import reverse
     return redirect(f"{reverse('browse_classes')}?t={time.time()}")
 
@@ -1415,7 +1418,7 @@ def handle_enrollment_request(request, enrollment_id, action):
         if not enrollment.classroom.has_capacity():
             messages.error(request, f"Cannot approve: Class has reached its maximum capacity of {enrollment.classroom.member_limit} members.")
             return redirect('manage_enrollments', class_id=enrollment.classroom.class_id)
-            
+
         enrollment.status = 'approved'
         enrollment.rejection_reason = None  # Clear reason on approval
         enrollment.save()
