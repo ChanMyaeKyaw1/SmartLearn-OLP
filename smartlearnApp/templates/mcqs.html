@@ -23,13 +23,6 @@
     </div>
 </div>
 
-{% if messages %}
-    <div class="message-stack">
-        {% for message in messages %}
-            <div class="message-card">{{ message }}</div>
-        {% endfor %}
-    </div>
-{% endif %}
 
 <div class="learning-layout">
     <section class="styled-card">
@@ -77,6 +70,27 @@
 
             <form method="POST" id="mcq-create-form" class="flashcard-create-form">
                 {% csrf_token %}
+            <!-- Quiz Settings -->
+            {% if quiz_settings %}
+            <div class="quiz-settings-box" style="background: #f8faf9; border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #e4ebc6;">
+                <h4 style="font-size: 16px; font-weight: 700; color: #2b4c3f; margin-bottom: 12px;">
+                    <i class="fa-solid fa-gear me-2"></i>Quiz Settings (Optional)
+                </h4>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="label-bold" style="font-size: 13px;">Time Limit (minutes)</label>
+                        <input type="number" name="time_limit" class="form-control" min="1" placeholder="No limit" value="{{ quiz_settings.time_limit_minutes|default:'' }}">
+                        <small class="text-muted">Leave blank for no time limit</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="label-bold" style="font-size: 13px;">Max Attempts Allowed</label>
+                        <input type="number" name="max_attempts" class="form-control" min="1" placeholder="Unlimited" value="{{ quiz_settings.max_attempts|default:'' }}">
+                        <small class="text-muted">Leave blank for unlimited attempts</small>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+                
                 <label class="label-bold">Topic</label>
                 <input type="text" name="topic" class="form-control" placeholder="e.g. Python Functions" required>
 

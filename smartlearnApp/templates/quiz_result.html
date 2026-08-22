@@ -3,17 +3,30 @@
 
 {% block content %}
 <div class="mb-3">
-        <!-- ✅ To this: -->
-         <a href="{% url 'teacher_student_results' attempt.classroom.class_id %}" class="back-btn-icon">
+    <!-- Back button - go back to appropriate page -->
+    {% if request.user == classroom.owner %}
+        <!-- Teacher sees back to student results -->
+        <a href="{% url 'teacher_student_results' classroom.class_id %}" class="back-btn-icon">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
+    {% else %}
+        <!-- Student sees back to all MCQs -->
+        <a href="{% url 'all_mcqs' %}" class="back-btn-icon">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+    {% endif %}
 </div>
 
 <section class="styled-card result-hero">
     <div>
         <span class="topic-label">{{ classroom.title }}</span>
         <h2 class="page-heading-large">Quiz Result</h2>
-        <p class="subtext-muted">Taken by {{ attempt.student.username }} on {{ attempt.taken_at|date:"M d, Y" }}.</p>
+        <p class="subtext-muted">Taken by {{ attempt.student.username }} on {{ attempt.taken_at|date:"M d, Y H:i" }}.</p>
+        {% if topic %}
+            <p class="subtext-muted" style="font-size: 14px; margin-top: 4px; color: #2b4c3f; font-weight: 600;">
+                <i class="fa-solid fa-tag me-1"></i> Topic: {{ topic }}
+            </p>
+        {% endif %}
     </div>
 
     <div class="score-ring">
@@ -23,29 +36,72 @@
 </section>
 
 <section class="styled-card result-review">
-    <h3 class="section-heading">Answer Review</h3>
+    <h3 class="section-heading">
+        <i class="fa-solid fa-list-check me-2"></i>Answer Review
+        {% if topic %}
+            <span style="font-size: 14px; font-weight: 400; color: #6b756f;">
+                - {{ topic }}
+            </span>
+        {% endif %}
+    </h3>
 
     {% for item in reviewed_questions %}
         <article class="result-question-card {% if item.is_correct %}result-correct{% else %}result-wrong{% endif %}">
             <div class="quiz-question-topline">
                 <span class="topic-label">{{ item.question.topic }}</span>
-                {% if item.is_correct %}
-                    <span class="result-status">Correct</span>
-                {% else %}
-                    <span class="result-status">Review</span>
-                {% endif %}
+                <span class="result-status {% if item.is_correct %}text-success{% else %}text-danger{% endif %}">
+                    {% if item.is_correct %}
+                        <i class="fa-solid fa-check-circle"></i> Correct
+                    {% else %}
+                        <i class="fa-solid fa-xmark-circle"></i> Incorrect
+                    {% endif %}
+                </span>
             </div>
 
             <h4>{{ forloop.counter }}. {{ item.question.question }}</h4>
-            <p><strong>Your answer:</strong> {{ item.selected|default:"Not answered" }}{% if item.selected_text %}. {{ item.selected_text }}{% endif %}</p>
-            <p><strong>Correct answer:</strong> {{ item.question.correct_option }}. {{ item.correct_text }}</p>
+            
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <p><strong>Your answer:</strong> 
+                        {% if item.selected %}
+                            {{ item.selected }}. {{ item.selected_text }}
+                        {% else %}
+                            <span class="text-muted">Not answered</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Correct answer:</strong> {{ item.question.correct_option }}. {{ item.correct_text }}</p>
+                </div>
+            </div>
 
             {% if item.question.explanation %}
-                <p class="result-explanation">{{ item.question.explanation }}</p>
+                <div class="result-explanation mt-2">
+                    <strong><i class="fa-solid fa-lightbulb me-1"></i>Explanation:</strong>
+                    {{ item.question.explanation }}
+                </div>
             {% endif %}
         </article>
     {% empty %}
         <p class="empty-text-centered">No questions were available for this attempt.</p>
     {% endfor %}
 </section>
+
+<!-- Action Buttons -->
+<div class="d-flex gap-3 mt-4 justify-content-center">
+    <a href="{% url 'all_mcqs' %}" class="btn btn-matcha-outline">
+        <i class="fa-solid fa-list me-1"></i> All MCQs
+    </a>
+    {% if request.user == classroom.owner %}
+        <a href="{% url 'teacher_student_results' classroom.class_id %}" class="btn btn-matcha-primary">
+            <i class="fa-solid fa-users me-1"></i> View All Student Results
+        </a>
+    {% else %}
+        <a href="{% url 'take_quiz' classroom.class_id %}?topic={{ topic|urlencode }}" class="btn btn-matcha-primary">
+            <i class="fa-solid fa-rotate-right me-1"></i> Retake Quiz
+        </a>
+    {% endif %}
+</div>
+
+<div style="height: 40px;"></div>
 {% endblock %}
