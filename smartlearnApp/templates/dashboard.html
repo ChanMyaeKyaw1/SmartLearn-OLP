@@ -135,7 +135,7 @@
                             {{ classroom.class_type|title }}
                         </span>
                         <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
-                            <i class="fa-solid fa-user-group me-1"></i>{{ classroom.member_count|default:1 }}
+                            <i class="fa-solid fa-user-group me-1">{{ classroom.member_count|default:1 }}</i>
                         </span>
                     </div>
                     <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:20 }}</p>
@@ -189,6 +189,9 @@
                                 <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
                                     {{ classroom.class_type|title }}
                                 </span>
+                                <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
+                                    <i class="fa-solid fa-user-group"></i>&nbsp;{{ classroom.member_count|default:1 }}
+                                </span>
                             </div>
                             <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:15 }}</p>
                             <div class="class-card-footer">
@@ -234,6 +237,9 @@
                             <h3 class="class-card-title">{{ classroom.title }}</h3>
                             <span class="status-badge {% if classroom.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">
                                 {{ classroom.class_type|title }}
+                            </span>
+                            <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
+                                <i class="fa-solid fa-user-group"></i>&nbsp;{{ classroom.member_count|default:1 }}
                             </span>
                         </div>
                         <p class="class-card-desc mb-4">{{ classroom.description|truncatewords:20 }}</p>

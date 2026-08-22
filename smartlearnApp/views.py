@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
+from django.views.decorators.cache import never_cache
 
 from .models import Classroom, CommunityNote, Enrollment, Flashcard, FlashcardTopicReaction, MCQQuestion, QuizAttempt, TeacherMaterial, UserProfile
 
@@ -18,7 +19,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user_model
 
 from django.views.decorators.http import require_POST
-
+import time
 
 # ==========================================
 # HELPER FUNCTIONS & ACCESS CONTROL
@@ -185,6 +186,7 @@ def view_profile(request):
 from django.db.models import Count, Q
 
 @login_required(login_url='login')
+@never_cache
 def dashboard_view(request):
     # Annotate created classes with the pending requests count
     my_classes = Classroom.objects.filter(
@@ -193,7 +195,10 @@ def dashboard_view(request):
     ).annotate(
         pending_count=Count('enrollments', filter=Q(enrollments__status='pending'))
     )
-
+    classes_with_count = Classroom.objects.annotate(
+            member_count=Count('enrollments', filter=Q(enrollments__status='approved')) + 1
+        )
+    
     total_teacher_pending = Enrollment.objects.filter(
         classroom__owner=request.user,
         status='pending'
@@ -309,55 +314,66 @@ def my_classes(request):
     })
 
 
-@login_required(login_url='login')  # Ensures current_user is authenticated
+from django.db.models import Count, Q
+from django.views.decorators.cache import never_cache
+from django.views.decorators.vary import vary_on_headers
+
+@login_required(login_url='login')
+@never_cache  # Prevent caching
 def browse_classes(request):
     current_user = request.user
 
-    classes_qs = Classroom.objects.annotate(
-            member_count=Count('enrollments', filter=Q(enrollments__status='approved')) + 1
-        )
+    # Get ALL classrooms with member count
+    all_classes = Classroom.objects.annotate(
+        member_count=Count('enrollments', filter=Q(enrollments__status='approved')) + 1
+    )
 
     search_query = request.GET.get('search', '').strip()
     visibility = request.GET.get('visibility', '').strip()
     sorting = request.GET.get('sorting', '').strip()
 
-    owned_classes = Classroom.objects.filter(owner=current_user).select_related('owner')
+    # Owned classes
+    owned_classes = all_classes.filter(owner=current_user)
 
-    # 1. Base Querysets
-    joined_classes = Classroom.objects.filter(
+    # Joined classes (approved)
+    joined_classes = all_classes.filter(
         enrollments__student=current_user,
         enrollments__status='approved'
-    ).select_related('owner').distinct()
+    ).distinct()
 
-    available_classes = Classroom.objects.exclude(
+    # Available classes (not owned, not joined, not pending)
+    available_classes = all_classes.exclude(
         owner=current_user
     ).exclude(
         enrollments__student=current_user,
         enrollments__status__in=['approved', 'pending']
-    ).select_related('owner').distinct()
+    ).distinct()
 
-    # 2. Apply Search Filter (__icontains allows partial matching anywhere in the title)
+    # Apply filters
     if search_query:
+        owned_classes = owned_classes.filter(title__icontains=search_query)
         joined_classes = joined_classes.filter(title__icontains=search_query)
         available_classes = available_classes.filter(title__icontains=search_query)
 
-    # 3. Apply Visibility Filter
     if visibility == 'public':
+        owned_classes = owned_classes.filter(class_type='public')
         joined_classes = joined_classes.filter(class_type='public')
         available_classes = available_classes.filter(class_type='public')
     elif visibility == 'private':
+        owned_classes = owned_classes.filter(class_type='private')
         joined_classes = joined_classes.filter(class_type='private')
         available_classes = available_classes.filter(class_type='private')
 
-    # 4. Apply Sorting
     if sorting == 'az':
+        owned_classes = owned_classes.order_by('title')
         joined_classes = joined_classes.order_by('title')
         available_classes = available_classes.order_by('title')
     elif sorting == 'za':
+        owned_classes = owned_classes.order_by('-title')
         joined_classes = joined_classes.order_by('-title')
         available_classes = available_classes.order_by('-title')
 
-    # 5. Query enrollment lists for IDs if needed
+    # Get enrollment statuses
     user_enrollments = Enrollment.objects.filter(student=current_user)
     joined_class_ids = list(user_enrollments.filter(status='approved').values_list('classroom_id', flat=True))
     pending_class_ids = list(user_enrollments.filter(status='pending').values_list('classroom_id', flat=True))
@@ -420,6 +436,12 @@ def delete_class(request, class_id):
 
 def classroom_detail(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
+
+
+    classroom_with_count = Classroom.objects.annotate(
+        member_count=Count('enrollments', filter=Q(enrollments__status='approved')) + 1
+    ).get(class_id=class_id)
+    
     current_user, blocked_response = require_classroom_access(request, classroom)
     if blocked_response:
         return blocked_response
@@ -433,7 +455,7 @@ def classroom_detail(request, class_id):
         {
             "classroom": classroom,
             "is_owner": is_owner,
-
+            "member_count": classroom_with_count.member_count,
         }
     )
 
@@ -506,11 +528,13 @@ def request_join_class(request, class_id):
             status = 'pending'
             messages.info(request, f"Your request to join {classroom.title} has been sent for approval.")
 
-        Enrollment.objects.create(
+        enrollment =Enrollment.objects.create(
             student=current_user,
             classroom=classroom,
             status=status
         )
+
+        enrollment.refresh_from_db()
     else:
         # If already exists but status is pending/rejected, update it for public classes
         if classroom.class_type == 'public' and existing.status != 'approved':
@@ -520,10 +544,9 @@ def request_join_class(request, class_id):
         else:
             messages.info(request, f"You already have a pending request for {classroom.title}.")
             
-    referer = request.META.get('HTTP_REFERER')
-    if referer:
-        return redirect(referer)
-    return redirect('browse_classes')
+    from django.urls import reverse
+    return redirect(f"{reverse('browse_classes')}?t={time.time()}")
+
 
 
 def manage_enrollments(request, class_id):

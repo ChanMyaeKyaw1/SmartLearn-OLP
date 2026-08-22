@@ -120,9 +120,7 @@
             <h3 class="m-0" style="font-size: 22px; font-weight: 700; color: #111827;">
                 Available Classes
             </h3>
-            <span class="badge" style="background-color: #e5e7eb; color: #374151; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 20px;">
-                {{ available_classes|length }}
-            </span>
+            
         </div>
 
         <div class="cards-grid">
@@ -134,7 +132,7 @@
                             {{ classroom.class_type|title }}
                         </span>
                         <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
-                            <i class="fa-solid fa-user-group me-1"></i>{{ classroom.member_count|default:1 }}
+                            <i class="fa-solid fa-user-group"></i>&nbsp;{{ classroom.member_count|default:1 }}
                         </span>
                     </div>
                     <p class="class-card-desc">{{ classroom.description|default:"No description provided."|truncatewords:20 }}</p>
