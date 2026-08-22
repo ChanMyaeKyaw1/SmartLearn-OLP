@@ -87,6 +87,10 @@
                     </span>
                     <span class="text-muted" style="font-size: 12px; font-weight: 600;" title="Total Joined Members">
                         <i class="fa-solid fa-user-group me-1"></i>{{ classroom.member_count|default:1 }}
+
+                        {% if classroom.class_type == 'private' and classroom.member_limit %}
+                        / {{ classroom.member_limit }}
+                    {% endif %}
                     </span>
                 </div>
                 <p class="class-card-desc">{{ classroom.description|default:"No description provided."|truncatewords:20 }}</p>

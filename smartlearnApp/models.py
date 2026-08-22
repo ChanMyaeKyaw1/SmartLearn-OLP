@@ -45,11 +45,20 @@ class Classroom(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     created_at = models.DateTimeField(auto_now_add=True)
     created_from_site = models.BooleanField(default=False)
+    member_limit = models.IntegerField(null=True, blank=True, help_text="Maximum number of students allowed (leave blank for unlimited)")
 
     def __str__(self):
         return self.title if self.title else "Unnamed Classroom"
 
+    def get_member_count(self):
+        """Get current number of approved members (including owner)"""
+        return Enrollment.objects.filter(classroom=self, status='approved').count() + 1
 
+    def has_capacity(self):
+        """Check if class has room for more members"""
+        if self.member_limit is None:
+            return True
+        return self.get_member_count() < self.member_limit
 # Updated Enrollment model to track payslips & payment details
 class Enrollment(models.Model):
     STATUS_CHOICES = [

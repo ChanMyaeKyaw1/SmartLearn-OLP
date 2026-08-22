@@ -286,9 +286,13 @@ def edit_classroom(request, class_id):
         description = request.POST.get('description')
         class_type = request.POST.get('class_type', 'public')
         price = request.POST.get('price', 0.00)
+        member_limit = request.POST.get('member_limit')
 
         if class_type == 'public':
             price = 0.00
+            member_limit = None
+        else:
+            member_limit = int(member_limit) if member_limit and member_limit.strip() else None
 
         # Update model fields
         classroom.title = title
@@ -296,6 +300,7 @@ def edit_classroom(request, class_id):
         classroom.description = description if description else "No description provided."
         classroom.class_type = class_type
         classroom.price = price
+        classroom.member_limit = member_limit
         classroom.save()
 
         messages.success(request, "Classroom updated successfully!")
@@ -399,9 +404,15 @@ def create_class(request):
         description = request.POST.get('description')
         class_type2 = request.POST.get('class_type', 'public')
         price = request.POST.get('price', 0.00)
+        member_limit = request.POST.get('member_limit')
 
         if class_type2 == 'public':
             price = 0.00
+            member_limit = None
+        else:
+            # Only save member_limit if it's a private class and has a value
+            member_limit = int(member_limit) if member_limit and member_limit.strip() else None
+
 
         Classroom.objects.create(
             title=title,
@@ -410,6 +421,7 @@ def create_class(request):
             class_type=class_type2,
             price=price,
             owner=request.user,
+            member_limit=member_limit,
             created_from_site=True
         )
 
@@ -513,6 +525,10 @@ def request_join_class(request, class_id):
 
     classroom = get_object_or_404(Classroom, class_id=class_id)
 
+    if classroom.class_type == 'private' and not classroom.has_capacity():
+        messages.error(request, f"This class has reached its maximum capacity of {classroom.member_limit} members.")
+        return redirect('browse_classes')
+    
     # Prevent duplicate requests
     existing = Enrollment.objects.filter(
         student=current_user,
@@ -538,6 +554,10 @@ def request_join_class(request, class_id):
     else:
         # If already exists but status is pending/rejected, update it for public classes
         if classroom.class_type == 'public' and existing.status != 'approved':
+            if not classroom.has_capacity():
+                messages.error(request, f"This class has reached its maximum capacity.")
+                return redirect('browse_classes')
+
             existing.status = 'approved'
             existing.save()
             messages.success(request, f"You have successfully joined {classroom.title}!")
@@ -1391,6 +1411,11 @@ def handle_enrollment_request(request, enrollment_id, action):
     enrollment = get_object_or_404(Enrollment, enrollment_id=enrollment_id, classroom__owner=request.user)
 
     if action == 'approve':
+
+        if not enrollment.classroom.has_capacity():
+            messages.error(request, f"Cannot approve: Class has reached its maximum capacity of {enrollment.classroom.member_limit} members.")
+            return redirect('manage_enrollments', class_id=enrollment.classroom.class_id)
+            
         enrollment.status = 'approved'
         enrollment.rejection_reason = None  # Clear reason on approval
         enrollment.save()

@@ -56,7 +56,11 @@
                 <label class="label-bold">Private Class Price</label>
                 <input type="number" name="price" class="form-control" min="0" step="0.01" value="0.00">
             </div>
-
+            <div id="memberLimitWrapper" class="price-wrapper" style="display: none;">
+                <label class="label-bold">Member Limit</label>
+                <input type="number" name="member_limit" class="form-control" min="1" placeholder="Leave blank for unlimited">
+                <small class="text-muted">Maximum number of students allowed to join this class (including the teacher).</small>
+            </div>
             <div class="form-actions-row">
                 <button type="submit" class="btn-primary">Publish Classroom</button>
                 <a href="{% url 'browse_classes' %}" class="btn-secondary">Cancel</a>
@@ -70,11 +74,13 @@
 
 <script>
     const priceWrapper = document.getElementById('priceWrapper');
+    const memberLimitWrapper = document.getElementById('memberLimitWrapper');
     const accessChoices = document.querySelectorAll('input[name="class_type"]');
 
     accessChoices.forEach((choice) => {
         choice.addEventListener('change', function() {
             priceWrapper.style.display = this.value === 'private' ? 'block' : 'none';
+            memberLimitWrapper.style.display = 'private' ? 'block' : 'none';
         });
     });
 </script>
