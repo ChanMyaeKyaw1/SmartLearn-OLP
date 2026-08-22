@@ -47,6 +47,10 @@ class Classroom(models.Model):
     created_from_site = models.BooleanField(default=False)
     member_limit = models.IntegerField(null=True, blank=True, help_text="Maximum number of students allowed (leave blank for unlimited)")
 
+    # for live-videocall
+    is_live = models.BooleanField(default=False)
+
+
     def __str__(self):
         return self.title if self.title else "Unnamed Classroom"
 

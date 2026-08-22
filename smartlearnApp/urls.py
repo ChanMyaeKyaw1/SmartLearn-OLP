@@ -69,6 +69,9 @@ urlpatterns = [
     path('api/chatbot/', views.chatbot_api, name='chatbot_api'),
 
     path('toggle-teacher-mode/', views.toggle_teacher_mode, name='toggle_teacher_mode'),
+
+    path('classroom/<int:class_id>/toggle-live/', views.toggle_live_status, name='toggle_live_status'),
+    path('classroom/<int:class_id>/live/', views.live_room_view, name='live_room'),
 ]
 
 if settings.DEBUG:

@@ -23,6 +23,9 @@ import time
 
 from django.views.decorators.vary import vary_on_headers
 
+# For Live-VideoCall
+from django.core.exceptions import PermissionDenied
+from django.utils import timezone
 # ==========================================
 # HELPER FUNCTIONS & ACCESS CONTROL
 # ==========================================
@@ -1893,4 +1896,37 @@ def toggle_teacher_mode(request):
     return JsonResponse({
         'status': 'success',
         'is_teacher_mode': request.session['is_teacher_mode']
+    })
+
+
+# For Live-VideoCall
+@login_required
+def toggle_live_status(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+    if request.user == classroom.owner:
+        classroom.is_live = not classroom.is_live
+        if hasattr(classroom, 'updated_at'):
+            classroom.updated_at = timezone.now()
+        classroom.save()
+
+        if classroom.is_live:
+            return redirect('live_room', class_id=class_id)
+
+    return redirect('classroom_detail', class_id=class_id)
+
+@login_required
+def live_room_view(request, class_id):
+    classroom = get_object_or_404(Classroom, class_id=class_id)
+
+    is_owner = (request.user == classroom.owner)
+    is_joined = Enrollment.objects.filter(classroom=classroom, student=request.user, status='approved').exists()
+
+    if not (is_owner or is_joined):
+        raise PermissionDenied("You must be enrolled in this class to join the live stream.")
+
+    room_name = f"SmartLearn_Class_{classroom.class_id}"
+
+    return render(request, 'live_room.html', {
+        'classroom': classroom,
+        'room_name': room_name
     })
