@@ -175,13 +175,22 @@
                                 <hr class="my-4">
 
                                 <!-- Action Buttons -->
-                                <div class="d-flex justify-content-between align-items-center">
+                                <!-- <div class="d-flex justify-content-between align-items-center">
                                     <a href="{% url 'change_password' %}" class="btn btn-outline-secondary btn-sm">
                                         <i class="fa-solid fa-key me-1"></i> Change Password
                                     </a>
                                     <div class="d-flex gap-2">
                                         <a href="{% url 'view_profile' %}" class="btn btn-light border">Cancel</a>
                                         <button type="submit" class="btn btn-matcha-primary px-4">Update Profile</button>
+                                    </div>
+                                </div> -->
+                                <div class="d-flex justify-content-between align-items-center w-100">
+                                    <a href="{% url 'change_password' %}" class="btn btn-outline-success card-action-btn-small">
+                                        <i class="fa-solid fa-key me-1"></i> Change Password
+                                    </a>
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'view_profile' %}" class="btn btn-outline-secondary card-action-btn-small">Cancel</a>
+                                        <button type="submit" class="btn-primary card-action-btn-small border-0">Update Profile</button>
                                     </div>
                                 </div>
                             </div>
