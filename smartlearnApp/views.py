@@ -790,8 +790,7 @@ def all_flashcards_view(request):
         Q(class_type='public') | Q(owner=current_user) | Q(enrollments__student=current_user, enrollments__status='approved')
     ).distinct()
     flashcard_groups = []
-<<<<<<< Updated upstream
-=======
+
     # Get unique classrooms for the dropdown
     unique_classrooms = []
     classroom_ids = set()
@@ -801,8 +800,6 @@ def all_flashcards_view(request):
         if classroom.class_id not in classroom_ids:
             classroom_ids.add(classroom.class_id)
             unique_classrooms.append(classroom)
-
->>>>>>> Stashed changes
 
     for classroom in accessible_classrooms:
         classroom_flashcards = list(
