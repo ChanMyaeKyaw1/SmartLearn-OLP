@@ -2,10 +2,12 @@
 {% block title %}My Quiz History - SmartLearn{% endblock %}
 
 {% block content %}
+        
+<a href="{% url 'dashboard' %}" class="back-btn-icon"><i class="fa-solid fa-arrow-left"></i></a>
+
 <div class="main-container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="fa-solid fa-pen-to-square text-success me-2"></i>My Quiz History</h2>
-        <a href="{% url 'dashboard' %}" class="back-btn-icon"><i class="fa-solid fa-arrow-left"></i></a>
     </div>
 
 

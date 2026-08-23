@@ -91,7 +91,6 @@
                     <h3 class="section-heading">Create Flashcards</h3>
                     <p class="subtext-muted">Add one card or build a whole topic set in one go.</p>
                 </div>
-                <button type="button" class="btn-primary create-more-btn" data-add-flashcard-row>Add more flashcards</button>
             </div>
             <form method="POST" id="flashcard-create-form" class="flashcard-create-form">
                 {% csrf_token %}
@@ -110,9 +109,12 @@
                         <label class="label-bold">Back</label>
                         <textarea name="back" class="form-control" rows="4" placeholder="Answer or explanation" required></textarea>
                     </article>
+                        <button type="button" class="btn-primary create-more-btn" data-add-flashcard-row>Add more flashcards</button>
+
                 </div>
 
                 <button type="submit" class="btn-primary full-width-btn">Share Flashcard</button>
+
             </form>
         {% else %}
             <h3 class="section-heading">Create Flashcard</h3>

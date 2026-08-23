@@ -18,6 +18,8 @@
         background-color: #047857;
         color: #ffffff;
     }
+
+    
 </style>
 {% endblock %} {% block content %}
 <div class="container py-5">
@@ -113,7 +115,7 @@
                                             <i class="fa-brands fa-linkedin me-1"></i> LinkedIn
                                         </a>
                                         {% endif %} {% if request.user.profile.github_url %}
-                                        <a href="{{ request.user.profile.github_url }}" target="_blank" class="btn btn-outline-dark btn-sm rounded-pill px-3">
+                                        <a href="{{ request.user.profile.github_url }}" target="_blank" class="btn btn-outline-info btn-sm rounded-pill px-3">
                                             <i class="fa-brands fa-github me-1"></i> GitHub
                                         </a>
                                         {% endif %} {% if request.user.profile.website_url %}

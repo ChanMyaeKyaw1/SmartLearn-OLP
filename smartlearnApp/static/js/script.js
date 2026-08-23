@@ -472,3 +472,36 @@ function applyTeacherMode(isTeacher) {
         document.body.classList.remove('teacher-mode-active');
     }
 }
+
+// Remove message by ID with smooth fade-out
+function removeMessage(messageId) {
+    const messageElement = document.getElementById(messageId);
+    if (messageElement) {
+        messageElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        messageElement.style.opacity = '0';
+        messageElement.style.transform = 'translateX(20px)';
+        setTimeout(() => {
+            messageElement.remove();
+        }, 300);
+    }
+}
+
+// Auto-remove messages after 5 seconds (optional)
+document.addEventListener('DOMContentLoaded', function() {
+    const messageCards = document.querySelectorAll('.message-card');
+    messageCards.forEach((card, index) => {
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (card.parentNode) {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(30px)';
+                setTimeout(() => {
+                    if (card.parentNode) {
+                        card.remove();
+                    }
+                }, 500);
+            }
+        }, 5000 + (index * 500)); // Stagger removal for multiple messages
+    });
+});
