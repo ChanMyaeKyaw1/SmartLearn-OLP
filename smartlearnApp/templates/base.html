@@ -99,7 +99,7 @@
         }
 
         .btn-matcha-primary:hover {
-            background-color: #3f9d70;
+            background-color: #15803D;
             color: #ffffff;
         }
 
@@ -264,7 +264,7 @@
         /* Hover Effect */
 
         .scroll-to-top-btn:hover {
-            background-color: var(--matcha, #3f9d70);
+            background-color: var(--matcha, #15803D);
             color: #ffffff;
             transform: translateY(-4px);
             box-shadow: 0 12px 24px rgba(63, 157, 112, 0.35);
@@ -419,6 +419,80 @@
             /* SmartLearn Green */
             box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.15);
         }
+        /* ==========================================================================
+           GLOBAL RESPONSIVE & MOBILE BREAKPOINTS
+           ========================================================================== */
+        /* 1. Fluid Typography & Elements */
+
+        img,
+        video,
+        iframe {
+            max-width: 100%;
+            height: auto;
+        }
+        /* 2. Responsive Tables (Prevents page overflow on small screens) */
+
+        .table-responsive {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* 3. Mobile Devices (Up to 768px) */
+
+        @media (max-width: 768px) {
+            /* Navbar Adjustment */
+            .navbar {
+                padding: 10px 0;
+            }
+            .logo {
+                font-size: 20px;
+            }
+            /* Hero Search Bar */
+            .hero-search-container {
+                max-width: 100%;
+            }
+            /* Full-Width Buttons for Touch Targets */
+            .btn-matcha-primary,
+            .btn-matcha-outline {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 8px;
+            }
+            /* Footer Layout */
+            .main-footer {
+                padding: 40px 0 0 0;
+            }
+            .footer-links-header {
+                margin-bottom: 15px;
+                margin-top: 25px;
+            }
+            .footer-bottom-bar {
+                margin-top: 40px;
+                padding: 20px 0;
+                text-align: center;
+            }
+            /* Scroll to Top Button Positioning */
+            .scroll-to-top-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 42px;
+                height: 42px;
+            }
+        }
+        /* 4. Small Mobile Screens (Up to 480px) */
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+            /* Teacher Toggle Box */
+            .teacher-toggle-box {
+                width: 100%;
+                text-align: center;
+                margin-top: 10px;
+            }
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -570,7 +644,7 @@
                     <a href="#" class="footer-logo">
                         <i class="fa-solid fa-graduation-cap"></i> SmartLearn</span>
                     </a>
-                    <p style="color: #4ade80; font-size: 15px; max-width: 340px; line-height: 1.6;" class="mb-4">
+                    <p style="color: white; font-size: 15px; max-width: 340px; line-height: 1.6;" class="mb-4">
                         An advanced all-in-one educational environment engineered to streamline personal class structures, self-assessment decks, structured exam validation fields, and direct image transaction auditing.
                     </p>
                     <div class="social-container">
