@@ -1,63 +1,73 @@
-{% extends 'custom_admin/admin_base.html' %} {% block title %}Admin Profile - SmartLearn{% endblock %} {% block content %}
-<div class="container-fluid">
-
-    <div class="card shadow mb-4 col">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
-                Admin Profile ( <span class="text-danger">{% if request.user.is_superuser %}Superadmin{% else %}Staff{% endif %}</span> )
-            </h6>
-        </div>
-        <form action="{% url 'admin_update_profile' %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="card-body">
-                <div class="row">
-
-                    <!-- Profile Picture Section -->
-                    <div class="col-md-3 text-center mb-3">
-                        {% if request.user.profile_image %}
-                        <img class="img-profile img-thumbnail mb-2" id="output" src="{{ request.user.profile_image.url }}" style="max-height: 200px; object-fit: cover;"> {% else %}
-                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold bg-primary shadow-sm mx-auto mb-2" style="width: 120px; height: 120px; font-size: 36px;">
-                            {{ request.user.username|slice:":2"|upper }}
-                        </div>
-                        {% endif %}
-
-                        <input type="file" name="image" accept="image/*" class="form-control mt-1" onchange="loadFile(event)"> {% if form.image.errors %}
-                        <small class="text-danger d-block mt-1">{{ form.image.errors.0 }}</small> {% endif %}
-                    </div>
-
-                    <!-- User Information Section -->
-                    <div class="col-md-9">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Username / Name</label>
-                                    <input type="text" name="username" class="form-control" placeholder="Name..." value="{{ form.username.value|default:request.user.username }}"> {% if form.username.errors %}
-                                    <small class="text-danger d-block mt-1">{{ form.username.errors.0 }}</small> {% endif %}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" name="email" class="form-control" placeholder="Email..." value="{{ form.email.value|default:request.user.email }}"> {% if form.email.errors %}
-                                    <small class="text-danger d-block mt-1">{{ form.email.errors.0 }}</small> {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="my-2">
-                            <a href="{% url 'admin_change_password' %}" class="text-decoration-none">
-                                <i class="fa-solid fa-key me-1"></i> Change Password
-                            </a>
-                        </div>
-
-                        <input type="submit" value="Update" class="btn btn-primary mt-3 px-3">
-                    </div>
-
+{% extends 'custom_admin/admin_base.html' %} {% block title %}Update Admin Profile - SmartLearn{% endblock %} {% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary fs-5">
+                        <i class="fa-solid fa-user-pen me-2"></i>Update Admin Profile
+                    </h6>
+                    <span class="badge bg-danger">
+                        {% if request.user.is_superuser %}Superadmin{% else %}Staff{% endif %}
+                    </span>
                 </div>
-            </div>
-        </form>
-    </div>
 
+                <form action="{% url 'admin_update_profile' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="card-body p-4">
+                        <div class="row align-items-start">
+
+                            <!-- Profile Image Section -->
+                            <div class="col-md-4 text-center mb-4 mb-md-0 border-end pe-md-4">
+                                {% if request.user.profile_image and request.user.profile_image.name %}
+                                <img class="img-profile img-thumbnail rounded-circle mb-3 shadow-sm" id="output" src="{{ request.user.profile_image.url }}" style="width: 140px; height: 140px; object-fit: cover;" alt="Profile Picture" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ request.user.username }}&background=0D6EFD&color=fff';">                                {% else %}
+                                <div id="placeholder-avatar" class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm mx-auto mb-3" style="width: 140px; height: 140px; font-size: 42px; background-color: #0d6efd; border: 2px solid #60a5fa;">
+                                    {{ request.user.username|slice:":2"|upper }}
+                                </div>
+                                {% endif %}
+
+                                <label class="form-label small text-muted d-block mb-1">Change Profile Image</label>
+                                <input type="file" name="image" accept="image/*" class="form-control form-control-sm mb-2" onchange="loadFile(event)">
+
+                                <!-- Remove Photo Button -->
+                                {% if request.user.profile_image and request.user.profile_image.name %}
+                                <button type="submit" name="remove_image" value="1" class="btn btn-outline-danger btn-sm w-100 mt-2 rounded-pill" onclick="return confirm('Remove your profile picture and restore your initial avatar?');">
+                                        <i class="fa-solid fa-trash-can me-1"></i> Remove Photo
+                                    </button> {% endif %}
+                            </div>
+
+                            <!-- Form Details Section -->
+                            <div class="col-md-8 ps-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Username / Name</label>
+                                    <input type="text" name="username" class="form-control" placeholder="Enter username..." value="{{ request.user.username }}" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Email Address</label>
+                                    <input type="email" name="email" class="form-control" placeholder="Enter email..." value="{{ request.user.email }}" required>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <!-- Action Buttons -->
+                                <div class="d-flex justify-content-between align-items-center w-100">
+                                    <a href="{% url 'admin_change_password' %}" class="btn btn-outline-primary card-action-btn-small">
+                                        <i class="fa-solid fa-key me-1"></i> Change Password
+                                    </a>
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'admin_update_profile' %}" class="btn btn-outline-secondary card-action-btn-small">Cancel</a>
+                                        <button type="submit" class="btn btn-primary card-action-btn-small border-0">Update Profile</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %} {% block extra_js %}
 <script>

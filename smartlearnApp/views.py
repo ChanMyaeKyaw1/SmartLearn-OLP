@@ -818,7 +818,7 @@ def all_flashcards_view(request):
     # Get unique classrooms for the dropdown
     unique_classrooms = []
     classroom_ids = set()
-    
+
     # First, add ALL accessible classrooms to unique_classrooms
     for classroom in accessible_classrooms:
         if classroom.class_id not in classroom_ids:
@@ -1620,7 +1620,7 @@ def take_quiz_view(request, class_id):
     if not selected_topic:
         messages.info(request, "Please select a specific topic to take a quiz.")
         return redirect('all_mcqs')
-    
+
     # Get all available topics for this classroom for debugging
     all_topics = MCQQuestion.objects.filter(classroom=classroom).values_list('topic', flat=True).distinct()
     print(f"Available topics: {list(all_topics)}")
@@ -1638,7 +1638,7 @@ def take_quiz_view(request, class_id):
             classroom=classroom,
             topic=selected_topic
         ).select_related('created_by').order_by('question_id')
-    
+
     # If still no questions found, try to find by partial match
     if not questions.exists():
         # Try to find a topic that contains the selected topic
@@ -1650,7 +1650,7 @@ def take_quiz_view(request, class_id):
                 ).select_related('created_by').order_by('question_id')
                 if questions.exists():
                     break
-    
+
     # If no questions found, show error
     if not questions.exists():
         topics_list = ', '.join(list(all_topics)) if all_topics else 'No topics available'
@@ -2106,12 +2106,29 @@ def admin_delete_user(request, user_id):
 def admin_view_profile(request):
     return render(request, 'custom_admin/view_profile.html')
 
+
 @staff_member_required(login_url='login')
 def admin_update_profile(request):
+    user = request.user
+
     if request.method == 'POST':
-        request.user.username = request.POST.get('username', '').strip()
-        request.user.email = request.POST.get('email', '').strip()
-        request.user.save()
+        # 1. Handle Remove Photo Button Submission
+        if 'remove_image' in request.POST:
+            if user.profile_image:
+                user.profile_image.delete(save=False)  # Remove file from media storage
+                user.profile_image = None
+                user.save()
+            messages.success(request, "Profile photo removed.")
+            return redirect('admin_update_profile')
+
+        # 2. Standard Profile Updates & Uploads
+        user.username = request.POST.get('username', '').strip()
+        user.email = request.POST.get('email', '').strip()
+
+        if 'image' in request.FILES:
+            user.profile_image = request.FILES['image']
+
+        user.save()
         messages.success(request, "Admin profile updated successfully!")
         return redirect('admin_update_profile')
 
