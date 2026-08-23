@@ -26,6 +26,7 @@ from django.views.decorators.vary import vary_on_headers
 # For Live-VideoCall
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
+
 # ==========================================
 # HELPER FUNCTIONS & ACCESS CONTROL
 # ==========================================
@@ -113,11 +114,11 @@ def home_view(request):
 #             return redirect('dashboard')
 #     return render(request, 'login.html')
 
+# smartlearnApp/views.py
+
 def login_view(request):
-    # 1. Check if user specified a 'next' parameter in GET or POST
     next_url = request.GET.get('next') or request.POST.get('next')
 
-    # 2. If already logged in, redirect to requested page or role dashboard
     if request.user.is_authenticated:
         if next_url:
             return redirect(next_url)
@@ -126,18 +127,22 @@ def login_view(request):
         return redirect('dashboard')
 
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
+        username_input = request.POST.get('username', '').strip()
+        password_input = request.POST.get('password')  # DO NOT .strip() password
+
+        # Standard authentication
+        user = authenticate(request, username=username_input, password=password_input)
 
         if user is not None:
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            if not user.is_active:
+                messages.error(request, "This account is inactive.")
+                return render(request, 'login.html')
 
-            # 3. Superadmin/Staff override (takes priority or handles admin redirects)
+            login(request, user)
+
             if user.is_superuser or user.is_staff:
                 return redirect('custom_admin_dashboard')
 
-            # 4. Regular users go to the 'next' URL if present, otherwise 'dashboard'
             if next_url:
                 return redirect(next_url)
             return redirect('dashboard')
@@ -147,6 +152,9 @@ def login_view(request):
     return render(request, 'login.html')
 
 def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         email = request.POST.get('email', '').strip()
@@ -161,15 +169,15 @@ def register_view(request):
             messages.error(request, "A user with that username already exists. Please choose a different one.")
             return render(request, 'register.html')
 
-        # 1. Create the user
-        user = User.objects.create_user(username=username, email=email, password=password)
+        # MUST use create_user — this sets up proper PBKDF2 hashing without the '!' flag
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
 
-        # 2. 🟢 Authenticate the user immediately
-        # This automatically attaches user.backend = 'django.contrib.auth.backends.ModelBackend'
-        authenticated_user = authenticate(request, username=username, password=password)
-
-        if authenticated_user is not None:
-            login(request, authenticated_user)
+        # Log in immediately
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
         messages.success(request, f"Welcome to SmartLearn, {user.username}!")
         return redirect('dashboard')

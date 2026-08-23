@@ -166,13 +166,11 @@
                 <div class="card shadow-lg border-0">
 
                     <div class="card-body p-5">
-<!--                        {% if messages %}-->
-<!--                            {% for message in messages %}-->
-<!--                                <div class="alert alert-info">-->
-<!--                                    {{ message }}-->
-<!--                                </div>-->
-<!--                            {% endfor %}-->
-<!--                        {% endif %}-->
+                        {% if messages %} {% for message in messages %}
+                        <div class="alert alert-info">
+                            {{ message }}
+                        </div>
+                        {% endfor %} {% endif %}
                         <!-- HEADER -->
                         <div class="text-center mb-4">
                             <i class="fas fa-user-plus fa-3x mb-3 text-success"></i>
@@ -181,18 +179,13 @@
                         </div>
 
                         <!-- FORM -->
-<!--                        <form onsubmit="register(event)">-->
-                        <form method="POST">
+                        <!--                        <form onsubmit="register(event)">-->
+                        <form method="POST" action="{% url 'register' %}">
                             {% csrf_token %}
 
                             <div class="row mb-3">
                                 <div class="col-md-6 mb-3 mb-md-0">
-<!--                                    <input type="text" class="form-control form-control-lg" placeholder="Full Name" required>-->
-                                    <input type="text"
-                                           name="username"
-                                           class="form-control form-control-lg"
-                                           placeholder="Username"
-                                           required>
+                                    <input type="text" name="username" class="form-control form-control-lg" placeholder="Username" required>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" class="form-control form-control-lg" placeholder="Phone Number">
@@ -200,30 +193,18 @@
                             </div>
 
                             <div class="mb-3">
-<!--                                <input type="email" name="email" class="form-control form-control-lg" placeholder="Email Address" required>-->
-                                <input type="email"
-                                       name="email"
-                                       class="form-control form-control-lg"
-                                       placeholder="Email Address"
-                                       required>
+                                <!--                                <input type="email" name="email" class="form-control form-control-lg" placeholder="Email Address" required>-->
+                                <input type="email" name="email" class="form-control form-control-lg" placeholder="Email Address" required>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-6 mb-3 mb-md-0">
-<!--                                    <input type="password" class="form-control form-control-lg" placeholder="Password" required>-->
-                                    <input type="password"
-                                           name="password1"
-                                           class="form-control form-control-lg"
-                                           placeholder="Password"
-                                           required>
+                                    <!--                                    <input type="password" class="form-control form-control-lg" placeholder="Password" required>-->
+                                    <input type="password" name="password1" class="form-control form-control-lg" placeholder="Password" required>
                                 </div>
                                 <div class="col-md-6">
-<!--                                    <input type="password" class="form-control form-control-lg" placeholder="Confirm Password" required>-->
-                                    <input type="password"
-                                           name="password2"
-                                           class="form-control form-control-lg"
-                                           placeholder="Confirm Password"
-                                           required>
+                                    <!--                                    <input type="password" class="form-control form-control-lg" placeholder="Confirm Password" required>-->
+                                    <input type="password" name="password2" class="form-control form-control-lg" placeholder="Confirm Password" required>
                                 </div>
                             </div>
 
@@ -247,7 +228,7 @@
                         <!-- LOGIN LINK -->
                         <p class="text-center mb-0">
                             Already have an account?
-<!--                            <a href="login.html">Login here</a>-->
+                            <!--                            <a href="login.html">Login here</a>-->
                             <a href="{% url 'login' %}">Login here</a>
                         </p>
 
@@ -263,15 +244,15 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!--    <script>-->
-<!--        function register(e) {-->
-<!--            e.preventDefault();-->
-<!--            alert("Register UI only");-->
-<!--            window.location.href = "login.html";-->
-<!--        }-->
-<!--    </script>-->
+    <!--    <script>-->
+    <!--        function register(e) {-->
+    <!--            e.preventDefault();-->
+    <!--            alert("Register UI only");-->
+    <!--            window.location.href = "login.html";-->
+    <!--        }-->
+    <!--    </script>-->
 
-<script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 
 </body>
 
