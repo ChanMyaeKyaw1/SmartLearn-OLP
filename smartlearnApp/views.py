@@ -1085,7 +1085,8 @@ def mcqs_view(request, class_id):
     current_user=request.user, blocked_response = require_classroom_access(request, classroom)
     if blocked_response:
         return blocked_response
-
+    # Debug: Check if user has access
+    print(f"MCQS View - User: {current_user.username}, Class: {classroom.title}, Is Owner: {classroom.owner == current_user}")
     can_create = user_can_create_learning_content(classroom, current_user)
 
     # Get or create quiz settings
@@ -1619,6 +1620,10 @@ def take_quiz_view(request, class_id):
     if not selected_topic:
         messages.info(request, "Please select a specific topic to take a quiz.")
         return redirect('all_mcqs')
+    
+    # Get all available topics for this classroom for debugging
+    all_topics = MCQQuestion.objects.filter(classroom=classroom).values_list('topic', flat=True).distinct()
+    print(f"Available topics: {list(all_topics)}")
 
     # Get questions for this classroom AND this specific topic
     questions = MCQQuestion.objects.filter(
@@ -1627,14 +1632,35 @@ def take_quiz_view(request, class_id):
     ).select_related('created_by').order_by('question_id')
 
     # If no questions found, show error
+    # If no questions found with case insensitive, try exact
     if not questions.exists():
-        # Get all available topics for this classroom
-        all_topics = MCQQuestion.objects.filter(classroom=classroom).values_list('topic', flat=True).distinct()
+        questions = MCQQuestion.objects.filter(
+            classroom=classroom,
+            topic=selected_topic
+        ).select_related('created_by').order_by('question_id')
+    
+    # If still no questions found, try to find by partial match
+    if not questions.exists():
+        # Try to find a topic that contains the selected topic
+        for topic in all_topics:
+            if selected_topic.lower() in topic.lower() or topic.lower() in selected_topic.lower():
+                questions = MCQQuestion.objects.filter(
+                    classroom=classroom,
+                    topic=topic
+                ).select_related('created_by').order_by('question_id')
+                if questions.exists():
+                    break
+    
+    # If no questions found, show error
+    if not questions.exists():
         topics_list = ', '.join(list(all_topics)) if all_topics else 'No topics available'
         messages.warning(request, f"No questions found for topic: '{selected_topic}'. Available topics: {topics_list}")
-        return redirect('all_mcqs')
+        return redirect('mcqs', class_id=classroom.class_id)
 
     questions = list(questions)
+    print(f"Found {len(questions)} questions for topic: {selected_topic}")
+
+    # questions = list(questions)
 
     # Get quiz settings
     quiz_settings = None
