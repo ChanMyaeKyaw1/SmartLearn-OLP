@@ -55,7 +55,7 @@
 
                     <div class="topic-collection-actions">
                         <!-- Student mode: Learn Topic button -->
-                        <button type="button" class="btn-primary learn-topic-btn student-action" data-learn-topic="{{ group.topic_slug }}">Learn Topic</button>
+                        <button type="button" class="btn-primary learn-topic-btn student-action" data-learn-topic="{{ group.topic_key }}">Learn Topic</button>
                         
                         <!-- Teacher Mode: Edit/Delete buttons -->
                         {% if current_user.username == group.primary_creator %}
@@ -191,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const topicMap = new Map();
     topicGroups.forEach(function(group) {
         if (group.topic_slug) topicMap.set(group.topic_slug, group);
+        if (group.topic_key) topicMap.set(group.topic_key, group);
         if (group.topic) topicMap.set(group.topic, group);
     });
     

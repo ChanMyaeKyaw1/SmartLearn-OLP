@@ -3673,3 +3673,180 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
         page-break-inside: avoid;
     }
 }
+
+/* ==========================================================================
+   DARK MODE FIXES FOR HOME PAGE & PROFILE DROPDOWN
+   ========================================================================== */
+
+/* Fix for Connected Providers section on Home page */
+[data-theme="dark"] .bg-white.p-4.rounded-3.shadow-sm.border {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .bg-white.p-4.rounded-3.shadow-sm.border .fw-bold.text-dark {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .bg-white.p-4.rounded-3.shadow-sm.border .badge.bg-light {
+    background-color: #24312c !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .bg-white.p-4.rounded-3.shadow-sm.border .border-bottom {
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .bg-white.p-4.rounded-3.shadow-sm.border .p-2.rounded.bg-light {
+    background-color: #24312c !important;
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .bg-white.p-4.rounded-3.shadow-sm.border .text-dark {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .bg-white.p-4.rounded-3.shadow-sm.border .small.fw-semibold {
+    color: var(--text-muted) !important;
+}
+
+/* Fix for Profile Dropdown in Dark Mode */
+[data-theme="dark"] .dropdown-menu {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .dropdown-menu .dropdown-item {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .dropdown-menu .dropdown-item:hover {
+    background-color: #24312c !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .dropdown-menu .dropdown-item .text-muted {
+    color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .dropdown-menu .border-bottom {
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .dropdown-menu .text-dark {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .dropdown-menu .dropdown-divider {
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .dropdown-menu .text-danger {
+    color: #ef4444 !important;
+}
+
+[data-theme="dark"] .dropdown-menu .dropdown-item i.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Fix for Quick Overview card on Home page */
+[data-theme="dark"] .smart-card.text-center.p-4 {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .smart-card.text-center.p-4 .bg-light {
+    background-color: #24312c !important;
+}
+
+[data-theme="dark"] .smart-card.text-center.p-4 .text-muted {
+    color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .smart-card.text-center.p-4 .text-dark {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .smart-card.text-center.p-4 .fw-bold.text-success {
+    color: #4ade80 !important;
+}
+
+[data-theme="dark"] .smart-card.text-center.p-4 .fw-bold.text-info {
+    color: #60a5fa !important;
+}
+
+[data-theme="dark"] .smart-card.text-center.p-4 .fw-bold.text-warning {
+    color: #fbbf24 !important;
+}
+
+/* Fix for Feature Callout Rows on Home page */
+[data-theme="dark"] .feature-callout-row.bg-white {
+    background-color: var(--bg-color) !important;
+}
+
+[data-theme="dark"] .feature-callout-row .bg-white.p-3.rounded-3.mb-2.border {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .feature-callout-row .bg-white.p-3.rounded-3.mb-2.border .fw-bold.text-dark {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .feature-callout-row .bg-white.p-3.rounded-3.mb-2.border .text-muted {
+    color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .feature-callout-row .bg-white.p-3.rounded-3.border {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .feature-callout-row .bg-white.p-3.rounded-3.border .fw-bold.text-dark {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .feature-callout-row .bg-white.p-3.rounded-3.border .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Fix for Footer text in dark mode */
+[data-theme="dark"] .main-footer {
+    background-color: #0f1a15 !important;
+}
+
+[data-theme="dark"] .main-footer .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Fix for Navbar in dark mode */
+[data-theme="dark"] .navbar {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .navbar .text-dark {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .navbar .teacher-toggle-box {
+    background-color: #24312c !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .navbar .teacher-toggle-box .text-dark {
+    color: var(--text-color) !important;
+}
+
+/* Fix for theme toggle button in dark mode */
+[data-theme="dark"] .nav-theme-toggle {
+    border-color: var(--forest) !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .nav-theme-toggle:hover {
+    background-color: var(--forest) !important;
+    color: var(--bg-color) !important;
+}

@@ -105,8 +105,9 @@
                     <div id="mcqExistingClassSec" class="mb-3">
                         <label for="mcqClassroomSelect" class="label-bold">Select Classroom</label>
                         <select name="classroom_id" id="mcqClassroomSelect" class="form-control">
-                            {% for group in mcq_groups %}
-                                <option value="{{ group.classroom_id }}">{{ group.classroom_title }}</option>
+                            {% for classroom in unique_classrooms %}
+
+                                <option value="{{ group.classroom_id }}">{{ classroom.title }}</option>
                             {% empty %}
                                 <option value="" disabled selected>No classrooms available</option>
                             {% endfor %}
