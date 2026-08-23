@@ -185,26 +185,28 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-6 mb-3 mb-md-0">
-                                    <input type="text" name="username" class="form-control form-control-lg" placeholder="Username" required>
+                                    <input type="text" name="username" class="form-control form-control-lg" placeholder="Username" value="{{ username|default:'' }}" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control form-control-lg" placeholder="Phone Number">
+                                    <input type="text" name="phone" class="form-control form-control-lg" placeholder="Phone Number" value="{{ phone|default:'' }}">
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <!--                                <input type="email" name="email" class="form-control form-control-lg" placeholder="Email Address" required>-->
-                                <input type="email" name="email" class="form-control form-control-lg" placeholder="Email Address" required>
+                                <input type="email" name="email" class="form-control form-control-lg" placeholder="Email Address" value="{{ email|default:'' }}" required>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-6 mb-3 mb-md-0">
-                                    <!--                                    <input type="password" class="form-control form-control-lg" placeholder="Password" required>-->
                                     <input type="password" name="password1" class="form-control form-control-lg" placeholder="Password" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <!--                                    <input type="password" class="form-control form-control-lg" placeholder="Confirm Password" required>-->
                                     <input type="password" name="password2" class="form-control form-control-lg" placeholder="Confirm Password" required>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <small class="form-text text-muted text-nowrap d-block text-center">
+                                        At least 8 chars, 1 uppercase, 1 lowercase, 1 number & 1 special char.
+                                    </small>
                                 </div>
                             </div>
 
