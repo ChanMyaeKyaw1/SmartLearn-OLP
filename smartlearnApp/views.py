@@ -775,7 +775,7 @@ def all_flashcards_view(request):
         Q(class_type='public') | Q(owner=current_user) | Q(enrollments__student=current_user, enrollments__status='approved')
     ).distinct()
     flashcard_groups = []
-    
+
     for classroom in accessible_classrooms:
         classroom_flashcards = list(
             Flashcard.objects.filter(classroom=classroom)
@@ -812,7 +812,7 @@ def all_flashcards_view(request):
                 'front': flashcard.front,
                 'back': flashcard.back,
             })
-            
+
             if flashcard.created_by.username not in group['contributors']:
                 group['contributors'].append(flashcard.created_by.username)
 
@@ -881,16 +881,16 @@ def toggle_flashcard_topic_reaction(request, class_id):
 @login_required
 def edit_flashcard(request, flashcard_id):
     flashcard = get_object_or_404(Flashcard, flashcard_id=flashcard_id)
-    
+
     # Check permission
     if flashcard.created_by != request.user:
         messages.error(request, "You don't have permission to edit this flashcard.")
         return redirect('flashcards', class_id=flashcard.classroom.class_id)
-    
+
     if request.method == 'POST':
         front = request.POST.get('front', '').strip()
         back = request.POST.get('back', '').strip()
-        
+
         if front and back:
             flashcard.front = front
             flashcard.back = back
@@ -898,9 +898,9 @@ def edit_flashcard(request, flashcard_id):
             messages.success(request, "Flashcard updated successfully!")
         else:
             messages.error(request, "Front and back fields are required.")
-        
+
         return redirect('flashcards', class_id=flashcard.classroom.class_id)
-    
+
     return render(request, 'edit_flashcard.html', {
         'flashcard': flashcard,
         'classroom': flashcard.classroom,
@@ -909,12 +909,12 @@ def edit_flashcard(request, flashcard_id):
 @login_required
 def delete_flashcard(request, flashcard_id):
     flashcard = get_object_or_404(Flashcard, flashcard_id=flashcard_id)
-    
+
     # Check permission
     if flashcard.created_by != request.user and not request.user.is_superuser:
         messages.error(request, "You don't have permission to delete this flashcard.")
         return redirect('flashcards', class_id=flashcard.classroom.class_id)
-    
+
     classroom_id = flashcard.classroom.class_id
     flashcard.delete()
     messages.success(request, "Flashcard deleted successfully!")
@@ -924,23 +924,23 @@ def delete_flashcard(request, flashcard_id):
 def delete_flashcard_topic(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
     topic = request.GET.get('topic', '').strip()
-    
+
     if not topic:
         messages.error(request, "No topic specified.")
         return redirect('flashcards', class_id=class_id)
-    
+
     # Delete all flashcards with this topic that belong to the current user
     deleted_count = Flashcard.objects.filter(
         classroom=classroom,
         topic=topic,
         created_by=request.user
     ).delete()
-    
+
     if deleted_count[0] > 0:
         messages.success(request, f"Deleted topic '{topic}' with {deleted_count[0]} flashcards.")
     else:
         messages.error(request, "No flashcards found for this topic or you don't have permission.")
-    
+
     return redirect('flashcards', class_id=class_id)
 
 # ==========================================
@@ -950,12 +950,12 @@ def delete_flashcard_topic(request, class_id):
 @login_required
 def edit_mcq(request, mcq_id):
     mcq = get_object_or_404(MCQQuestion, question_id=mcq_id)
-    
+
     # Check permission
     if mcq.created_by != request.user:
         messages.error(request, "You don't have permission to edit this MCQ.")
         return redirect('mcqs', class_id=mcq.classroom.class_id)
-    
+
     if request.method == 'POST':
         question = request.POST.get('question', '').strip()
         option_a = request.POST.get('option_a', '').strip()
@@ -964,7 +964,7 @@ def edit_mcq(request, mcq_id):
         option_d = request.POST.get('option_d', '').strip()
         correct_option = request.POST.get('correct_option', '').strip()
         explanation = request.POST.get('explanation', '').strip()
-        
+
         if question and option_a and option_b and option_c and option_d and correct_option:
             mcq.question = question
             mcq.option_a = option_a
@@ -977,9 +977,9 @@ def edit_mcq(request, mcq_id):
             messages.success(request, "MCQ updated successfully!")
         else:
             messages.error(request, "All fields are required.")
-        
+
         return redirect('mcqs', class_id=mcq.classroom.class_id)
-    
+
     return render(request, 'edit_mcq.html', {
         'mcq': mcq,
         'classroom': mcq.classroom,
@@ -988,12 +988,12 @@ def edit_mcq(request, mcq_id):
 @login_required
 def delete_mcq(request, mcq_id):
     mcq = get_object_or_404(MCQQuestion, question_id=mcq_id)
-    
+
     # Check permission
     if mcq.created_by != request.user and not request.user.is_superuser:
         messages.error(request, "You don't have permission to delete this MCQ.")
         return redirect('mcqs', class_id=mcq.classroom.class_id)
-    
+
     classroom_id = mcq.classroom.class_id
     mcq.delete()
     messages.success(request, "MCQ deleted successfully!")
@@ -1003,23 +1003,23 @@ def delete_mcq(request, mcq_id):
 def delete_mcq_topic(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
     topic = request.GET.get('topic', '').strip()
-    
+
     if not topic:
         messages.error(request, "No topic specified.")
         return redirect('mcqs', class_id=class_id)
-    
+
     # Delete all MCQs with this topic that belong to the current user
     deleted_count = MCQQuestion.objects.filter(
         classroom=classroom,
         topic=topic,
         created_by=request.user
     ).delete()
-    
+
     if deleted_count[0] > 0:
         messages.success(request, f"Deleted topic '{topic}' with {deleted_count[0]} questions.")
     else:
         messages.error(request, "No MCQs found for this topic or you don't have permission.")
-    
+
     return redirect('mcqs', class_id=class_id)
 
 # ==========================================
@@ -1033,7 +1033,7 @@ def mcqs_view(request, class_id):
         return blocked_response
 
     can_create = user_can_create_learning_content(classroom, current_user)
-    
+
     # Get or create quiz settings
     quiz_settings = None
     try:
@@ -1051,13 +1051,13 @@ def mcqs_view(request, class_id):
         # Save quiz settings
         time_limit = request.POST.get('time_limit')
         max_attempts = request.POST.get('max_attempts')
-        
+
         if quiz_settings:
             if time_limit and time_limit.strip():
                 quiz_settings.time_limit_minutes = int(time_limit)
             else:
                 quiz_settings.time_limit_minutes = None
-                
+
             if max_attempts and max_attempts.strip():
                 quiz_settings.max_attempts = int(max_attempts)
             else:
@@ -1183,7 +1183,7 @@ def mcqs_view(request, class_id):
         return blocked_response
 
     can_create = user_can_create_learning_content(classroom, current_user)
-    
+
     # Get or create quiz settings
     quiz_settings = None
     try:
@@ -1201,13 +1201,13 @@ def mcqs_view(request, class_id):
         # Save quiz settings
         time_limit = request.POST.get('time_limit')
         max_attempts = request.POST.get('max_attempts')
-        
+
         if quiz_settings:
             if time_limit and time_limit.strip():
                 quiz_settings.time_limit_minutes = int(time_limit)
             else:
                 quiz_settings.time_limit_minutes = None
-                
+
             if max_attempts and max_attempts.strip():
                 quiz_settings.max_attempts = int(max_attempts)
             else:
@@ -1447,7 +1447,7 @@ import traceback
 #             classroom=classroom,
 #             student=current_user
 #         ).count()
-        
+
 #         if attempts_count >= quiz_settings.max_attempts:
 #             messages.error(request, f"You have reached the maximum of {quiz_settings.max_attempts} attempts for this quiz.")
 #             return redirect('mcqs', class_id=classroom.class_id)
@@ -1460,7 +1460,7 @@ import traceback
 #         'current_user': current_user,
 #         'quiz_settings': quiz_settings,
 #     }
-    
+
 #     return render(request, 'take_mcq_quiz.html', context)
 
 
@@ -1475,7 +1475,7 @@ def submit_quiz(request, class_id):
 
     # Get the topic from the POST data
     selected_topic = request.POST.get('topic', '').strip()
-    
+
     # Get questions ONLY for this topic
     if selected_topic:
         questions = MCQQuestion.objects.filter(
@@ -1485,7 +1485,7 @@ def submit_quiz(request, class_id):
     else:
         # If no topic specified, get all questions (fallback)
         questions = MCQQuestion.objects.filter(classroom=classroom).order_by('question_id')
-    
+
     # Get quiz settings to check max attempts
     try:
         from .models import QuizSettings
@@ -1546,18 +1546,18 @@ def take_quiz_view(request, class_id):
 
     # Get the topic from the URL parameter
     selected_topic = request.GET.get('topic', '').strip()
-    
+
     # If no topic is provided, show all topics or redirect
     if not selected_topic:
         messages.info(request, "Please select a specific topic to take a quiz.")
         return redirect('all_mcqs')
-    
+
     # Get questions for this classroom AND this specific topic
     questions = MCQQuestion.objects.filter(
         classroom=classroom,
         topic=selected_topic  # Exact match on topic
     ).select_related('created_by').order_by('question_id')
-    
+
     # If no questions found, show error
     if not questions.exists():
         # Get all available topics for this classroom
@@ -1567,7 +1567,7 @@ def take_quiz_view(request, class_id):
         return redirect('all_mcqs')
 
     questions = list(questions)
-    
+
     # Get quiz settings
     quiz_settings = None
     try:
@@ -1576,18 +1576,18 @@ def take_quiz_view(request, class_id):
     except Exception as e:
         print(f"QuizSettings error: {e}")
         quiz_settings = None
-    
+
     # Check max attempts
     if quiz_settings and quiz_settings.max_attempts:
         attempts_count = QuizAttempt.objects.filter(
             classroom=classroom,
             student=current_user
         ).count()
-        
+
         if attempts_count >= quiz_settings.max_attempts:
             messages.error(request, f"You have reached the maximum of {quiz_settings.max_attempts} attempts for this quiz.")
             return redirect('mcqs', class_id=classroom.class_id)
-    
+
     context = {
         'classroom': classroom,
         'questions': questions,
@@ -1596,7 +1596,7 @@ def take_quiz_view(request, class_id):
         'current_user': current_user,
         'quiz_settings': quiz_settings,
     }
-    
+
     return render(request, 'take_mcq_quiz.html', context)
 
 def quiz_result(request, attempt_id):
@@ -1614,7 +1614,7 @@ def quiz_result(request, attempt_id):
 
     # Get the topic from the attempt (if stored)
     topic = getattr(attempt, 'topic', None)
-    
+
     # If topic is stored in attempt, filter questions by that topic
     if topic:
         questions = MCQQuestion.objects.filter(
@@ -1636,7 +1636,7 @@ def quiz_result(request, attempt_id):
                     ).order_by('question_id')
                 except MCQQuestion.DoesNotExist:
                     pass
-    
+
     reviewed_questions = []
     for question in questions:
         answer = attempt.answers.get(str(question.question_id), {})
@@ -2056,11 +2056,19 @@ def edit_profile(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
+        # Check if the user clicked the 'Remove Photo' button
+        if 'remove_image' in request.POST:
+            if profile.profile_image:
+                profile.profile_image.delete(save=False)  # Remove file from media storage
+                profile.profile_image = None
+                profile.save()
+            return redirect('edit_profile')
+
+        # Standard profile updates
         request.user.username = request.POST.get('username')
         request.user.email = request.POST.get('email')
         request.user.save()
 
-        # IMPORTANT: 'image' MUST match name="image" in your <input type="file" name="image">
         if 'image' in request.FILES:
             profile.profile_image = request.FILES['image']
 

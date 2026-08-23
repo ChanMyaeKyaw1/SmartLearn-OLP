@@ -485,14 +485,17 @@
 
                     <div class="dropdown">
                         <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" style="
-                    width: 42px;
-                    height: 42px;
-                    background-color: #2b4c3f;
-                    border: 2px solid #15803D;
-                  ">
-                                {{ request.user.username|slice:":2"|upper }}
-                            </div>
+                            {% if request.user.profile.profile_image %}
+                                <img src="{{ request.user.profile.profile_image.url }}"
+                                     alt="{{ request.user.username }}"
+                                     class="rounded-circle object-fit-cover shadow-sm"
+                                     style="width: 42px; height: 42px; border: 2px solid #15803D;">
+                            {% else %}
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+                                     style="width: 42px; height: 42px; background-color: #2b4c3f; border: 2px solid #15803D;">
+                                    {{ request.user.username|slice:":2"|upper }}
+                                </div>
+                            {% endif %}
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" aria-labelledby="profileDropdown">
