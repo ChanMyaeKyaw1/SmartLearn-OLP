@@ -59,15 +59,52 @@
         </div>
 
         <p class="text-secondary" style="white-space: pre-line;">{{ note.content }}</p>
-
+        <!-- FILE ATTACHMENT PREVIEW -->
         {% if note.attachment %}
-        <div class="mb-3">
-            <!-- <a href="{{ note.attachment.url }}" target="_blank" class="btn btn-sm btn-light border">
-                <i class="fa-solid fa-paperclip me-1"></i> View Attached Resource
-            </a> -->
-            <a href="{{ note.attachment.url }}" target="_blank" class="btn btn-sm btn-light border">
-                <i class="fa-solid fa-download"></i> Download File
-            </a>
+        <div class="mb-3 p-3 rounded-3" style="background: #f8faf9; border: 1px solid #e4ebc6;">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                    <!-- File Icon based on extension -->
+                    <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 44px; height: 44px; background: #eef8f2;">
+                        {% with extension=note.attachment.name|lower|cut:" " %}
+                            {% if extension|slice:"-4:" == ".pdf" %}
+                                <i class="fa-solid fa-file-pdf text-danger" style="font-size: 22px;"></i>
+                            {% elif extension|slice:"-4:" == ".doc" or extension|slice:"-5:" == ".docx" %}
+                                <i class="fa-solid fa-file-word text-primary" style="font-size: 22px;"></i>
+                            {% elif extension|slice:"-4:" == ".xls" or extension|slice:"-5:" == ".xlsx" %}
+                                <i class="fa-solid fa-file-excel text-success" style="font-size: 22px;"></i>
+                            {% elif extension|slice:"-4:" == ".ppt" or extension|slice:"-5:" == ".pptx" %}
+                                <i class="fa-solid fa-file-powerpoint text-warning" style="font-size: 22px;"></i>
+                            {% elif extension|slice:"-4:" == ".jpg" or extension|slice:"-5:" == ".jpeg" or extension|slice:"-3:" == ".png" or extension|slice:"-4:" == ".gif" %}
+                                <i class="fa-solid fa-file-image text-info" style="font-size: 22px;"></i>
+                            {% elif extension|slice:"-4:" == ".mp4" or extension|slice:"-3:" == ".mp4" or extension|slice:"-4:" == ".mov" %}
+                                <i class="fa-solid fa-file-video text-purple" style="font-size: 22px;"></i>
+                            {% elif extension|slice:"-4:" == ".mp3" or extension|slice:"-3:" == ".mp3" or extension|slice:"-4:" == ".wav" %}
+                                <i class="fa-solid fa-file-audio text-warning" style="font-size: 22px;"></i>
+                            {% elif extension|slice:"-4:" == ".zip" or extension|slice:"-4:" == ".rar" %}
+                                <i class="fa-solid fa-file-archive text-secondary" style="font-size: 22px;"></i>
+                            {% else %}
+                                <i class="fa-solid fa-file text-muted" style="font-size: 22px;"></i>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    <div>
+                        <strong class="d-block">{{ note.attachment.name|cut:"community_notes/" }}</strong>
+                        <small class="text-muted">
+                            {% if note.attachment.size %}
+                                {% if note.attachment.size < 1048576 %}
+                                    {{ note.attachment.size|filesizeformat }}
+                                {% else %}
+                                    {{ note.attachment.size|filesizeformat }}
+                                {% endif %}
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+                <a href="{{ note.attachment.url }}" target="_blank" class="btn btn-sm btn-primary" download>
+                    <i class="fa-solid fa-download me-1"></i> Download
+                </a>
+            </div>
         </div>
         {% endif %}
 
@@ -89,7 +126,6 @@
     <p class="m-0">No community notes found. Be the first student to share one!</p>
 </div>
 {% endif %}
-
 <!-- CREATE NOTE MODAL -->
 <div class="modal fade" id="createNoteModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">

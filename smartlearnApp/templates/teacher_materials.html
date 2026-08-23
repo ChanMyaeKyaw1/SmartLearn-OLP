@@ -59,9 +59,30 @@
     <div class="styled-card class-card custom-hover-card p-4 d-flex flex-column justify-content-between">
         <div>
             <div class="d-flex justify-content-between align-items-start mb-3">
+                <!-- File Type Badge with Icon -->
                 <span class="topic-pill">
                     {% if item.file %}
-                        <i class="fa-solid fa-file-lines me-1"></i> {{ item.extension|upper }}
+                        {% with extension=item.file.name|lower|cut:" " %}
+                            {% if extension|slice:"-4:" == ".pdf" %}
+                                <i class="fa-solid fa-file-pdf text-danger me-1"></i> PDF
+                            {% elif extension|slice:"-4:" == ".doc" or extension|slice:"-5:" == ".docx" %}
+                                <i class="fa-solid fa-file-word text-primary me-1"></i> WORD
+                            {% elif extension|slice:"-4:" == ".xls" or extension|slice:"-5:" == ".xlsx" %}
+                                <i class="fa-solid fa-file-excel text-success me-1"></i> EXCEL
+                            {% elif extension|slice:"-4:" == ".ppt" or extension|slice:"-5:" == ".pptx" %}
+                                <i class="fa-solid fa-file-powerpoint text-warning me-1"></i> PPT
+                            {% elif extension|slice:"-4:" == ".jpg" or extension|slice:"-5:" == ".jpeg" or extension|slice:"-3:" == ".png" or extension|slice:"-4:" == ".gif" %}
+                                <i class="fa-solid fa-file-image text-info me-1"></i> IMAGE
+                            {% elif extension|slice:"-4:" == ".mp4" or extension|slice:"-3:" == ".mp4" or extension|slice:"-4:" == ".mov" %}
+                                <i class="fa-solid fa-file-video text-purple me-1"></i> VIDEO
+                            {% elif extension|slice:"-4:" == ".mp3" or extension|slice:"-3:" == ".mp3" or extension|slice:"-4:" == ".wav" %}
+                                <i class="fa-solid fa-file-audio text-warning me-1"></i> AUDIO
+                            {% elif extension|slice:"-4:" == ".zip" or extension|slice:"-4:" == ".rar" %}
+                                <i class="fa-solid fa-file-archive text-secondary me-1"></i> ZIP
+                            {% else %}
+                                <i class="fa-solid fa-file text-muted me-1"></i> {{ extension|upper }}
+                            {% endif %}
+                        {% endwith %}
                     {% else %}
                         <i class="fa-solid fa-link me-1"></i> LINK
                     {% endif %}
@@ -74,13 +95,23 @@
             {% if item.description %}
             <p class="class-card-desc mb-3" style="font-size: 14px;">{{ item.description|truncatewords:18 }}</p>
             {% endif %}
+            
+            <!-- File name preview -->
+            {% if item.file %}
+            <div class="mb-2 p-2 rounded-2" style="background: #f4faf6; border: 1px solid #e4ebc6;">
+                <small class="text-muted">
+                    <i class="fa-solid fa-paperclip me-1"></i> 
+                    <strong>{{ item.file.name|cut:"teacher_materials/" }}</strong>
+                    {% if item.size_mb %}
+                        ({{ item.size_mb }} MB)
+                    {% endif %}
+                </small>
+            </div>
+            {% endif %}
         </div>
 
         <div class="pt-3 border-top d-flex justify-content-between align-items-center mt-3">
             <small class="text-muted">
-                {% if item.file and item.size_mb %}
-                    {{ item.size_mb }} MB • 
-                {% endif %}
                 {{ item.uploaded_at|date:"M d, Y" }}
             </small>
 
@@ -101,8 +132,8 @@
                 {% else %}
                     <!-- ✅ STUDENT VIEW: OPEN / DOWNLOAD -->
                     {% if item.file %}
-                        <a href="{{ item.file.url }}" target="_blank" class="btn-primary py-1 px-3 style-sm" style="font-size: 13px;">
-                            <i class="fa-solid fa-download me-1"></i> Open/Download
+                        <a href="{{ item.file.url }}" target="_blank" class="btn-primary py-1 px-3 style-sm" style="font-size: 13px;" download>
+                            <i class="fa-solid fa-download me-1"></i> Download
                         </a>
                     {% elif item.external_url %}
                         <a href="{{ item.external_url }}" target="_blank" class="btn-primary py-1 px-3 style-sm" style="font-size: 13px;">

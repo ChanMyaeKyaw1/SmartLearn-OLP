@@ -506,14 +506,14 @@ textarea.form-control {
 }
 
 .footer-text-small {
-    color: #7b857f;
+    color: #2f875b;
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
 }
 
 .footer-text-bold {
-    color: #2b4c3f;
+    color: #4ade80;
     font-size: 15px;
     font-weight: 800;
     overflow: hidden;
@@ -875,10 +875,10 @@ body.teacher-mode-active .teacher-only {
 }
 
 .stat-chip {
-    background: #eef8f2;
-    border: 1px solid #d7eadf;
+    background: #2b4c3f;
+    border: 1px solid #4ade80;
     border-radius: 999px;
-    color: #2b4c3f;
+    color: #eef8f2;
     font-size: 13px;
     font-weight: 800;
     padding: 8px 14px;
@@ -1170,10 +1170,10 @@ body.teacher-mode-active .teacher-only {
 }
 
 .empty-study-state {
-    background: #f8fcf9;
+    background: #2b4c3f;
     border: 1px dashed #cfe8d8;
     border-radius: 18px;
-    color: #5f6964;
+    color: #4ade80;
     line-height: 1.6;
     padding: 26px;
 }
@@ -1184,8 +1184,8 @@ body.teacher-mode-active .teacher-only {
 }
 
 .flashcard-entry-card {
-    background: #f8fcf9;
-    border: 1px solid #dcebdc;
+    background: #2b4c3f;
+    border: 1px solid #4ade80;
     border-radius: 20px;
     display: grid;
     gap: 10px;
@@ -2289,10 +2289,10 @@ body.teacher-mode-active .teacher-only {
     --bg-color: #121816;
     --text-color: #e0ece7;
     --card-bg: #1c2622;
-    --border-color: #2b3a34;
-    --light-matcha: #1e332a;
-    --forest: #80d9a5;
-    --text-muted: #9ba8a2;
+    --border-color: #4ade80;
+    --light-matcha: #4ade80;
+    --forest: #4ade80;
+    --text-muted: #4ade80;
 }
 
 
@@ -3849,4 +3849,99 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
 [data-theme="dark"] .nav-theme-toggle:hover {
     background-color: var(--forest) !important;
     color: var(--bg-color) !important;
+}
+
+/* Quiz Settings Box - Light Mode (default) */
+.quiz-settings-box {
+    background: #f8faf9;
+    border: 1px solid #e4ebc6;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.quiz-settings-box h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2b4c3f;
+    margin-bottom: 12px;
+}
+
+.quiz-settings-box .label-bold {
+    font-size: 13px;
+}
+
+/* Quiz Settings Box - Dark Mode */
+[data-theme="dark"] .quiz-settings-box {
+    background: #1a231f !important;
+    border-color: #2b3a34 !important;
+}
+
+[data-theme="dark"] .quiz-settings-box h4 {
+    color: #80d9a5 !important;
+}
+
+[data-theme="dark"] .quiz-settings-box .label-bold {
+    color: #d0e0d8 !important;
+}
+
+[data-theme="dark"] .quiz-settings-box .form-control {
+    background-color: #0f1512 !important;
+    border-color: #2b3a34 !important;
+    color: #e0ece7 !important;
+}
+
+[data-theme="dark"] .quiz-settings-box .form-control:focus {
+    border-color: #4CAF7D !important;
+    box-shadow: 0 0 0 4px rgba(76, 175, 125, 0.15) !important;
+}
+
+[data-theme="dark"] .quiz-settings-box .text-muted {
+    color: #9cb0a5 !important;
+}
+
+[data-theme="dark"] .quiz-settings-box small {
+    color: #9cb0a5 !important;
+}
+
+/* ==========================================================================
+   FILE PREVIEW CONTAINER DARK MODE FIX
+   ========================================================================== */
+
+/* For community_notes.html file preview */
+[data-theme="dark"] .mb-3.p-3.rounded-3[style*="background: #f8faf9"] {
+    background: #1a231f !important;
+    border-color: #2b3a34 !important;
+}
+
+[data-theme="dark"] .mb-3.p-3.rounded-3[style*="background: #f8faf9"] .text-muted {
+    color: #9cb0a5 !important;
+}
+
+[data-theme="dark"] .mb-3.p-3.rounded-3[style*="background: #f8faf9"] strong {
+    color: #e0ece7 !important;
+}
+
+[data-theme="dark"] .mb-3.p-3.rounded-3[style*="background: #f8faf9"] .btn-primary {
+    background-color: #4CAF7D !important;
+    border-color: #4CAF7D !important;
+}
+
+[data-theme="dark"] .mb-3.p-3.rounded-3[style*="background: #f8faf9"] .btn-primary:hover {
+    background-color: #3d8b6a !important;
+    border-color: #3d8b6a !important;
+}
+
+/* For teacher_materials.html file preview */
+[data-theme="dark"] .mb-2.p-2.rounded-2[style*="background: #f4faf6"] {
+    background: #111714 !important;
+    border-color: #2b3a34 !important;
+}
+
+[data-theme="dark"] .mb-2.p-2.rounded-2[style*="background: #f4faf6"] .text-muted {
+    color: #9cb0a5 !important;
+}
+
+[data-theme="dark"] .mb-2.p-2.rounded-2[style*="background: #f4faf6"] strong {
+    color: #e0ece7 !important;
 }
