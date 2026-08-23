@@ -696,18 +696,24 @@ def flashcards_view(request, class_id):
     topic_map = OrderedDict()
 
     for flashcard in flashcards:
-        group = topic_map.get(flashcard.topic)
+        # Normalize topic name (strip and lower case for grouping, but keep original for display)
+        topic_key = flashcard.topic.strip().lower()
+        topic_display = flashcard.topic.strip()
+
+        group = topic_map.get(topic_key)
         if not group:
             group = {
-                'topic': flashcard.topic,
-                'topic_slug': slugify(flashcard.topic) or 'flashcard-topic',
+                'topic': topic_display,
+                'topic_key': topic_key,
+                'topic_slug': slugify(topic_display) or 'flashcard-topic',
                 'cards': [],
                 'contributors': [],
                 'primary_creator': flashcard.created_by.username,
                 'preview_front': flashcard.front,
                 'preview_back': flashcard.back,
+                'total_cards': 0,
             }
-            topic_map[flashcard.topic] = group
+            topic_map[topic_key] = group
             topic_groups.append(group)
 
         group['cards'].append(flashcard)
@@ -743,6 +749,7 @@ def flashcards_view(request, class_id):
 
         topic_groups_payload.append({
             'topic': group['topic'],
+            'topic_key': group['topic_key'],
             'topic_slug': group['topic_slug'],
             'total_cards': group['total_cards'],
             'primary_creator': group['primary_creator'],
@@ -783,6 +790,19 @@ def all_flashcards_view(request):
         Q(class_type='public') | Q(owner=current_user) | Q(enrollments__student=current_user, enrollments__status='approved')
     ).distinct()
     flashcard_groups = []
+<<<<<<< Updated upstream
+=======
+    # Get unique classrooms for the dropdown
+    unique_classrooms = []
+    classroom_ids = set()
+    
+    # First, add ALL accessible classrooms to unique_classrooms
+    for classroom in accessible_classrooms:
+        if classroom.class_id not in classroom_ids:
+            classroom_ids.add(classroom.class_id)
+            unique_classrooms.append(classroom)
+
+>>>>>>> Stashed changes
 
     for classroom in accessible_classrooms:
         classroom_flashcards = list(
@@ -793,6 +813,10 @@ def all_flashcards_view(request):
 
         if not classroom_flashcards:
             continue
+        # Add classroom to unique list if not already added
+        if classroom.class_id not in classroom_ids:
+            classroom_ids.add(classroom.class_id)
+            unique_classrooms.append(classroom)
 
         classroom_topic_map = OrderedDict()
         for flashcard in classroom_flashcards:
@@ -837,6 +861,7 @@ def all_flashcards_view(request):
 
     return render(request, 'all_flashcards.html', {
         'current_user': current_user,
+        'unique_classrooms': unique_classrooms,
         'flashcard_groups': flashcard_groups,
         'total_flashcards': sum(group['total_cards'] for group in flashcard_groups),
         'total_topics': len(flashcard_groups),
@@ -1355,6 +1380,14 @@ def all_mcqs_view(request):
     can_create = request.user.is_authenticated
 
     mcq_groups = []
+    unique_classrooms = []
+    classroom_ids = set()
+
+    for classroom in accessible_classrooms:
+        if classroom.class_id not in classroom_ids:
+            classroom_ids.add(classroom.class_id)
+            unique_classrooms.append(classroom)
+
     for classroom in accessible_classrooms:
         # Get all questions for this classroom
         classroom_questions = list(
@@ -1367,6 +1400,10 @@ def all_mcqs_view(request):
         if not classroom_questions:
             continue
 
+        if classroom.class_id not in classroom_ids:
+            classroom_ids.add(classroom.class_id)
+            unique_classrooms.append(classroom)
+
         # Group by topic
         classroom_topic_map = OrderedDict()
         for question_item in classroom_questions:
@@ -1378,6 +1415,7 @@ def all_mcqs_view(request):
                     'classroom_title': classroom.title,
                     'class_type': classroom.class_type,
                     'topic': question_item.topic,
+                    'topic_key': group_key,
                     'topic_slug': slugify(question_item.topic) or 'mcq-topic',
                     'preview_question': question_item.question,
                     'questions': [],
@@ -1415,6 +1453,7 @@ def all_mcqs_view(request):
     return render(request, 'all_mcqs.html', {
         'current_user': current_user,
         'mcq_groups': mcq_groups,
+        'unique_classrooms': unique_classrooms,  # Now contains ALL accessible classrooms
         'total_questions': sum(group['total_questions'] for group in mcq_groups),
         'total_topics': len(mcq_groups),
         'can_create': can_create,

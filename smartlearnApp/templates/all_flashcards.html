@@ -47,7 +47,7 @@
 
             <div class="topic-collection-actions">
                 <!-- Student mode: Learn Topic button -->
-                <button type="button" class="btn-primary learn-topic-btn student-action" data-learn-topic="{{ group.modal_key }}">Learn Topic</button>
+                <button type="button" class="btn-primary learn-topic-btn student-action" data-learn-topic="{{ group.topic_key }}">Learn Topic</button>
                 
                 <!-- Teacher Mode: Edit/Delete buttons -->
                 {% if request.user.username == group.primary_creator %}
@@ -139,8 +139,8 @@
                     <div id="fcExistingClassSec" class="mb-3">
                         <label for="fcClassroomSelect" class="label-bold">Select Classroom</label>
                         <select name="classroom_id" id="fcClassroomSelect" class="form-control">
-                            {% for group in flashcard_groups %}
-                                <option value="{{ group.classroom_id }}">{{ group.classroom_title }}</option>
+                            {% for classroom in unique_classrooms %}
+                                <option value="{{ classroom.class_id }}">{{ classroom.title }}</option>
                             {% empty %}
                                 <option value="" disabled selected>No classrooms available</option>
                             {% endfor %}
