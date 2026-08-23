@@ -22,11 +22,16 @@
         <span class="stat-chip">Created by {{ classroom.owner.username }}</span>
     </div>
 </div>
-
 {% if messages %}
     <div class="message-stack">
         {% for message in messages %}
-            <div class="message-card">{{ message }}</div>
+            <div class="message-card" id="message-{{ forloop.counter }}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>{{ message }}</span>
+                    <button type="button" class="btn-close" onclick="removeMessage('message-{{ forloop.counter }}')" 
+                            aria-label="Close" style="font-size: 12px;"></button>
+                </div>
+            </div>
         {% endfor %}
     </div>
 {% endif %}
@@ -147,9 +152,11 @@
                         <label class="label-bold">Explanation</label>
                         <textarea name="explanation" class="form-control" rows="3" placeholder="Optional answer explanation"></textarea>
                     </article>
+
                 </div>
 
                 <button type="submit" class="btn-primary full-width-btn">Share MCQ</button>
+
             </form>
         {% else %}
             <h3 class="section-heading">Create MCQ</h3>
