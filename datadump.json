@@ -1,0 +1,3050 @@
+[
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$lxNl1lHLw9rJziYmGa5Loa$jfjNo5xTcaKBzza6hrMVyAXJ7vQ7dwvfV9X3L3PzYNk=",
+        "last_login": "2026-08-23T13:48:56.223Z",
+        "is_superuser": false,
+        "username": "Tun Tun",
+        "first_name": "",
+        "last_name": "",
+        "email": "tuntun@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-07-11T17:09:10.463Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "!QH9cFs7ww0rWcoJtqTjhOOvmqEAcQUSrStKx9asd",
+        "last_login": "2026-07-12T16:07:17.002Z",
+        "is_superuser": false,
+        "username": "yoon_nandar_moe",
+        "first_name": "Yoon Nandar Moe",
+        "last_name": "",
+        "email": "yoon173004@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-07-12T04:39:01.147Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$qxTgQAkhdaWvLoLbMEakxR$bBwSyY5XPko4JAspSTFWX7j1jG6PxYxD54m4SKJmVCM=",
+        "last_login": "2026-08-21T16:11:41.603Z",
+        "is_superuser": true,
+        "username": "admin1",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2026-07-12T08:02:03.055Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "!CcXFvmydtnnVqVrGM4ZEJZurjKtlKfc8bzYAmY96",
+        "last_login": "2026-08-23T10:44:46.575Z",
+        "is_superuser": false,
+        "username": "pann_phyu",
+        "first_name": "Pann Phyu",
+        "last_name": "Sin",
+        "email": "pannps2001@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-07-18T07:08:43.132Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$vYzTAQlwccnelv37hGgrHx$1hi4yYHaQgoG9IEV+SWW42+FV6YopAjhX+nLpCEm99g=",
+        "last_login": "2026-08-23T07:33:34.093Z",
+        "is_superuser": true,
+        "username": "admin2",
+        "first_name": "",
+        "last_name": "",
+        "email": "admin2@gmail.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2026-08-12T16:38:47.442Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "!jdQLBQaKeCqSk440GOcpUfQoIQq8lqtzCdZLlecM",
+        "last_login": "2026-08-22T08:46:18.380Z",
+        "is_superuser": false,
+        "username": "mi_mi",
+        "first_name": "Mi Mi",
+        "last_name": "Kyaw",
+        "email": "mimikyaw2712@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-08-22T08:46:18.306Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$cZ4DIE7e3oRxbG4juPmjKK$FJ7Hv+cL7ipi3cxVvlfPkGdi5mGvHChdRjFetU1N4/A=",
+        "last_login": "2026-08-23T05:25:27.428Z",
+        "is_superuser": false,
+        "username": "Testing",
+        "first_name": "",
+        "last_name": "",
+        "email": "testing@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-08-23T05:13:33.113Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "!7nCoHtc3KXH8Ph8yA8qggJV4NRTtJ8Xrp5Jxm7We",
+        "last_login": "2026-08-23T05:25:52.669Z",
+        "is_superuser": false,
+        "username": "Aye Aye",
+        "first_name": "",
+        "last_name": "",
+        "email": "ayeaye@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-08-23T05:25:52.662Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$ifObMav7sRe7IyqE27z7pE$XQGHuduC7WjpiW4/R1lYl9HAbQ+e5llq44ug26o3L7A=",
+        "last_login": "2026-08-23T07:40:46.178Z",
+        "is_superuser": false,
+        "username": "Testing2",
+        "first_name": "",
+        "last_name": "",
+        "email": "testing2@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-08-23T07:40:45.720Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "1gq3z2eh8i57i2oun2x6yetu7jjrytdh",
+    "fields": {
+        "session_data": ".eJxVjMEOwiAQRP-FsyEUt7B49O43kAUWqRpISnsy_rtt0oMmc5r3Zt7C07oUv3ae_ZTERQxOnH7LQPHJdSfpQfXeZGx1macgd0UetMtbS_y6Hu7fQaFetvWowSRlkQkQlNJAZrQOGGM0dosiZ_IAjq1DTSaQsxlTxkjEJuuz-HwB5Yw3zg:1wrJEk:L9xaoO4WLs8OeBegh6WnrVDTYgQPtQMUvVWJwXi3qrs",
+        "expire_date": "2026-08-18T17:47:34.671Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "36q9b2399bp5frrvsgvne9h3wgn3iy4e",
+    "fields": {
+        "session_data": ".eJwlycEKAiEQANB_mbMEEal5DqJDP7ARYrPTrps4u-p2SPz3Fro9eBUyo3fBIfIai83FFcpgKozdd7wM08S03K7P5QzmXmFOjJS3h8CDjyCgd8WBiWsIAuY3kkXuyX4o-Zen9J8m9koflD5JqXdykzo-WvsBzoUqYw:1wibB6:WY20N-9iwUDaXQFx9Y0drxvDoV7ZajgvcwraC_NBAQc",
+        "expire_date": "2026-07-25T17:07:48.684Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "3mg1x87eaq4rths8kyl88l4jbv4mwqxf",
+    "fields": {
+        "session_data": ".eJxVjDEOgzAMAP_iuYqCQx1g7M4bUBw7hbZKJAJT1b9XSAztene6N0xh3-Zpr7pOi8AADcHlF3KIT82HkUfI92Jiydu6sDkSc9pqxiL6up3t32AOdYYBQuwcoUvSopXEJC32iKSerU-IPjqhlLxcG9bUqSPCplV2PSJTZx18vgyvN9k:1wixJH:Is-qv-wrJmXgMsPVRnuEE9ju6im82CgTMoluvg2L1Lg",
+        "expire_date": "2026-07-26T16:45:43.744Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "3n6pgbvl1bpme1z90lds7x57pmrypctd",
+    "fields": {
+        "session_data": ".eJxVj8FuhSAQRf9l1saAgCC79jeaxgw4Pkl50gi-jfHfG61N425y7p07dzbIyQeM6H1a59LngoUy2G2v4I-9aAljoKGnJ4YIdl5j_FdxLRPNJXgsIc39k8qUhgz2Y4PfGez9BlSABSzXRgtjhDa1UC2TXFfwvaRXGGgBC4-UHpGggjUcCZwpqaTkihmhJeOMcyVh_6zgLNCvmZb-dDYSbtCh_6L5UDDGA9dXj_r0XHKu325_vF9bt6gJ8wQWvPHMCeKNExqdckYqbEzXNaMZB98iuYEL1rUepaZRKsa4Fhz9QORFNxLsP1M7fLE:1wxhMo:bOpXnMMkWGrffJhuRM8zc1JlEMx_6MHbDvMk63YmIxE",
+        "expire_date": "2026-09-05T08:46:18.391Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "3z3i9ho90zmrc2k6tfpz0ui7t040lzlq",
+    "fields": {
+        "session_data": ".eJxVj81uhDAMhN_FZ4QSCCTOrfsaVYXyY5aoWVKRsBfEu1fsUlXcrPnG4_EGOblgonEurXMZcjGFMuhtr-BPe9ISxkB-oIcJEfS8xvhPzVommktwpoQ0Dw8qU_IZ9OcG7xn09QZUYApoLlWrWs4FrzvZY4-8gp8lPYOnBTTcU7pHggrWcCRw3quGNR1D7BUyJlGpBvavCl4FhjXTMrydAi6iNe6b5oOYGA-5PnvUL8-Jc_1x-eN2bl2iJpMn0CAkoSR0jbIoJNoGjVHIceSeuPOKCYVNb4W1h1FybGmUY-eZc-SYGGH_BU6_fEc:1wily1:CU1MpVc5HKIDVTCj0krlGRpGq1i_V3-tjaf1Tr5DeG8",
+        "expire_date": "2026-07-26T04:39:01.694Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "58yzbrl58730bnddizt0ulzumqcd787b",
+    "fields": {
+        "session_data": ".eJxVjDEOgzAMAP_iuYqCAw5h7N43ICexG9oKJAJT1b9XSAztene6N4y8b2Xcq6zjlGGABuHyCyOnp8yHyQ-e74tJy7ytUzRHYk5bzW3J8rqe7d-gcC0wgKq31PZeJatrJAby5LIlQoedsvMkyugtEofO9k1qJWXFRCg-igvw-QIEzjgX:1wxhMH:BsPq6KZaDUlw_SPtndtuxYzmX0v6lAcJV-i9SErdc_Y",
+        "expire_date": "2026-09-05T08:45:45.928Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "91ss26a9qvy3n3zqf35mm6tx87stqrt4",
+    "fields": {
+        "session_data": ".eJxVjEEOwiAQRe_C2pBKBxCX7j0DmWEGqRpISrsy3l2bdKHb_977LxVxXUpcu8xxYnVWVh1-N8L0kLoBvmO9NZ1aXeaJ9KbonXZ9bSzPy-7-HRTs5VubwOTcQB7Go8lMISPxCbMBsF7EwQCSyUkIhA4oiA92RPTkUjJgRb0_-6E4pg:1woxG4:GhYlLg-OnVkIq3SXjgIakGuLNRtcJPiNbo8IGQwi5D4",
+        "expire_date": "2026-08-12T05:55:12.669Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "c9yy4jk7q1e3kzf2e1b97we9yvl442oq",
+    "fields": {
+        "session_data": ".eJxVj01uhTAMhO_iNUL5tRN27TWqCpkQHqiUVCR0g7h7xXt0wc76Zjya2SGnMPHMIaRtKW0uXGKGZj8q-Ge8lTEuZQpcprS037GMqc_QfOzwuqG5p0AFXKCR5KyS3ntfoyFNqCv4WdPv1McVGnik9JgjVLBNZ4KUiIRCeedQaSKFaAQcnxU8C7Rbjmv7chLcYMfhKy6nwvN84vrqUT89l5zrt9uO9-vrFjVyHqEB7AUJy10nSUQVHTmpB43WSnJSSeZIZtCkRDc4q531RvbRYafYmIg-wPEHLqBvpg:1wobGx:RHfLZTfopD94iVNv9pVGy5rkgSUpQtE05W3or3sVstg",
+        "expire_date": "2026-08-11T06:26:39.683Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "gwu3761rvo1zj5r1vrn6rtc7czq3uqtf",
+    "fields": {
+        "session_data": ".eJxVj01uhTAMhO_iNUL5d8iuvUZVIRPMA5WSioRuEHeveI8u2FnfjMfjHXKKE80UY9qW0uZChTOE_ajgn9FWRl7KFKlMaWm_uYypzxA-dnjNEO4pUAEVCBI9Gi-9d7W1Qmpdwc-afqeeVwjwSOkxM1SwTWeAlM6hE6rx3imNqJwzAo7PCp732y3z2r6cCDfYUfzi5VRonk9cXzXqp-eSc_12e-P92rpFjZRHCOB6gcJS10kUrNijl3rQzlqJXipJxGgGjUp0g7fa28bInr3rFBnDrolw_AHJJG9h:1wy5h0:aRU-Z4oM2yagpdZZkb-yd1pMmJKLNqZEgWXJ156UwVU",
+        "expire_date": "2026-09-06T10:44:46.587Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "kffclatk71j9kdp81sgi075w135hs0m8",
+    "fields": {
+        "session_data": ".eJxVjMsOwiAURP-FtSG8BZfu_QZygXulaiAp7cr477ZJFzrLOWfmzSKsS43rwDlOhV2YEuz0WybIT2w7KQ9o985zb8s8Jb4r_KCD33rB1_Vw_w4qjLqtrTgjWTKJgkNlTdK4JXujTdZSJ0cBJHrvLAFaIVUgoQw5q7QLoBz7fAEWgzfk:1wxmAg:ETo6LV0V2319YMExHN_c70Uddzk5vyVqDFZlY572y8c",
+        "expire_date": "2026-09-05T13:54:06.046Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "l3ufd1pjc919e454fpgpkla62e1vligw",
+    "fields": {
+        "session_data": ".eJxVj01uhTAMhO_iNUL5ww7s2mtUFTLBPFApqUjoBnH3ivfogp31zXg0s0OKYeKZQ4jbktuUOUuCZj8K-Ge85VGWPAXOU1zab8lj7BM0Hzu8bmjuKVAAZ2g0ebIWkVzptcfaUAE_a_ydelmhgUeMj1mggG06E7RGJFSm9h6NJTKITsHxWcCzQLslWduXk-AGOw5fspwKz_OJy6tH-fRccirfbjver69b1MhphAawV6Qq7jpNSox48toOFqtKk9dGMwu5wZJR3eAr66va6V48doadE6wDHH8rsW-j:1wxTus:fpYPfhlE5UL36MlWc6Rb3ZYl6QtgY7BydPXp6obRy-w",
+        "expire_date": "2026-09-04T18:24:34.854Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "mofhenv496xa4gp7kmjltly9rdm8gqgd",
+    "fields": {
+        "session_data": ".eJxVjMEOwiAQRP-FsyEUt7B49O43kAUWqRpISnsy_rtt0oMmc5r3Zt7C07oUv3ae_ZTERQxOnH7LQPHJdSfpQfXeZGx1macgd0UetMtbS_y6Hu7fQaFetvWowSRlkQkQlNJAZrQOGGM0dosiZ_IAjq1DTSaQsxlTxkjEJuuz-HwB5Yw3zg:1wrJ0q:a43s4sKkcP3IrOk7ESYOaxK1M_7TYnDZXkC7bT6P-Rk",
+        "expire_date": "2026-08-18T17:33:12.004Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "mqsbzge3vzzo918p5z649kt92ft6vhxu",
+    "fields": {
+        "session_data": ".eJxVj81ugzAQhN9lz4jYxn9wS9WeeuqpqqoILWZJ3BAcYRNVinj3ihQOua12Zme_uUMMzmOPzoVpSHVMmChCdYf9_ueN3s2Xbszx43X8hOr7DtcxOIoRKujD0Q-QQYsJoRqmvs_genZUu9BSfaPRd57GTRnoN0EFOzcSJtrBnHFjZaGsNCxX2gpWysOcwYax3rc1XdD3W8qm4pRONCTvMPkw1BdKp9DGB-D_DNVzLcgAE1TrTyWKnGvJS6aypdHNtwspHEM49gQZTH5J4Fxro5kordWiMEZoLRnMhwweAPUUaaz_nQaelg26Mw2Lgn2_rPOVI394Vjnm-6ceL-vVU9QJ4wkq0C0zTGHTcMNIkDWWF12hleLGcsERyciuMII1nVWFVaXkLVndCJSSdOlg_gNVoJ8X:1wkzAB:Pv8_8OP7b5J0HnMYnoT75rGYCq61ZdDBTy7s-mDmxK0",
+        "expire_date": "2026-08-01T07:08:43.188Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "nae2lczilps6qjw8wluluth9tkfkk3na",
+    "fields": {
+        "session_data": ".eJxVj01uhTAMhO_iNUL5d8iuvUZVIRPMA5WSioRuEHeveI8u2FnfjEczO-QUJ5opxrQtpc2FCmcI-1HBP6OtjLyUKVKZ0tJ-cxlTnyF87PC6IdxToAIqECR61I32ytbaCiutq-BnTb9TzysEeKT0mBkq2KYzQUrn0AnVeO-URlTOGQHHZwXPAu2WeW1fToQb7Ch-8XIqNM8nrq8e9dNzybl-u-14v75uUSPlEQK4XqCw1HUSBSv26KUetLNWopdKEjGaQaMS3eCt9rYxsmfvOkXGsGsiHH8dyG-U:1wximf:sPRzem78pV6GWNxc-UMIM6vfJn42g6Dg6wE2TdMtvqQ",
+        "expire_date": "2026-09-05T10:17:05.387Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "ng8fd6yz9pq8z9u1y1f5j4iwfyay378f",
+    "fields": {
+        "session_data": ".eJwlybEKwjAQANB_uTlIG4XGjDq7ZHEQCcf1qsGQK0kqQsi_K_jW16AIBYxIJFuqvlSsXMA2qMdL_Lh8duKey-mqwd4arFmIy-8hyiMkUDBjRbBpi1HB-iL2JDP7N-ewBM7_6WqczGD0qA9mt9eDmcy99y-eJSm-:1wW8yU:tNRewGxcukggDEkaSKdy0dvj-uZeDhVclo3y8ebYC1g",
+        "expire_date": "2026-06-21T08:35:18.976Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "obsf2i9ydk0a6afi63edhd6yhbeex6rn",
+    "fields": {
+        "session_data": ".eJxVjEEOwiAQRe_C2pABSiku3fcMZGagUjWQlHZlvLtt0oVu_3vvv0XAbc1ha2kJcxRXYcXldyPkZyoHiA8s9yq5lnWZSR6KPGmTY43pdTvdv4OMLe81GKc6cF10hsgmOwEygdE9Yx9NUjtF5wZPEwArJrbeAw1mIqZeOy0-X9TBN7w:1wia3L:UL5ezZPH42qLr0f9dk2ysDZzxvw61GmJsgxqS3bzw-Y",
+        "expire_date": "2026-07-25T15:55:43.978Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "oyw47d1s3wix53usxzczv7cmh3ibe4i9",
+    "fields": {
+        "session_data": ".eJxVj01uhTAMhO_idYTyRxyya69RVcgE80ClpCKhG8TdK96jC3bWN-PxeIec4kQzxZi2pbS5UOEMYT8E_DPayshLmSKVKS3tN5cx9RnCxw6vGcI9BQRQgaDQW6_RKFV5I7XTAn7W9Dv1vEKAR0qPmUHANp0BSjmHTurGe6cNonbOSjg-BTzvt1vmtX05EW6wo_jFy6nQPJ-4umpUT88l5-rt9sb7tXWLGimPEMD1EmVNXadQsmaPXpnBuLpW6JVWRIx2MKhlN_ja-LqxqmfvOk3WsmsiHH-9p29V:1wmx7H:rwc07l9ztfjFXOH7ed0IDcy1TRreAonieNTQpN9qoG0",
+        "expire_date": "2026-08-06T17:21:51.867Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "pse4h5lwpolc8z76cpa55nz3qebohup8",
+    "fields": {
+        "session_data": ".eJxVjDEOgzAMAP_iuYqCQx1g7M4bUBw7hbZKJAJT1b9XSAztene6N0xh3-Zpr7pOi8AADcHlF3KIT82HkUfI92Jiydu6sDkSc9pqxiL6up3t32AOdYYBQuwcoUvSopXEJC32iKSerU-IPjqhlLxcG9bUqSPCplV2PSJTZx18vgyvN9k:1woaHr:mKLlOuQBx2nB9asTas45qUvaHFZiNmRtjjueKh9ZjKs",
+        "expire_date": "2026-08-11T05:23:31.900Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "wb41fzvsnov6j0ckvygwfoe3aqoz5473",
+    "fields": {
+        "session_data": ".eJxVj01uhTAMhO_iNUL5d8KuvUZVIRPMA5WSioRuEHeveI8u2FnfjMfjHXKKE80UY9qW0uZChTM0-1HBP6OtjLyUKVKZ0tJ-cxlTn6H52OE1Q3NPgQqoQCPRo9EiGF8Hb4MOFfys6XfqeYUGHik9ZoYKtukMkNI5dEIF753SiMo5I-D4rOB5v90yr-3LiXCDHcUvXk6F5vnE9VWjfnouOddvtzfer61b1Eh5hAZcL1BY6jqJghV79FIP2lkr0UsliRjNoFGJbvBWexuM7Nm7TpEx7EKE4w_aim90:1wxsRR:GbvpIhBPCK2UqvAfxjQNbYOrCETxNNMRyT5VJM5kles",
+        "expire_date": "2026-09-05T20:35:49.032Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "x2pwdid6ghi14o322s1pis3ie41qy8vz",
+    "fields": {
+        "session_data": ".eJxVjDEOgzAMAP_iuYqCAw5h7N43ICexG9oKJAJT1b9XSAztene6N4y8b2Xcq6zjlGGABuHyCyOnp8yHyQ-e74tJy7ytUzRHYk5bzW3J8rqe7d-gcC0wgKq31PZeJatrJAby5LIlQoedsvMkyugtEofO9k1qJWXFRCg-igvw-QIEzjgX:1wy8ZE:oX5k_zD6HnujXv7uo3IwIWx683xEW-zc2sP6gwHMCZg",
+        "expire_date": "2026-09-06T13:48:56.231Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "xy4nwg4p0vn3wlnalntdie24211htu0e",
+    "fields": {
+        "session_data": ".eJxVjDEOgzAMAP_iuYqCAw5h7N43ICexG9oKJAJT1b9XSAztene6N4y8b2Xcq6zjlGGABuHyCyOnp8yHyQ-e74tJy7ytUzRHYk5bzW3J8rqe7d-gcC0wgKq31PZeJatrJAby5LIlQoedsvMkyugtEofO9k1qJWXFRCg-igvw-QIEzjgX:1wxPd1:PmcneouXsJptK6kTqHsp9DsBEC839Fz8xgRQamLFATE",
+        "expire_date": "2026-09-04T13:49:51.908Z"
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 1,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Accounting Matrices for Engineers",
+        "description": "Financial ledger tracking and computational matrix math for technical managers.",
+        "subject": "math",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T08:29:27.198Z",
+        "created_from_site": false,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 3,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Biology & Bioinformatics Statistics",
+        "description": "Mapping mathematical formulas onto genomic arrays and physiological data systems.",
+        "subject": "math",
+        "class_type": "private",
+        "price": "40.00",
+        "created_at": "2026-07-12T10:46:18.439Z",
+        "created_from_site": false,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 6,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Calculus Foundations Level 1",
+        "description": "An introductory analysis into differentiation equations, functions, and graphs.",
+        "subject": "math",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T11:19:20.550Z",
+        "created_from_site": false,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 7,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Data Structures & Algorithm Architecture",
+        "description": "Mastering complex trees, graphs, sorting operations, and operational runtimes.",
+        "subject": "coding",
+        "class_type": "private",
+        "price": "71.00",
+        "created_at": "2026-07-12T11:20:06.055Z",
+        "created_from_site": false,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 8,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "English Literature Interpretation",
+        "description": "Analyzing stylistic elements, classical prose syntax, and deep reading mechanics.",
+        "subject": "languages",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T11:20:31.248Z",
+        "created_from_site": false,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 9,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Full-Stack Web Development with Django",
+        "description": "Build responsive data-driven web products implementing Python framework models.",
+        "subject": "coding",
+        "class_type": "private",
+        "price": "45.00",
+        "created_at": "2026-07-12T11:21:05.759Z",
+        "created_from_site": false,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 10,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Geometry Processing & Vector Mesh",
+        "description": "Advanced coordinate systems, spatial topology calculations, and shapes mapping.",
+        "subject": "math",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T11:21:29.831Z",
+        "created_from_site": false,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 11,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "HTML5 & CSS3 Interface Design",
+        "description": "Crafting beautiful front-end user layouts, grid controls, and modern styling sheets.",
+        "subject": "coding",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T11:22:02.274Z",
+        "created_from_site": false,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 23,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "IELTS Preparation Masterclass",
+        "description": "Focuses deeply on advanced grammar matrices, writing tasks, and listening skills.",
+        "subject": "languages",
+        "class_type": "private",
+        "price": "57.00",
+        "created_at": "2026-07-12T16:46:57.812Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 24,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Java Enterprise Architecture Systems",
+        "description": "Spring Boot setups, cloud microservices deployment, and robust server scaling.",
+        "subject": "coding",
+        "class_type": "private",
+        "price": "76.00",
+        "created_at": "2026-07-12T16:47:37.577Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 25,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Kotlin Mobile App Programming",
+        "description": "Native Android workflows, lifecycle handlers, storage hooks, and UI widgets.",
+        "subject": "coding",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T16:48:04.285Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 26,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Linear Programming & Optimization",
+        "description": "Mastering the Simplex calculation matrix method and multi-variable equations.",
+        "subject": "coding",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T16:48:29.434Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 27,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Machine Learning Mathematical Matrix",
+        "description": "Probability densities, linear regression curves, and vector neural calculations.",
+        "subject": "math",
+        "class_type": "private",
+        "price": "80.00",
+        "created_at": "2026-07-12T16:48:56.165Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 28,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Network Protocols & Cyber Infrastructure",
+        "description": "IP routing logic, data socket configurations, firewall rules, and packet analysis.",
+        "subject": "coding",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T16:49:21.464Z",
+        "created_from_site": false,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 29,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Object Oriented Design Patterns",
+        "description": "Refactoring factory methods, observer systems, and reusable software structures.",
+        "subject": "coding",
+        "class_type": "private",
+        "price": "50.00",
+        "created_at": "2026-07-12T16:50:09.797Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 30,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Python Automation Scripting Labs",
+        "description": "Automating directory jobs, text parsing files, scraping info, and server cron checks.",
+        "subject": "coding",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T16:50:36.260Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 31,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Quantum Physics Mathematics",
+        "description": "Complex hilbert planes, vector distributions, and differential equation mechanics.",
+        "subject": "science",
+        "class_type": "private",
+        "price": "76.00",
+        "created_at": "2026-07-12T16:51:03.192Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 32,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "React Native Cross Platform Suites",
+        "description": "Publishing unified builds to iOS and Android utilizing common JavaScript bridges.",
+        "subject": "coding",
+        "class_type": "private",
+        "price": "34.00",
+        "created_at": "2026-07-12T16:51:32.289Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 33,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Software Quality Assurance Processes",
+        "description": "Automating unit script suites, load stress arrays, and production test tracking.",
+        "subject": "coding",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T16:51:55.253Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 34,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Technical Writing & English Phrasings",
+        "description": "Structuring crisp product document papers, API manuals, and business updates.",
+        "subject": "languages",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T16:52:20.027Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 35,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "UX/UI Prototyping System Architecture",
+        "description": "User journeys mapping, wireframe click maps, and layout interactive mockups.",
+        "subject": "coding",
+        "class_type": "private",
+        "price": "23.00",
+        "created_at": "2026-07-12T16:52:57.873Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 36,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Vocabulary Enhancement & Accent Reduction",
+        "description": "Refining phonetics rules, dialogue intonation rhythms, and colloquial idioms.",
+        "subject": "languages",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T16:53:25.371Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 37,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Web Security & Penetration Strategies",
+        "description": "Preventing cross-site scripts, SQL injections, token exploits, and session thefts.",
+        "subject": "coding",
+        "class_type": "private",
+        "price": "86.00",
+        "created_at": "2026-07-12T16:53:52.020Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 38,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "XML Data Parsing Schemes",
+        "description": "Parsing structured datasets, system configuration mapping, and legacy file integrations.",
+        "subject": "coding",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T16:54:13.714Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 39,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Youth Leadership English Seminars",
+        "description": "Public debating formats, group negotiations patterns, and formal speech training.",
+        "subject": "languages",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-07-12T16:54:35.695Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 40,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "title": "Zoology Statistical Data Models",
+        "description": "Plotting population metrics, animal distribution formulas, and field sampling equations.",
+        "subject": "math",
+        "class_type": "private",
+        "price": "64.00",
+        "created_at": "2026-07-12T16:55:01.055Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 41,
+    "fields": {
+        "owner": [
+            "pann_phyu"
+        ],
+        "title": "Calculas",
+        "description": "bbbbbbb..................",
+        "subject": "Mathematics",
+        "class_type": null,
+        "price": "0.00",
+        "created_at": "2026-07-18T07:11:43.014Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 42,
+    "fields": {
+        "owner": [
+            "pann_phyu"
+        ],
+        "title": "Python",
+        "description": "mmm...",
+        "subject": "Coding/IT",
+        "class_type": null,
+        "price": "0.00",
+        "created_at": "2026-07-18T07:42:46.953Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 47,
+    "fields": {
+        "owner": [
+            "Tun Tun"
+        ],
+        "title": "Knowledge Engineering",
+        "description": "No description provided.",
+        "subject": "coding",
+        "class_type": "private",
+        "price": "20.00",
+        "created_at": "2026-08-21T16:14:30.122Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 50,
+    "fields": {
+        "owner": [
+            "pann_phyu"
+        ],
+        "title": "Nervous System",
+        "description": "No description provided.",
+        "subject": "science",
+        "class_type": "private",
+        "price": "8.39",
+        "created_at": "2026-08-22T10:18:21.918Z",
+        "created_from_site": true,
+        "member_limit": 6,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 53,
+    "fields": {
+        "owner": [
+            "Tun Tun"
+        ],
+        "title": "Tun Tun Live-Class ",
+        "description": "No description provided.",
+        "subject": "languages",
+        "class_type": "private",
+        "price": "25.00",
+        "created_at": "2026-08-22T14:15:29.368Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 54,
+    "fields": {
+        "owner": [
+            "Tun Tun"
+        ],
+        "title": "tun tun class1 ",
+        "description": "No description provided.",
+        "subject": "languages",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-08-22T15:02:12.228Z",
+        "created_from_site": true,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.classroom",
+    "pk": 55,
+    "fields": {
+        "owner": [
+            "Tun Tun"
+        ],
+        "title": "Testing by  Tun Tun",
+        "description": "",
+        "subject": "math",
+        "class_type": "public",
+        "price": "0.00",
+        "created_at": "2026-08-23T04:13:05.749Z",
+        "created_from_site": false,
+        "member_limit": null,
+        "is_live": false
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 12,
+    "fields": {
+        "classroom": 24,
+        "student": [
+            "pann_phyu"
+        ],
+        "phone": null,
+        "payment_type": null,
+        "payslip": "",
+        "status": "rejected",
+        "requested_at": "2026-07-20T06:16:25.977Z",
+        "rejection_reason": "Not Available RN!",
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 13,
+    "fields": {
+        "classroom": 40,
+        "student": [
+            "pann_phyu"
+        ],
+        "phone": null,
+        "payment_type": null,
+        "payslip": "",
+        "status": "approved",
+        "requested_at": "2026-07-20T06:17:27.672Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 14,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "pann_phyu"
+        ],
+        "phone": null,
+        "payment_type": null,
+        "payslip": "",
+        "status": "approved",
+        "requested_at": "2026-07-22T15:58:36.291Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 16,
+    "fields": {
+        "classroom": 3,
+        "student": [
+            "pann_phyu"
+        ],
+        "phone": "09967488737",
+        "payment_type": "KPay",
+        "payslip": "payslips/strawberry.png",
+        "status": "approved",
+        "requested_at": "2026-07-28T04:05:23.197Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 17,
+    "fields": {
+        "classroom": 9,
+        "student": [
+            "pann_phyu"
+        ],
+        "phone": "09967488737",
+        "payment_type": "KBZPay",
+        "payslip": "payslips/Screenshot_2026-07-13_231827.png",
+        "status": "approved",
+        "requested_at": "2026-07-28T04:35:30.267Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 18,
+    "fields": {
+        "classroom": 7,
+        "student": [
+            "pann_phyu"
+        ],
+        "phone": "09967488737",
+        "payment_type": "KBZPay",
+        "payslip": "payslips/Screenshot_2026-05-18_112600.png",
+        "status": "approved",
+        "requested_at": "2026-07-28T05:08:17.633Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 19,
+    "fields": {
+        "classroom": 42,
+        "student": [
+            "admin1"
+        ],
+        "phone": "98345787509",
+        "payment_type": "Wave Pay",
+        "payslip": "payslips/flashcard.png",
+        "status": "rejected",
+        "requested_at": "2026-07-28T05:43:04.106Z",
+        "rejection_reason": "Not available right now! Will infromed back!",
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 21,
+    "fields": {
+        "classroom": 3,
+        "student": [
+            "Tun Tun"
+        ],
+        "phone": "09967488737",
+        "payment_type": "KBZPay",
+        "payslip": "payslips/RecoMagic_ClassD_s4YLaw9.png",
+        "status": "pending",
+        "requested_at": "2026-08-11T05:52:58.033Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 22,
+    "fields": {
+        "classroom": 1,
+        "student": [
+            "Tun Tun"
+        ],
+        "phone": null,
+        "payment_type": null,
+        "payslip": "",
+        "status": "approved",
+        "requested_at": "2026-08-13T13:16:27.963Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 23,
+    "fields": {
+        "classroom": 6,
+        "student": [
+            "Tun Tun"
+        ],
+        "phone": null,
+        "payment_type": null,
+        "payslip": "",
+        "status": "approved",
+        "requested_at": "2026-08-13T13:20:47.233Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 24,
+    "fields": {
+        "classroom": 39,
+        "student": [
+            "Tun Tun"
+        ],
+        "phone": null,
+        "payment_type": null,
+        "payslip": "",
+        "status": "approved",
+        "requested_at": "2026-08-13T13:21:12.701Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 25,
+    "fields": {
+        "classroom": 6,
+        "student": [
+            "pann_phyu"
+        ],
+        "phone": null,
+        "payment_type": null,
+        "payslip": "",
+        "status": "approved",
+        "requested_at": "2026-08-14T18:33:07.092Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 26,
+    "fields": {
+        "classroom": 10,
+        "student": [
+            "Tun Tun"
+        ],
+        "phone": null,
+        "payment_type": null,
+        "payslip": "",
+        "status": "approved",
+        "requested_at": "2026-08-16T10:54:48.750Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 27,
+    "fields": {
+        "classroom": 8,
+        "student": [
+            "Tun Tun"
+        ],
+        "phone": null,
+        "payment_type": null,
+        "payslip": "",
+        "status": "approved",
+        "requested_at": "2026-08-16T10:54:57.333Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 28,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "Tun Tun"
+        ],
+        "phone": "98345787509",
+        "payment_type": "KPay",
+        "payslip": "payslips/report.jpg",
+        "status": "approved",
+        "requested_at": "2026-08-19T14:41:40.086Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-19T14:47:53.490Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 32,
+    "fields": {
+        "classroom": 10,
+        "student": [
+            "pann_phyu"
+        ],
+        "phone": null,
+        "payment_type": null,
+        "payslip": "",
+        "status": "approved",
+        "requested_at": "2026-08-22T08:47:09.452Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-22T08:47:09.452Z"
+    }
+},
+{
+    "model": "smartlearnApp.enrollment",
+    "pk": 36,
+    "fields": {
+        "classroom": 42,
+        "student": [
+            "Tun Tun"
+        ],
+        "phone": "3333333333",
+        "payment_type": "CB Pay",
+        "payslip": "payslips/strawberry_hiJkX4k.png",
+        "status": "approved",
+        "requested_at": "2026-08-23T14:20:11.333Z",
+        "rejection_reason": null,
+        "date_joined": "2026-08-23T14:20:11.334Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcard",
+    "pk": 1,
+    "fields": {
+        "classroom": 39,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Youth Leadership English Seminars",
+        "front": "What is Active Listening?",
+        "back": "Fully concentrating, understanding, responding, and remembering what is being said—rather than passively hearing the message. Key techniques include maintaining eye contact, nodding, and avoiding interruptions.",
+        "created_at": "2026-07-20T16:05:54.246Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcard",
+    "pk": 2,
+    "fields": {
+        "classroom": 39,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Youth Leadership English Seminars",
+        "front": "What is the difference between Servant Leadership and Transformational Leadership?",
+        "back": "Servant Leadership focuses primarily on serving the needs of team members to help them grow, whereas Transformational Leadership focuses on inspiring and motivating team members to achieve a shared vision or goal.",
+        "created_at": "2026-07-20T16:06:43.845Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcard",
+    "pk": 3,
+    "fields": {
+        "classroom": 8,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "English Literature Interpretation",
+        "front": "What is Close Reading in literary analysis?",
+        "back": "The careful, sustained examination of a brief passage of text. It focuses on precise details such as word choice (diction), sentence structure (syntax), imagery, tone, and figurative language to reveal deeper meaning beyond the surface plot.",
+        "created_at": "2026-07-20T16:35:59.950Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcard",
+    "pk": 4,
+    "fields": {
+        "classroom": 1,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Accounting Matrices for Engineers",
+        "front": "What is Matrix Accounting (Transaction Matrix)?",
+        "back": "A method of representing double-entry bookkeeping using linear algebra. Rows represent credited accounts (sources) and columns represent debited accounts (destinations). An entry $a_{ij}$ shows the monetary value transferred from account $i$ to account $j$ during a specific period.",
+        "created_at": "2026-07-20T16:44:47.372Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcard",
+    "pk": 5,
+    "fields": {
+        "classroom": 1,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Accounting Matrices for Engineers",
+        "front": "How is the Leontief Input-Output Model used in Engineering Cost Accounting?",
+        "back": "It models inter-departmental resource consumption using a matrix equation: $X = (I - A)^{-1} D$, where $X$ is total output required, $A$ is the internal consumption matrix, $I$ is the identity matrix, and $D$ is external final demand. It calculates true product costs and indirect overhead distribution.",
+        "created_at": "2026-07-20T16:44:47.383Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcard",
+    "pk": 6,
+    "fields": {
+        "classroom": 41,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Test",
+        "front": "t1",
+        "back": "a1",
+        "created_at": "2026-07-22T15:20:41.804Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcard",
+    "pk": 7,
+    "fields": {
+        "classroom": 6,
+        "created_by": [
+            "Tun Tun"
+        ],
+        "topic": "Basic Calculus",
+        "front": "Derivative",
+        "back": "The rate at which a function changes with respect to its variable; a measure of how a function value changes as its input changes.",
+        "created_at": "2026-08-14T18:08:23.564Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcard",
+    "pk": 8,
+    "fields": {
+        "classroom": 6,
+        "created_by": [
+            "Tun Tun"
+        ],
+        "topic": "Basic Calculus",
+        "front": "Integral",
+        "back": "A mathematical concept that represents the area under a curve; the accumulation of quantities over an interval.",
+        "created_at": "2026-08-14T18:08:23.581Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcard",
+    "pk": 9,
+    "fields": {
+        "classroom": 6,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Advanced Calculus",
+        "front": "Gradient",
+        "back": "Vector showing direction of steepest increase of a scalar function.",
+        "created_at": "2026-08-16T09:11:51.423Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcard",
+    "pk": 12,
+    "fields": {
+        "classroom": 54,
+        "created_by": [
+            "Tun Tun"
+        ],
+        "topic": "Testing1",
+        "front": "1+3=?",
+        "back": "4",
+        "created_at": "2026-08-23T04:11:55.069Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcard",
+    "pk": 13,
+    "fields": {
+        "classroom": 54,
+        "created_by": [
+            "Tun Tun"
+        ],
+        "topic": "Testing1",
+        "front": "2*3=?",
+        "back": "6",
+        "created_at": "2026-08-23T04:11:55.070Z"
+    }
+},
+{
+    "model": "smartlearnApp.flashcardtopicreaction",
+    "pk": 1,
+    "fields": {
+        "classroom": 6,
+        "user": [
+            "pann_phyu"
+        ],
+        "topic": "Basic Calculus",
+        "reaction_type": "like",
+        "created_at": "2026-08-14T18:33:14.478Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 1,
+    "fields": {
+        "classroom": 6,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Calculus",
+        "question": "What is the limit of $f(x) = \\frac{x^2 - 9}{x - 3}$ as $x$ approaches $3$?",
+        "option_a": "0",
+        "option_b": "3",
+        "option_c": "6",
+        "option_d": "The limit does not exist",
+        "correct_option": "A",
+        "explanation": "",
+        "created_at": "2026-07-20T16:59:22.106Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 2,
+    "fields": {
+        "classroom": 6,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Calculus",
+        "question": "What is the derivative of $f(x) = 5x^3 - 4x + 7$ with respect to $x$?",
+        "option_a": "$f'(x) = 15x^2 - 4$",
+        "option_b": "$f'(x) = 15x^2 - 4x$",
+        "option_c": "$f'(x) = 5x^2 - 4$",
+        "option_d": "$f'(x) = 15x^3 - 4$",
+        "correct_option": "A",
+        "explanation": "",
+        "created_at": "2026-07-20T16:59:22.122Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 3,
+    "fields": {
+        "classroom": 41,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "C1",
+        "question": "x+2=3, x=?",
+        "option_a": "1",
+        "option_b": "-1",
+        "option_c": "2",
+        "option_d": "-2",
+        "correct_option": "A",
+        "explanation": "",
+        "created_at": "2026-07-23T17:20:43.890Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 4,
+    "fields": {
+        "classroom": 41,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "C1",
+        "question": "x+2=-3, x=?",
+        "option_a": "-1",
+        "option_b": "-2",
+        "option_c": "5",
+        "option_d": "-5",
+        "correct_option": "D",
+        "explanation": "",
+        "created_at": "2026-07-23T17:20:43.904Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 5,
+    "fields": {
+        "classroom": 39,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "English Grammar",
+        "question": "There is ___ apple.",
+        "option_a": "a",
+        "option_b": "an",
+        "option_c": "the",
+        "option_d": "one",
+        "correct_option": "B",
+        "explanation": "",
+        "created_at": "2026-07-26T15:37:27.729Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 6,
+    "fields": {
+        "classroom": 39,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "English Grammar",
+        "question": "____ will you leave for training?",
+        "option_a": "When",
+        "option_b": "Which",
+        "option_c": "Where",
+        "option_d": "Who",
+        "correct_option": "A",
+        "explanation": "",
+        "created_at": "2026-07-26T15:37:27.742Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 7,
+    "fields": {
+        "classroom": 41,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "C2",
+        "question": "what is the value of pi?",
+        "option_a": "3.142",
+        "option_b": "2.132",
+        "option_c": "4.214",
+        "option_d": "2.224",
+        "correct_option": "A",
+        "explanation": "",
+        "created_at": "2026-07-26T16:03:27.734Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 8,
+    "fields": {
+        "classroom": 6,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Advanced Calculus",
+        "question": "Gradient",
+        "option_a": "Vector showing direction of steepest increase of a scalar function.",
+        "option_b": "Vector showing direction of steepest increase and decrease of a scalar function.",
+        "option_c": "Vector showing direction of steepest decrease of a scalar function.",
+        "option_d": "Vector not showing direction of steepest increase of a scalar function.",
+        "correct_option": "A",
+        "explanation": "",
+        "created_at": "2026-08-16T09:12:36.840Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 9,
+    "fields": {
+        "classroom": 41,
+        "created_by": [
+            "Tun Tun"
+        ],
+        "topic": "Adding",
+        "question": "1 + 1 = ?",
+        "option_a": "0",
+        "option_b": "1",
+        "option_c": "2",
+        "option_d": "3",
+        "correct_option": "B",
+        "explanation": "",
+        "created_at": "2026-08-21T20:19:39.880Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 12,
+    "fields": {
+        "classroom": 55,
+        "created_by": [
+            "Tun Tun"
+        ],
+        "topic": "Adding",
+        "question": "1+5=?",
+        "option_a": "6",
+        "option_b": "5",
+        "option_c": "4",
+        "option_d": "3",
+        "correct_option": "A",
+        "explanation": "",
+        "created_at": "2026-08-23T04:13:05.751Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 13,
+    "fields": {
+        "classroom": 55,
+        "created_by": [
+            "Tun Tun"
+        ],
+        "topic": "Adding",
+        "question": "3*4=?",
+        "option_a": "10",
+        "option_b": "11",
+        "option_c": "12",
+        "option_d": "13",
+        "correct_option": "C",
+        "explanation": "",
+        "created_at": "2026-08-23T04:13:05.754Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 14,
+    "fields": {
+        "classroom": 55,
+        "created_by": [
+            "Tun Tun"
+        ],
+        "topic": "Testing1",
+        "question": "7-8=?",
+        "option_a": "0",
+        "option_b": "1",
+        "option_c": "-1",
+        "option_d": "Answer not included",
+        "correct_option": "C",
+        "explanation": "",
+        "created_at": "2026-08-23T04:14:19.098Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 15,
+    "fields": {
+        "classroom": 41,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Testing TIme",
+        "question": "1+2",
+        "option_a": "11",
+        "option_b": "8",
+        "option_c": "3",
+        "option_d": "13",
+        "correct_option": "C",
+        "explanation": "",
+        "created_at": "2026-08-23T13:51:23.173Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 16,
+    "fields": {
+        "classroom": 41,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Testing TIme",
+        "question": "3-3",
+        "option_a": "1",
+        "option_b": "0",
+        "option_c": "11",
+        "option_d": "2",
+        "correct_option": "B",
+        "explanation": "",
+        "created_at": "2026-08-23T13:51:23.184Z"
+    }
+},
+{
+    "model": "smartlearnApp.mcqquestion",
+    "pk": 17,
+    "fields": {
+        "classroom": 42,
+        "created_by": [
+            "pann_phyu"
+        ],
+        "topic": "Basic Python Test",
+        "question": "print(\"1\")",
+        "option_a": "1",
+        "option_b": "\"1\"",
+        "option_c": "none of the above",
+        "option_d": "(\"1\")",
+        "correct_option": "A",
+        "explanation": "",
+        "created_at": "2026-08-23T14:18:48.137Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 1,
+    "fields": {
+        "classroom": 6,
+        "student": [
+            "pann_phyu"
+        ],
+        "score": 0,
+        "total_questions": 2,
+        "answers": {
+            "1": {
+                "selected": "B",
+                "correct": "A",
+                "is_correct": false
+            },
+            "2": {
+                "selected": "B",
+                "correct": "A",
+                "is_correct": false
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-07-20T16:59:36.030Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 2,
+    "fields": {
+        "classroom": 6,
+        "student": [
+            "pann_phyu"
+        ],
+        "score": 1,
+        "total_questions": 2,
+        "answers": {
+            "1": {
+                "selected": "A",
+                "correct": "A",
+                "is_correct": true
+            },
+            "2": {
+                "selected": "C",
+                "correct": "A",
+                "is_correct": false
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-07-20T17:06:03.187Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 6,
+    "fields": {
+        "classroom": 39,
+        "student": [
+            "pann_phyu"
+        ],
+        "score": 1,
+        "total_questions": 2,
+        "answers": {
+            "5": {
+                "selected": "B",
+                "correct": "B",
+                "is_correct": true
+            },
+            "6": {
+                "selected": "C",
+                "correct": "A",
+                "is_correct": false
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-07-26T16:04:44.800Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 7,
+    "fields": {
+        "classroom": 39,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 2,
+        "total_questions": 2,
+        "answers": {
+            "5": {
+                "selected": "B",
+                "correct": "B",
+                "is_correct": true
+            },
+            "6": {
+                "selected": "A",
+                "correct": "A",
+                "is_correct": true
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-08-14T16:48:09.012Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 8,
+    "fields": {
+        "classroom": 6,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 0,
+        "total_questions": 2,
+        "answers": {
+            "1": {
+                "selected": "C",
+                "correct": "A",
+                "is_correct": false
+            },
+            "2": {
+                "selected": "C",
+                "correct": "A",
+                "is_correct": false
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-08-14T17:01:52.984Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 9,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 1,
+        "total_questions": 2,
+        "answers": {
+            "3": {
+                "selected": "A",
+                "correct": "A",
+                "is_correct": true
+            },
+            "4": {
+                "selected": "A",
+                "correct": "D",
+                "is_correct": false
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-08-21T20:15:41.657Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 10,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 0,
+        "total_questions": 1,
+        "answers": {
+            "7": {
+                "selected": "",
+                "correct": "A",
+                "is_correct": false
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-08-21T20:16:40.854Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 11,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 0,
+        "total_questions": 1,
+        "answers": {
+            "9": {
+                "selected": "C",
+                "correct": "B",
+                "is_correct": false
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-08-21T20:19:47.067Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 12,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 0,
+        "total_questions": 1,
+        "answers": {
+            "9": {
+                "selected": "",
+                "correct": "B",
+                "is_correct": false
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-08-21T20:20:21.164Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 13,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 1,
+        "total_questions": 1,
+        "answers": {
+            "9": {
+                "selected": "B",
+                "correct": "B",
+                "is_correct": true
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-08-21T20:21:10.580Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 15,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 0,
+        "total_questions": 1,
+        "answers": {
+            "9": {
+                "selected": "C",
+                "correct": "B",
+                "is_correct": false
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-08-22T06:40:02.308Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 16,
+    "fields": {
+        "classroom": 6,
+        "student": [
+            "admin2"
+        ],
+        "score": 2,
+        "total_questions": 2,
+        "answers": {
+            "1": {
+                "selected": "A",
+                "correct": "A",
+                "is_correct": true
+            },
+            "2": {
+                "selected": "A",
+                "correct": "A",
+                "is_correct": true
+            }
+        },
+        "topic": null,
+        "taken_at": "2026-08-22T13:49:37.588Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 17,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 0,
+        "total_questions": 1,
+        "answers": {
+            "9": {
+                "selected": "C",
+                "correct": "B",
+                "is_correct": false
+            }
+        },
+        "topic": "Adding",
+        "taken_at": "2026-08-23T04:10:15.244Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 18,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 1,
+        "total_questions": 1,
+        "answers": {
+            "9": {
+                "selected": "B",
+                "correct": "B",
+                "is_correct": true
+            }
+        },
+        "topic": "Adding",
+        "taken_at": "2026-08-23T04:10:25.772Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 19,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 2,
+        "total_questions": 2,
+        "answers": {
+            "3": {
+                "selected": "A",
+                "correct": "A",
+                "is_correct": true
+            },
+            "4": {
+                "selected": "D",
+                "correct": "D",
+                "is_correct": true
+            }
+        },
+        "topic": "C1",
+        "taken_at": "2026-08-23T04:10:39.206Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 20,
+    "fields": {
+        "classroom": 41,
+        "student": [
+            "pann_phyu"
+        ],
+        "score": 1,
+        "total_questions": 2,
+        "answers": {
+            "15": {
+                "selected": "C",
+                "correct": "C",
+                "is_correct": true
+            },
+            "16": {
+                "selected": "",
+                "correct": "B",
+                "is_correct": false
+            }
+        },
+        "topic": "Testing TIme",
+        "taken_at": "2026-08-23T13:55:18.122Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizattempt",
+    "pk": 21,
+    "fields": {
+        "classroom": 42,
+        "student": [
+            "Tun Tun"
+        ],
+        "score": 1,
+        "total_questions": 1,
+        "answers": {
+            "17": {
+                "selected": "A",
+                "correct": "A",
+                "is_correct": true
+            }
+        },
+        "topic": "Basic Python Test",
+        "taken_at": "2026-08-23T14:21:48.662Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizsettings",
+    "pk": 1,
+    "fields": {
+        "classroom": 41,
+        "time_limit_minutes": 1,
+        "max_attempts": 1,
+        "created_at": "2026-08-23T04:10:09.357Z",
+        "updated_at": "2026-08-23T13:51:23.161Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizsettings",
+    "pk": 2,
+    "fields": {
+        "classroom": 55,
+        "time_limit_minutes": null,
+        "max_attempts": null,
+        "created_at": "2026-08-23T13:53:47.849Z",
+        "updated_at": "2026-08-23T13:53:47.849Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizsettings",
+    "pk": 3,
+    "fields": {
+        "classroom": 39,
+        "time_limit_minutes": null,
+        "max_attempts": null,
+        "created_at": "2026-08-23T14:15:51.349Z",
+        "updated_at": "2026-08-23T14:15:51.349Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizsettings",
+    "pk": 4,
+    "fields": {
+        "classroom": 6,
+        "time_limit_minutes": null,
+        "max_attempts": null,
+        "created_at": "2026-08-23T14:16:15.569Z",
+        "updated_at": "2026-08-23T14:16:15.569Z"
+    }
+},
+{
+    "model": "smartlearnApp.quizsettings",
+    "pk": 5,
+    "fields": {
+        "classroom": 42,
+        "time_limit_minutes": null,
+        "max_attempts": 1,
+        "created_at": "2026-08-23T14:17:11.640Z",
+        "updated_at": "2026-08-23T14:18:48.114Z"
+    }
+},
+{
+    "model": "smartlearnApp.paymentaccount",
+    "pk": 1,
+    "fields": {
+        "owner": [
+            "admin1"
+        ],
+        "payment_type": "KBZPay",
+        "account_name": "pann_phyu",
+        "account_number": "09967488737"
+    }
+},
+{
+    "model": "smartlearnApp.paymentaccount",
+    "pk": 4,
+    "fields": {
+        "owner": [
+            "pann_phyu"
+        ],
+        "payment_type": "CB Pay",
+        "account_name": "PPS",
+        "account_number": "09967488737"
+    }
+},
+{
+    "model": "smartlearnApp.paymentaccount",
+    "pk": 5,
+    "fields": {
+        "owner": [
+            "pann_phyu"
+        ],
+        "payment_type": "KBZPay",
+        "account_name": "PPSS",
+        "account_number": "09967488737"
+    }
+},
+{
+    "model": "smartlearnApp.paymentaccount",
+    "pk": 6,
+    "fields": {
+        "owner": [
+            "Tun Tun"
+        ],
+        "payment_type": "KBZPay",
+        "account_name": "Tun Tun",
+        "account_number": "09124536789"
+    }
+},
+{
+    "model": "smartlearnApp.paymentaccount",
+    "pk": 7,
+    "fields": {
+        "owner": [
+            "Tun Tun"
+        ],
+        "payment_type": "Wave Money",
+        "account_name": "Tun Tun",
+        "account_number": "09951234567"
+    }
+},
+{
+    "model": "smartlearnApp.teachermaterial",
+    "pk": 2,
+    "fields": {
+        "classroom": 53,
+        "uploader": [
+            "Tun Tun"
+        ],
+        "title": "Data mining",
+        "description": "DM",
+        "category": "lecture",
+        "file": "teacher_materials/IS-212_Topic1.pdf",
+        "external_url": "https://youtube.com",
+        "uploaded_at": "2026-08-22T14:50:49.702Z",
+        "is_visible": true
+    }
+},
+{
+    "model": "smartlearnApp.teachermaterial",
+    "pk": 3,
+    "fields": {
+        "classroom": 53,
+        "uploader": [
+            "Tun Tun"
+        ],
+        "title": "Vd1",
+        "description": "",
+        "category": "video",
+        "file": "teacher_materials/IMG_0166.MOV",
+        "external_url": null,
+        "uploaded_at": "2026-08-22T14:54:07.256Z",
+        "is_visible": true
+    }
+},
+{
+    "model": "smartlearnApp.teachermaterial",
+    "pk": 4,
+    "fields": {
+        "classroom": 54,
+        "uploader": [
+            "Tun Tun"
+        ],
+        "title": "vd1",
+        "description": "",
+        "category": "video",
+        "file": "teacher_materials/IMG_0166_ySmza0R.MOV",
+        "external_url": null,
+        "uploaded_at": "2026-08-22T15:02:38.521Z",
+        "is_visible": true
+    }
+},
+{
+    "model": "smartlearnApp.teachermaterial",
+    "pk": 5,
+    "fields": {
+        "classroom": 54,
+        "uploader": [
+            "Tun Tun"
+        ],
+        "title": "file1",
+        "description": "",
+        "category": "lecture",
+        "file": "teacher_materials/A_Traditional_Myanmar_Musical_Instrument.docx",
+        "external_url": null,
+        "uploaded_at": "2026-08-22T15:02:54.876Z",
+        "is_visible": true
+    }
+},
+{
+    "model": "smartlearnApp.teachermaterial",
+    "pk": 6,
+    "fields": {
+        "classroom": 42,
+        "uploader": [
+            "pann_phyu"
+        ],
+        "title": "Test",
+        "description": "",
+        "category": "lecture",
+        "file": "teacher_materials/IntroductionTo_WebApp_lTXuf1N.pptx",
+        "external_url": null,
+        "uploaded_at": "2026-08-23T11:01:27.522Z",
+        "is_visible": true
+    }
+},
+{
+    "model": "smartlearnApp.communitynote",
+    "pk": 1,
+    "fields": {
+        "classroom": 53,
+        "author": [
+            "Tun Tun"
+        ],
+        "title": "Essay",
+        "content": "Essay for Highschool",
+        "attachment": "community_notes/A_Traditional_Myanmar_Musical_Instrument.docx",
+        "is_pinned": false,
+        "is_verified": false,
+        "created_at": "2026-08-22T14:22:29.133Z",
+        "updated_at": "2026-08-22T14:22:41.104Z",
+        "upvotes": []
+    }
+},
+{
+    "model": "smartlearnApp.communitynote",
+    "pk": 2,
+    "fields": {
+        "classroom": 53,
+        "author": [
+            "Tun Tun"
+        ],
+        "title": "cloud",
+        "content": "assignment",
+        "attachment": "community_notes/CloudAssignment.pdf",
+        "is_pinned": false,
+        "is_verified": false,
+        "created_at": "2026-08-22T14:47:40.791Z",
+        "updated_at": "2026-08-22T14:47:40.791Z",
+        "upvotes": []
+    }
+},
+{
+    "model": "smartlearnApp.communitynote",
+    "pk": 3,
+    "fields": {
+        "classroom": 42,
+        "author": [
+            "pann_phyu"
+        ],
+        "title": "Test",
+        "content": "ff",
+        "attachment": "community_notes/2.1_Input_Validation.pptx",
+        "is_pinned": false,
+        "is_verified": false,
+        "created_at": "2026-08-23T11:00:43.084Z",
+        "updated_at": "2026-08-23T11:00:43.084Z",
+        "upvotes": []
+    }
+},
+{
+    "model": "smartlearnApp.userprofile",
+    "pk": 1,
+    "fields": {
+        "user": [
+            "Tun Tun"
+        ],
+        "profile_image": "profile_pics/profile-boy_mi2RHQB.jpg",
+        "bio": "3 years of teaching experience",
+        "expertise": "Advanced English,Python,Django,Web Development,Database Management",
+        "linkedin_url": "https://www.linkedin.com",
+        "github_url": "https://github.com",
+        "website_url": "https://portfolio.com"
+    }
+},
+{
+    "model": "smartlearnApp.userprofile",
+    "pk": 2,
+    "fields": {
+        "user": [
+            "admin2"
+        ],
+        "profile_image": "",
+        "bio": null,
+        "expertise": null,
+        "linkedin_url": null,
+        "github_url": null,
+        "website_url": null
+    }
+},
+{
+    "model": "smartlearnApp.userprofile",
+    "pk": 4,
+    "fields": {
+        "user": [
+            "Aye Aye"
+        ],
+        "profile_image": "profile_pics/profile-girl.avif",
+        "bio": "",
+        "expertise": "",
+        "linkedin_url": "",
+        "github_url": "",
+        "website_url": ""
+    }
+},
+{
+    "model": "sites.site",
+    "fields": {
+        "domain": "127.0.0.1:8000",
+        "name": "SmartLearn"
+    }
+},
+{
+    "model": "account.emailaddress",
+    "pk": 9,
+    "fields": {
+        "user": [
+            "yoon_nandar_moe"
+        ],
+        "email": "yoon173004@gmail.com",
+        "verified": true,
+        "primary": true
+    }
+},
+{
+    "model": "account.emailaddress",
+    "pk": 10,
+    "fields": {
+        "user": [
+            "pann_phyu"
+        ],
+        "email": "pannps2001@gmail.com",
+        "verified": true,
+        "primary": true
+    }
+},
+{
+    "model": "account.emailaddress",
+    "pk": 11,
+    "fields": {
+        "user": [
+            "mi_mi"
+        ],
+        "email": "mimikyaw2712@gmail.com",
+        "verified": true,
+        "primary": true
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 23,
+    "fields": {
+        "action_time": "2026-07-12T08:29:27.213Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "1",
+        "object_repr": "Accounting Matrices for Engineers",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 24,
+    "fields": {
+        "action_time": "2026-07-12T10:12:40.900Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "2",
+        "object_repr": "Unnamed Classroom",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 25,
+    "fields": {
+        "action_time": "2026-07-12T10:46:18.482Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "3",
+        "object_repr": "Biology & Bioinformatics Statistics",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 26,
+    "fields": {
+        "action_time": "2026-07-12T10:53:01.022Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "4",
+        "object_repr": "Unnamed Classroom",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 27,
+    "fields": {
+        "action_time": "2026-07-12T11:18:25.944Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "5",
+        "object_repr": "python",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 28,
+    "fields": {
+        "action_time": "2026-07-12T11:19:20.556Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "6",
+        "object_repr": "Calculus Foundations Level 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 29,
+    "fields": {
+        "action_time": "2026-07-12T11:20:06.076Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "7",
+        "object_repr": "Data Structures & Algorithm Architecture",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 30,
+    "fields": {
+        "action_time": "2026-07-12T11:20:31.289Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "8",
+        "object_repr": "English Literature Interpretation",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 31,
+    "fields": {
+        "action_time": "2026-07-12T11:21:05.761Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "9",
+        "object_repr": "Full-Stack Web Development with Django",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 32,
+    "fields": {
+        "action_time": "2026-07-12T11:21:29.833Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "10",
+        "object_repr": "Geometry Processing & Vector Mesh",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 33,
+    "fields": {
+        "action_time": "2026-07-12T11:22:02.279Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "11",
+        "object_repr": "HTML5 & CSS3 Interface Design",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 34,
+    "fields": {
+        "action_time": "2026-07-12T11:22:51.003Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "6",
+        "object_repr": "Calculus Foundations Level 1",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 35,
+    "fields": {
+        "action_time": "2026-07-12T14:59:49.714Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "17",
+        "object_repr": "New Java",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 36,
+    "fields": {
+        "action_time": "2026-07-12T15:00:58.582Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "22",
+        "object_repr": "aa",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 37,
+    "fields": {
+        "action_time": "2026-07-12T15:37:57.732Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "20",
+        "object_repr": "Cloud Computing",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 38,
+    "fields": {
+        "action_time": "2026-07-12T15:37:57.732Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "19",
+        "object_repr": "Mobile App Development",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 39,
+    "fields": {
+        "action_time": "2026-07-12T15:37:57.732Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "18",
+        "object_repr": "OOP Prpgramming",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 40,
+    "fields": {
+        "action_time": "2026-07-12T16:06:33.624Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "21",
+        "object_repr": "Advanced Mining",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 41,
+    "fields": {
+        "action_time": "2026-07-12T16:46:57.827Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "23",
+        "object_repr": "IELTS Preparation Masterclass",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 42,
+    "fields": {
+        "action_time": "2026-07-12T16:47:37.580Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "24",
+        "object_repr": "Java Enterprise Architecture Systems",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 43,
+    "fields": {
+        "action_time": "2026-07-12T16:48:04.288Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "25",
+        "object_repr": "Kotlin Mobile App Programming",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 44,
+    "fields": {
+        "action_time": "2026-07-12T16:48:29.436Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "26",
+        "object_repr": "Linear Programming & Optimization",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 45,
+    "fields": {
+        "action_time": "2026-07-12T16:48:56.167Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "27",
+        "object_repr": "Machine Learning Mathematical Matrix",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 46,
+    "fields": {
+        "action_time": "2026-07-12T16:49:21.493Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "28",
+        "object_repr": "Network Protocols & Cyber Infrastructure",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 47,
+    "fields": {
+        "action_time": "2026-07-12T16:50:09.801Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "29",
+        "object_repr": "Object Oriented Design Patterns",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 48,
+    "fields": {
+        "action_time": "2026-07-12T16:50:36.263Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "30",
+        "object_repr": "Python Automation Scripting Labs",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 49,
+    "fields": {
+        "action_time": "2026-07-12T16:51:03.244Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "31",
+        "object_repr": "Quantum Physics Mathematics",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 50,
+    "fields": {
+        "action_time": "2026-07-12T16:51:32.292Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "32",
+        "object_repr": "React Native Cross Platform Suites",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 51,
+    "fields": {
+        "action_time": "2026-07-12T16:51:55.255Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "33",
+        "object_repr": "Software Quality Assurance Processes",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 52,
+    "fields": {
+        "action_time": "2026-07-12T16:52:20.029Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "34",
+        "object_repr": "Technical Writing & English Phrasings",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 53,
+    "fields": {
+        "action_time": "2026-07-12T16:52:57.877Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "35",
+        "object_repr": "UX/UI Prototyping System Architecture",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 54,
+    "fields": {
+        "action_time": "2026-07-12T16:53:25.374Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "36",
+        "object_repr": "Vocabulary Enhancement & Accent Reduction",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 55,
+    "fields": {
+        "action_time": "2026-07-12T16:53:52.024Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "37",
+        "object_repr": "Web Security & Penetration Strategies",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 56,
+    "fields": {
+        "action_time": "2026-07-12T16:54:13.717Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "38",
+        "object_repr": "XML Data Parsing Schemes",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 57,
+    "fields": {
+        "action_time": "2026-07-12T16:54:35.698Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "39",
+        "object_repr": "Youth Leadership English Seminars",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 58,
+    "fields": {
+        "action_time": "2026-07-12T16:55:01.058Z",
+        "user": [
+            "admin1"
+        ],
+        "content_type": [
+            "smartlearnApp",
+            "classroom"
+        ],
+        "object_id": "40",
+        "object_repr": "Zoology Statistical Data Models",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}
+]
