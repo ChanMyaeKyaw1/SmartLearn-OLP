@@ -17,11 +17,12 @@
                 <div style="flex: 1;">
                     <label class="label-bold">Subject Category</label>
                     <select name="subject" class="form-control">
+                        <option value="languages">Languages</option>
                         <option value="math">Mathematics</option>
                         <option value="science">Science</option>
                         <option value="coding">Coding/IT</option>
-                        <option value="languages">Languages</option>
                         <option value="arts">Arts & Design</option>
+                        <option value="arts">Others</option>
                     </select>
                 </div>
 
@@ -60,7 +61,8 @@
             </div>
             <div class="form-actions-row">
                 <button type="submit" class="btn-primary">Publish Classroom</button>
-                <a href="{% url 'browse_classes' %}" class="btn-secondary">Cancel</a>
+                <a href="{% url 'browse_classes' %}" class="btn btn-light">Cancel</a>
+                <!-- <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button> -->
             </div>
         </form>
     </div>

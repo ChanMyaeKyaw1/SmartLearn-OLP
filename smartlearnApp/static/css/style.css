@@ -168,6 +168,26 @@ textarea.form-control {
 }
 
 
+/* .btn-white {
+    background: white;
+    color: black;
+    border: 2px solid #15803D;
+    text-decoration: none;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-white:hover {
+    background: #3f9d70;
+    color: white;
+    transform: translateY(-2px);
+} */
+
+
 /* NAVBAR SPACING FIX */
 
 .site-header {
@@ -2660,33 +2680,44 @@ html[data-theme="dark"] .chatbot-input-area input {
 
 
 /* Teacher actions - hidden by default */
+
 .teacher-actions {
     display: none !important;
 }
 
+
 /* Show when teacher mode is active via body class */
+
 body.teacher-mode-active .teacher-actions {
     display: inline-flex !important;
 }
 
+
 /* Hide student actions when teacher mode is active */
+
 body.teacher-mode-active .student-action {
     display: none !important;
 }
 
+
 /* Show student actions normally */
+
 .student-action {
     display: inline-block !important;
 }
 
+
 /* Hide non-teacher cards when teacher mode is active */
+
 body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     display: none !important;
 }
 
+
 /* ==========================================
    TEACHER ACTION BUTTONS
 ========================================== */
+
 .btn-edit {
     display: inline-flex;
     align-items: center;
@@ -2745,444 +2776,379 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     transform: translateY(0px);
 }
 
+
 /* Teacher actions container */
+
 .teacher-actions {
     display: flex;
     gap: 6px;
     align-items: center;
 }
 
+
 /* Show when teacher mode is active via body class */
+
 body.teacher-mode-active .teacher-actions {
     display: inline-flex !important;
 }
 
+
 /* Hide student actions when teacher mode is active */
+
 body.teacher-mode-active .student-action {
     display: none !important;
 }
+
+
 /* Show student actions normally */
+
 .student-action {
     display: inline-block !important;
 }
 
+
 /* Hide non-teacher cards when teacher mode is active */
+
 body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     display: none !important;
 }
+
 
 /* ==========================================
    RESPONSIVE FIXES FOR ALL PAGES
    ========================================== */
 
+
 /* ---------- TABLETS (max-width: 992px) ---------- */
+
 @media (max-width: 992px) {
     /* Navigation */
     .navbar .container {
         flex-wrap: wrap;
     }
-    
     .navbar .d-flex {
         flex-wrap: wrap;
         gap: 8px;
     }
-    
     .navbar .d-flex .btn {
         font-size: 12px;
         padding: 6px 12px;
     }
-    
     .teacher-toggle-box {
         padding: 4px 8px;
     }
-    
     .teacher-toggle-box .fw-bold {
         font-size: 11px !important;
     }
-    
     /* Hero Section */
     .hero-section {
         padding: 60px 0 40px 0;
     }
-    
     .hero-title {
         font-size: 32px;
     }
-    
     /* Dashboard */
     .hero-greeting-card {
         padding: 20px 24px !important;
     }
-    
     .hero-greeting-title {
         font-size: 1.4rem;
     }
-    
     .greeting-content-row {
         flex-direction: column;
         align-items: stretch;
     }
-    
     .hero-search-container {
         max-width: 100%;
         min-width: auto;
     }
-    
     /* Metrics Grid */
     .metrics-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
-    
     .metric-card {
         padding: 14px 16px !important;
     }
-    
     .metric-value {
         font-size: 1.1rem;
     }
-    
     .metric-label {
         font-size: 0.7rem;
     }
-    
     /* Cards Grid */
     .cards-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 16px;
     }
-    
     .topic-collection-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 16px;
     }
-    
     /* Learning Layout */
     .learning-layout {
         grid-template-columns: 1fr;
         gap: 16px;
     }
-    
     .create-panel {
         position: static;
     }
-    
     /* Classroom Detail */
     .course-header {
         padding: 30px;
     }
-    
     .course-title {
         font-size: 30px;
     }
-    
     .module-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
     }
-    
     /* Flashcards & MCQs */
     .flashcard-modal__dialog {
         max-width: 90vw;
         padding: 20px;
     }
-    
     .flashcard-modal__header h3 {
         font-size: 22px;
     }
-    
     /* Footer */
     .main-footer {
         padding: 50px 0 0 0;
     }
-    
     .footer-logo {
         font-size: 24px;
     }
-    
     /* Forms */
     .centered-form-wrapper {
         max-width: 90%;
         margin: 30px auto;
     }
-    
     .styled-card {
         padding: 30px;
     }
-    
     .page-heading-large {
         font-size: 28px;
     }
 }
 
+
 /* ---------- MOBILE (max-width: 768px) ---------- */
+
 @media (max-width: 768px) {
     /* Main Container */
     .main-container {
         padding: 20px 16px;
     }
-    
     /* Navigation */
     .navbar {
         padding: 10px 0;
     }
-    
     .navbar .container {
         padding: 0 16px;
     }
-    
     .logo {
         font-size: 20px;
     }
-    
     .navbar-toggler {
         padding: 4px 8px;
     }
-    
     .navbar-nav .nav-link {
         font-size: 14px;
         padding: 6px 0;
     }
-    
     .d-flex.align-items-center.gap-3 {
         flex-wrap: wrap;
         gap: 6px;
     }
-    
     .teacher-toggle-box {
         padding: 2px 6px;
     }
-    
     .teacher-toggle-box .fw-bold {
         font-size: 10px !important;
     }
-    
     .theme-toggle-btn {
         width: 34px;
         height: 34px;
         font-size: 14px;
     }
-    
     /* Profile dropdown */
     .dropdown .rounded-circle {
         width: 32px !important;
         height: 32px !important;
         font-size: 12px !important;
     }
-    
     /* Hero Section */
     .hero-section {
         padding: 40px 0 30px 0;
     }
-    
     .hero-title {
         font-size: 26px;
     }
-    
     .hero-section .btn {
         font-size: 14px;
         padding: 10px 20px;
     }
-    
     /* Hero Greeting Card */
     .hero-greeting-card {
         padding: 16px 20px !important;
         border-radius: 14px !important;
     }
-    
     .hero-greeting-title {
         font-size: 1.2rem;
     }
-    
     .hero-subtext {
         font-size: 0.85rem;
     }
-    
     .hero-search-field {
         height: 38px;
         font-size: 14px;
         padding-left: 36px !important;
     }
-    
     .time-pill {
         font-size: 0.7rem;
         padding: 2px 10px;
     }
-    
     /* Metrics Grid */
     .metrics-grid {
         grid-template-columns: 1fr 1fr;
         gap: 10px;
     }
-    
     .metric-card {
         padding: 12px 14px !important;
         border-radius: 12px !important;
     }
-    
     .metric-icon {
         width: 36px;
         height: 36px;
         font-size: 0.9rem;
     }
-    
     .metric-value {
         font-size: 1rem;
     }
-    
     .metric-label {
         font-size: 0.65rem;
     }
-    
     /* Cards */
     .cards-grid {
         grid-template-columns: 1fr;
         gap: 14px;
     }
-    
     .topic-collection-grid {
         grid-template-columns: 1fr;
         gap: 14px;
     }
-    
     .styled-card.class-card {
         padding: 18px;
         min-height: auto;
     }
-    
     .class-card-title {
         font-size: 18px;
     }
-    
     .class-card-footer {
         flex-direction: column;
         align-items: stretch;
         gap: 12px;
     }
-    
     .card-actions {
         justify-content: flex-start;
         margin-left: 0;
         min-width: auto;
         text-align: left;
     }
-    
     /* Course Header */
     .course-header {
         padding: 20px;
         border-radius: 18px;
     }
-    
     .course-title {
         font-size: 24px;
         margin-top: 16px;
     }
-    
     .course-description {
         font-size: 15px;
         margin-top: 12px;
     }
-    
     .teacher-box {
         flex-direction: column;
         align-items: flex-start !important;
         gap: 12px;
     }
-    
     .teacher-avatar {
         width: 44px;
         height: 44px;
         font-size: 16px;
     }
-    
     .member-count-badge {
         font-size: 12px !important;
         padding: 4px 12px !important;
     }
-    
     /* Modules */
     .module-grid {
         grid-template-columns: 1fr 1fr;
         gap: 12px;
         margin-top: 20px;
     }
-    
     .module-card {
         padding: 20px 16px;
     }
-    
     .module-icon {
         width: 48px;
         height: 48px;
         font-size: 20px;
         margin-bottom: 12px;
     }
-    
     .module-card h5 {
         font-size: 14px;
     }
-    
     .module-card p {
         font-size: 12px;
     }
-    
     /* Teacher Tools */
     .teacher-tools__grid {
         grid-template-columns: 1fr;
         gap: 10px;
     }
-    
     .teacher-tool-card {
         padding: 12px 14px;
     }
-    
     .teacher-tool-card i {
         width: 32px;
         height: 32px;
         font-size: 14px;
     }
-    
     .teacher-tool-card strong {
         font-size: 13px;
     }
-    
     .teacher-tool-card span {
         font-size: 11px;
     }
-    
     /* Flashcards & MCQs */
     .flashcard-interactive-wrapper {
         flex-direction: column;
         gap: 12px;
     }
-    
     .flashcard-nav-arrow {
         width: 40px;
         height: 40px;
         font-size: 14px;
     }
-    
     .study-flip-card--modal {
         min-height: 240px;
     }
-    
     .study-flip-card--modal .study-flip-card-inner {
         height: 240px;
     }
-    
     .study-flip-face {
         padding: 20px;
     }
-    
     .study-flip-front h4 {
         font-size: 16px;
     }
-    
     .flashcard-modal__dialog {
         padding: 16px;
         border-radius: 20px;
     }
-    
     .flashcard-modal__close {
         width: 34px;
         height: 34px;
@@ -3190,165 +3156,133 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
         right: 12px;
         top: 12px;
     }
-    
     .flashcard-modal__header h3 {
         font-size: 18px;
     }
-    
     /* Create Panel */
     .create-panel__header {
         flex-direction: column;
         align-items: stretch;
     }
-    
     .create-panel__header .btn-secondary {
         width: 100%;
         text-align: center;
     }
-    
     /* Forms */
     .centered-form-wrapper {
         max-width: 100%;
         margin: 20px auto;
         padding: 0 16px;
     }
-    
     .styled-card {
         padding: 20px;
         border-radius: 16px;
     }
-    
     .page-heading-large {
         font-size: 24px;
     }
-    
     .subtext-muted {
         font-size: 14px;
         margin-bottom: 20px;
     }
-    
     .form-actions-row {
         flex-direction: column;
         gap: 12px;
     }
-    
     .form-actions-row .btn-primary,
     .form-actions-row .btn-secondary {
         width: 100%;
         text-align: center;
         justify-content: center;
     }
-    
     /* Access Choice */
     .access-choice-row {
         grid-template-columns: 1fr;
         gap: 10px;
     }
-    
     .access-choice {
         padding: 12px;
     }
-    
     /* Quiz */
     .quiz-question-card {
         padding: 16px;
     }
-    
     .result-hero {
         flex-direction: column;
         align-items: stretch;
         gap: 16px;
     }
-    
     .score-ring {
         flex: 0 0 120px;
         height: 120px;
         width: 120px;
         margin: 0 auto;
     }
-    
     .score-ring strong {
         font-size: 28px;
     }
-    
     /* Learning Stats */
     .learning-stats {
         gap: 8px;
     }
-    
     .stat-chip {
         font-size: 11px;
         padding: 4px 10px;
     }
-    
     /* Learning Section Head */
     .learning-section-head {
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
     }
-    
     .section-heading {
         font-size: 18px;
         margin-bottom: 0;
     }
-    
     /* Footer */
     .main-footer {
         padding: 40px 0 0 0;
     }
-    
     .footer-logo {
         font-size: 20px;
     }
-    
     .footer-links-header {
         font-size: 13px;
         margin-bottom: 16px;
     }
-    
     .footer-links-list a {
         font-size: 13px;
     }
-    
     .contact-info-item {
         font-size: 13px;
         margin-bottom: 14px;
     }
-    
     .social-container {
         gap: 8px;
     }
-    
     .social-icon-btn {
         width: 36px;
         height: 36px;
         font-size: 14px;
     }
-    
     .footer-bottom-bar {
         margin-top: 40px;
         padding: 20px 0;
         font-size: 12px;
     }
-    
     /* Modal */
     .modal-dialog {
         margin: 10px;
     }
-    
     .modal-content {
         border-radius: 16px;
     }
-    
     .modal-body {
         padding: 16px;
     }
-    
     .flashcard-entry-card {
         padding: 14px;
     }
-    
     /* Scroll to top */
     .scroll-to-top-btn {
         width: 40px;
@@ -3357,79 +3291,65 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
         bottom: 20px;
         right: 16px;
     }
-    
     /* Chatbot */
     .chatbot-modal {
         width: 290px;
         height: 380px;
         right: -10px;
     }
-    
     .chatbot-toggle-btn {
         width: 44px;
         height: 44px;
         font-size: 1.1rem;
     }
-    
     .chatbot-wrapper {
         bottom: 70px !important;
         right: 16px !important;
     }
-    
     /* Topic Collection */
     .topic-collection-card {
         padding: 16px;
         border-radius: 16px;
     }
-    
     .topic-collection-topline {
         flex-direction: column;
         align-items: flex-start;
         gap: 4px;
     }
-    
     .topic-preview {
         min-height: 60px;
         padding: 12px 14px;
         font-size: 14px;
     }
-    
     .topic-collection-actions {
         flex-wrap: wrap;
         gap: 8px;
     }
-    
     /* Back Button */
     .back-btn-icon {
         width: 36px;
         height: 36px;
         font-size: 14px;
     }
-    
     /* Carousel */
     .carousel-card-item {
         flex: 0 0 260px;
     }
-    
     .carousel-floating-btn {
         width: 32px;
         height: 32px;
         font-size: 12px;
     }
-    
     .carousel-floating-btn.btn-left {
         left: -8px;
     }
-    
     .carousel-floating-btn.btn-right {
         right: -8px;
     }
-    
     /* Teacher Mode toggle */
     .teacher-actions {
         flex-wrap: wrap;
     }
-    
     .btn-edit,
     .btn-delete {
         font-size: 11px;
@@ -3437,213 +3357,182 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     }
 }
 
+
 /* ---------- SMALL MOBILE (max-width: 480px) ---------- */
+
 @media (max-width: 480px) {
     /* Navigation */
     .logo {
         font-size: 17px;
     }
-    
     .navbar .d-flex .btn {
         font-size: 11px;
         padding: 4px 10px;
     }
-    
     .teacher-toggle-box .fw-bold {
         display: none;
     }
-    
     .teacher-toggle-box .form-switch {
         margin: 0 !important;
     }
-    
     .theme-toggle-btn {
         width: 30px;
         height: 30px;
         font-size: 12px;
     }
-    
     /* Hero */
     .hero-title {
         font-size: 22px;
     }
-    
     .hero-section .d-flex.gap-3 {
         flex-direction: column;
     }
-    
     .hero-section .d-flex.gap-3 .btn {
         width: 100%;
         text-align: center;
     }
-    
     /* Metrics */
     .metrics-grid {
         grid-template-columns: 1fr 1fr;
         gap: 8px;
     }
-    
     .metric-card {
         padding: 10px 12px !important;
     }
-    
     .metric-icon {
         width: 30px;
         height: 30px;
         font-size: 0.8rem;
     }
-    
     .metric-value {
         font-size: 0.9rem;
     }
-    
     /* Cards */
     .class-card-title {
         font-size: 16px;
     }
-    
     /* Course */
     .course-title {
         font-size: 20px;
     }
-    
     .module-grid {
         grid-template-columns: 1fr;
     }
-    
     /* Modal */
     .flashcard-modal__dialog {
         padding: 12px;
         max-width: 95vw;
     }
-    
     .study-flip-card--modal {
         min-height: 200px;
     }
-    
     .study-flip-card--modal .study-flip-card-inner {
         height: 200px;
     }
-    
     .study-flip-face {
         padding: 14px;
     }
-    
     .study-flip-front h4 {
         font-size: 14px;
     }
-    
     .study-flip-back p {
         font-size: 14px;
     }
-    
     .flashcard-nav-arrow {
         width: 34px;
         height: 34px;
         font-size: 12px;
     }
-    
     /* Forms */
     .page-heading-large {
         font-size: 20px;
     }
-    
     .styled-card {
         padding: 16px;
     }
-    
     .form-control {
         padding: 10px 14px;
         font-size: 14px;
     }
-    
     select.form-control {
         height: 44px;
     }
-    
     /* Quiz */
     .score-ring {
         flex: 0 0 100px;
         height: 100px;
         width: 100px;
     }
-    
     .score-ring strong {
         font-size: 22px;
     }
-    
     .score-ring span {
         font-size: 14px;
     }
-    
     /* Stats */
     .stat-chip {
         font-size: 10px;
         padding: 3px 8px;
     }
-    
     /* Footer */
     .footer-bottom-bar .col-md-6 {
         text-align: center !important;
     }
-    
     .footer-bottom-bar .col-md-6:last-child {
         margin-top: 8px;
     }
-    
     /* Chatbot */
     .chatbot-modal {
         width: 260px;
         height: 340px;
         right: -20px;
     }
-    
     .quick-replies .btn {
         font-size: 10px !important;
         padding: 2px 10px !important;
     }
 }
 
+
 /* ---------- FIX FOR TABLETS IN LANDSCAPE ---------- */
+
 @media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
     .metrics-grid {
         grid-template-columns: repeat(4, 1fr);
     }
-    
     .cards-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
     .topic-collection-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
+
 /* ---------- FIX FOR VERY LARGE SCREENS ---------- */
+
 @media (min-width: 1400px) {
     .main-container {
         max-width: 1320px;
         padding: 80px 60px;
     }
-    
     .hero-title {
         font-size: 58px;
     }
-    
     .cards-grid {
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     }
-    
     .topic-collection-grid {
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     }
-    
     .hero-greeting-title {
         font-size: 2.2rem;
     }
 }
 
+
 /* ---------- PRINT STYLES ---------- */
+
 @media print {
     .navbar,
     .footer,
@@ -3657,28 +3546,28 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     .create-panel {
         display: none !important;
     }
-    
     .main-container {
         padding: 20px !important;
         max-width: 100% !important;
     }
-    
     .styled-card {
         box-shadow: none !important;
         border: 1px solid #ddd !important;
     }
-    
     .topic-collection-card {
         break-inside: avoid;
         page-break-inside: avoid;
     }
 }
 
+
 /* ==========================================================================
    DARK MODE FIXES FOR HOME PAGE & PROFILE DROPDOWN
    ========================================================================== */
 
+
 /* Fix for Connected Providers section on Home page */
+
 [data-theme="dark"] .bg-white.p-4.rounded-3.shadow-sm.border {
     background-color: var(--card-bg) !important;
     border-color: var(--border-color) !important;
@@ -3711,7 +3600,9 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     color: var(--text-muted) !important;
 }
 
+
 /* Fix for Profile Dropdown in Dark Mode */
+
 [data-theme="dark"] .dropdown-menu {
     background-color: var(--card-bg) !important;
     border-color: var(--border-color) !important;
@@ -3751,7 +3642,9 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     color: var(--text-muted) !important;
 }
 
+
 /* Fix for Quick Overview card on Home page */
+
 [data-theme="dark"] .smart-card.text-center.p-4 {
     background-color: var(--card-bg) !important;
     border-color: var(--border-color) !important;
@@ -3781,7 +3674,9 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     color: #fbbf24 !important;
 }
 
+
 /* Fix for Feature Callout Rows on Home page */
+
 [data-theme="dark"] .feature-callout-row.bg-white {
     background-color: var(--bg-color) !important;
 }
@@ -3812,7 +3707,9 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     color: var(--text-muted) !important;
 }
 
+
 /* Fix for Footer text in dark mode */
+
 [data-theme="dark"] .main-footer {
     background-color: #0f1a15 !important;
 }
@@ -3821,7 +3718,9 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     color: var(--text-muted) !important;
 }
 
+
 /* Fix for Navbar in dark mode */
+
 [data-theme="dark"] .navbar {
     background-color: var(--card-bg) !important;
     border-color: var(--border-color) !important;
@@ -3840,7 +3739,9 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     color: var(--text-color) !important;
 }
 
+
 /* Fix for theme toggle button in dark mode */
+
 [data-theme="dark"] .nav-theme-toggle {
     border-color: var(--forest) !important;
     color: #ffffff !important;
@@ -3851,7 +3752,9 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     color: var(--bg-color) !important;
 }
 
+
 /* Quiz Settings Box - Light Mode (default) */
+
 .quiz-settings-box {
     background: #f8faf9;
     border: 1px solid #e4ebc6;
@@ -3871,7 +3774,9 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     font-size: 13px;
 }
 
+
 /* Quiz Settings Box - Dark Mode */
+
 [data-theme="dark"] .quiz-settings-box {
     background: #1a231f !important;
     border-color: #2b3a34 !important;
@@ -3904,11 +3809,14 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     color: #9cb0a5 !important;
 }
 
+
 /* ==========================================================================
    FILE PREVIEW CONTAINER DARK MODE FIX
    ========================================================================== */
 
+
 /* For community_notes.html file preview */
+
 [data-theme="dark"] .mb-3.p-3.rounded-3[style*="background: #f8faf9"] {
     background: #1a231f !important;
     border-color: #2b3a34 !important;
@@ -3932,7 +3840,9 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     border-color: #3d8b6a !important;
 }
 
+
 /* For teacher_materials.html file preview */
+
 [data-theme="dark"] .mb-2.p-2.rounded-2[style*="background: #f4faf6"] {
     background: #111714 !important;
     border-color: #2b3a34 !important;
