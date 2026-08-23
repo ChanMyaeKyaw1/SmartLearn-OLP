@@ -27,6 +27,8 @@ from django.views.decorators.vary import vary_on_headers
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 
+import re
+
 # ==========================================
 # HELPER FUNCTIONS & ACCESS CONTROL
 # ==========================================
@@ -116,26 +118,80 @@ def home_view(request):
 
 # smartlearnApp/views.py
 
+def validate_password_strength(password):
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long."
+    if not re.search(r'[A-Z]', password):
+        return False, "Password must contain at least one uppercase letter (A-Z)."
+    if not re.search(r'[a-z]', password):
+        return False, "Password must contain at least one lowercase letter (a-z)."
+    if not re.search(r'\d', password):
+        return False, "Password must contain at least one number (0-9)."
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        return False, "Password must contain at least one special character (!@#$%^&*)."
+    return True, None
+
+def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+
+        password = request.POST.get('password1')
+        confirm_password = request.POST.get('password2')
+
+        # Context to retain form fields when returning errors
+        context = {
+            'username': username,
+            'email': email,
+            'phone': phone,
+        }
+
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return render(request, 'register.html', context)
+
+        # Check password strength
+        is_strong, error_msg = validate_password_strength(password)
+        if not is_strong:
+            messages.error(request, error_msg)
+            return render(request, 'register.html', context)
+
+        if User.objects.filter(username__iexact=username).exists():
+            messages.error(request, "A user with that username already exists.")
+            return render(request, 'register.html', context)
+
+        # Create user
+        user = User.objects.create_user(username=username, email=email, password=password)
+
+        # Log in automatically
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+        messages.success(request, f"Welcome to SmartLearn, {user.username}!")
+        return redirect('dashboard')
+
+    return render(request, 'register.html')
+
 def login_view(request):
     next_url = request.GET.get('next') or request.POST.get('next')
 
     if request.user.is_authenticated:
         if next_url:
             return redirect(next_url)
-        if request.user.is_superuser or request.user.is_staff:
-            return redirect('custom_admin_dashboard')
         return redirect('dashboard')
 
     if request.method == 'POST':
         username_input = request.POST.get('username', '').strip()
-        password_input = request.POST.get('password')  # DO NOT .strip() password
+        password_input = request.POST.get('password')
 
-        # Standard authentication
         user = authenticate(request, username=username_input, password=password_input)
 
         if user is not None:
             if not user.is_active:
-                messages.error(request, "This account is inactive.")
+                messages.error(request, "This account is disabled.")
                 return render(request, 'login.html')
 
             login(request, user)
@@ -151,42 +207,10 @@ def login_view(request):
 
     return render(request, 'login.html')
 
-def register_view(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-
-    if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
-        email = request.POST.get('email', '').strip()
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-
-        if password != confirm_password:
-            messages.error(request, "Passwords do not match.")
-            return render(request, 'register.html')
-
-        if User.objects.filter(username__iexact=username).exists():
-            messages.error(request, "A user with that username already exists. Please choose a different one.")
-            return render(request, 'register.html')
-
-        # MUST use create_user — this sets up proper PBKDF2 hashing without the '!' flag
-        user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password
-        )
-
-        # Log in immediately
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-
-        messages.success(request, f"Welcome to SmartLearn, {user.username}!")
-        return redirect('dashboard')
-
-    return render(request, 'register.html')
-
 def logout_view(request):
     logout(request)
     return redirect('home')
+
 
 @login_required
 def view_profile(request):
