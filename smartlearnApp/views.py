@@ -841,23 +841,27 @@ def all_flashcards_view(request):
 
         classroom_topic_map = OrderedDict()
         for flashcard in classroom_flashcards:
-            group_key = flashcard.topic
-            group = classroom_topic_map.get(group_key)
+            topic_key = flashcard.topic.strip().lower()
+            # topic_display = flashcard.topic.strip()
+            #group_key = flashcard.topic
+            group = classroom_topic_map.get(topic_key)
             if not group:
                 group = {
                     'classroom_id': classroom.class_id,
                     'classroom_title': classroom.title,
                     'class_type': classroom.class_type,
-                    'topic': flashcard.topic,
-                    'topic_slug': slugify(flashcard.topic) or 'flashcard-topic',
-                    'modal_key': f'{classroom.class_id}-{slugify(flashcard.topic) or "flashcard-topic"}',
+                    'topic_key': topic_key,
+                    'topic': topic_key,
+                    #'topic': flashcard.topic,
+                    # 'topic_slug': slugify(topic_display) or 'flashcard-topic',
+                    # 'modal_key': f'{classroom.class_id}-{topic_key}',  # Use topic_key here too
                     'cards': [],
                     'contributors': [],
                     'primary_creator': flashcard.created_by.username,
                     'preview_front': flashcard.front,
                     'total_cards': 0,
                 }
-                classroom_topic_map[group_key] = group
+                classroom_topic_map[topic_key] = group
 
             # IMPORTANT: Make sure front and back are included
             group['cards'].append({
@@ -878,6 +882,12 @@ def all_flashcards_view(request):
 
             group['total_cards'] = len(group['cards'])
             group['contributor_summary'] = contributor_summary
+
+            if 'topic_key' not in group:
+                group['topic_key'] = group['topic'].strip().lower()
+            flashcard_groups.append(group)
+
+
             flashcard_groups.append(group)
 
     return render(request, 'all_flashcards.html', {
