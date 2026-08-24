@@ -888,7 +888,6 @@ def all_flashcards_view(request):
             flashcard_groups.append(group)
 
 
-            flashcard_groups.append(group)
 
     return render(request, 'all_flashcards.html', {
         'current_user': current_user,
@@ -1923,32 +1922,52 @@ from django.db.models import Q
 #     }
 #     return render(request, 'create_topic.html', context)
 
-
 @login_required
 def create_topic_global(request, item_type):
     if request.method == 'POST':
         class_mode = request.POST.get('class_mode')
-        topic = request.POST.get('topic')
+        topic = request.POST.get('topic', '').strip()
 
         # 1. Resolve Classroom
         if class_mode == 'new':
-            new_title = request.POST.get('new_class_title')
+            new_title = request.POST.get('new_class_title', '').strip()
+            if not new_title:
+                messages.error(request, "Please provide a class title.")
+                return redirect('create_topic_global', item_type=item_type)
+            
             classroom = Classroom.objects.create(
                 title=new_title,
                 owner=request.user,
-                class_type='public'
+                class_type='public',
+                created_from_site=True
             )
         else:
             classroom_id = request.POST.get('classroom_id')
+            if not classroom_id:
+                messages.error(request, "Please select a classroom.")
+                return redirect('create_topic_global', item_type=item_type)
+            
             classroom = get_object_or_404(Classroom, class_id=classroom_id)
+            
+            # Check if user has access to this classroom
+            if not user_can_create_learning_content(classroom, request.user):
+                messages.error(request, "You don't have permission to add content to this classroom.")
+                return redirect('create_topic_global', item_type=item_type)
+
+        if not topic:
+            messages.error(request, "Please provide a topic name.")
+            return redirect('create_topic_global', item_type=item_type)
 
         # 2. Save Flashcards
         if item_type == 'flashcards':
             fronts = request.POST.getlist('front')
             backs = request.POST.getlist('back')
+            created_count = 0
 
             for front, back in zip(fronts, backs):
-                if front.strip() and back.strip():
+                front = front.strip()
+                back = back.strip()
+                if front and back:
                     Flashcard.objects.create(
                         classroom=classroom,
                         topic=topic,
@@ -1956,6 +1975,12 @@ def create_topic_global(request, item_type):
                         back=back,
                         created_by=request.user
                     )
+                    created_count += 1
+
+            if created_count > 0:
+                messages.success(request, f"Created {created_count} flashcards in '{classroom.title}'!")
+            else:
+                messages.error(request, "Please fill in at least one flashcard.")
             return redirect('all_flashcards')
 
         # 3. Save MCQs
@@ -1967,21 +1992,36 @@ def create_topic_global(request, item_type):
             opts_d = request.POST.getlist('option_d')
             corrects = request.POST.getlist('correct_option')
             explanations = request.POST.getlist('explanation')
+            created_count = 0
 
             for i in range(len(questions)):
-                if questions[i].strip():
+                question = questions[i].strip() if i < len(questions) else ''
+                option_a = opts_a[i].strip() if i < len(opts_a) else ''
+                option_b = opts_b[i].strip() if i < len(opts_b) else ''
+                option_c = opts_c[i].strip() if i < len(opts_c) else ''
+                option_d = opts_d[i].strip() if i < len(opts_d) else ''
+                correct_option = corrects[i].strip() if i < len(corrects) else ''
+                explanation = explanations[i].strip() if i < len(explanations) else ''
+
+                if question and option_a and option_b and option_c and option_d and correct_option:
                     MCQQuestion.objects.create(
                         classroom=classroom,
                         topic=topic,
-                        question=questions[i],
-                        option_a=opts_a[i],
-                        option_b=opts_b[i],
-                        option_c=opts_c[i],
-                        option_d=opts_d[i],
-                        correct_option=corrects[i],
-                        explanation=explanations[i] if i < len(explanations) else '',
+                        question=question,
+                        option_a=option_a,
+                        option_b=option_b,
+                        option_c=option_c,
+                        option_d=option_d,
+                        correct_option=correct_option,
+                        explanation=explanation,
                         created_by=request.user
                     )
+                    created_count += 1
+
+            if created_count > 0:
+                messages.success(request, f"Created {created_count} MCQs in '{classroom.title}'!")
+            else:
+                messages.error(request, "Please complete at least one MCQ question with all options.")
             return redirect('all_mcqs')
 
     # GET Request
@@ -1993,7 +2033,6 @@ def create_topic_global(request, item_type):
         'item_type': item_type,
         'classrooms': all_classes,
     })
-
 
 @login_required(login_url='login')
 def manage_classroom_view(request, class_id):
