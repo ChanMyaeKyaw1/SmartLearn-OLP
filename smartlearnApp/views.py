@@ -859,7 +859,6 @@ def all_flashcards_view(request):
                     #'topic': flashcard.topic,
                     # 'topic_slug': slugify(topic_display) or 'flashcard-topic',
                     # 'modal_key': f'{classroom.class_id}-{topic_key}',  # Use topic_key here too
->>>>>>> c330d866a19739d41c64b577159345a4c7c80a24
                     'cards': [],
                     'contributors': [],
                     'primary_creator': flashcard.created_by.username,
