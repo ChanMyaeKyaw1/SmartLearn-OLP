@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-{% block title %}Flashcards - SmartLearn{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}Flashcards - SmartLearn{% endblock %} {% block content %}
 <div class="learning-page-header">
     <div class="learning-title-row d-flex justify-content-between align-items-center">
         <div>
@@ -13,8 +10,7 @@
             {% if can_create or request.user.is_authenticated %}
             <button type="button" class="btn-primary teacher-only" data-bs-toggle="modal" data-bs-target="#createFlashcardModal">
                 + Create New Flashcards
-            </button>
-            {% endif %}
+            </button> {% endif %}
         </div>
     </div>
 
@@ -34,8 +30,7 @@
 
     <div class="topic-collection-grid" id="flashcardGrid">
         {% for group in flashcard_groups %}
-        <article class="topic-collection-card topic-item-card {% if request.user.username == group.primary_creator %}teacher-owned{% endif %}" 
-                 data-owner="{{ group.primary_creator }}">
+        <article class="topic-collection-card topic-item-card {% if request.user.username == group.primary_creator %}teacher-owned{% endif %}" data-owner="{{ group.primary_creator }}">
             <div class="topic-collection-topline">
                 <span class="status-badge {% if group.class_type == 'public' %}badge-public{% else %}badge-private{% endif %}">{{ group.classroom_title }}</span>
                 <span class="topic-card-count">{{ group.total_cards }} cards</span>
@@ -48,19 +43,17 @@
             <div class="topic-collection-actions">
                 <!-- Student mode: Learn Topic button -->
                 <button type="button" class="btn-primary learn-topic-btn student-action" data-learn-topic="{{ group.topic_key }}">Learn Topic</button>
-                
+
                 <!-- Teacher Mode: Edit/Delete buttons -->
                 {% if request.user.username == group.primary_creator %}
-                    <div class="teacher-actions">
-                        <a href="{% url 'edit_flashcard' group.cards.0.flashcard_id %}" class="btn-edit">
-                            <i class="fa-solid fa-pen"></i> Edit
-                        </a>
-                        <a href="{% url 'delete_flashcard_topic' group.classroom_id %}?topic={{ group.topic|urlencode }}" 
-                           class="btn-delete"
-                           onclick="return confirm('Are you sure you want to delete this entire topic?');">
-                            <i class="fa-solid fa-trash"></i> Delete
-                        </a>
-                    </div>
+                <div class="teacher-actions">
+                    <a href="{% url 'edit_flashcard' group.cards.0.flashcard_id %}" class="btn-edit">
+                        <i class="fa-solid fa-pen"></i> Edit
+                    </a>
+                    <a href="{% url 'delete_flashcard_topic' group.classroom_id %}?topic={{ group.topic|urlencode }}" class="btn-delete" onclick="return confirm('Are you sure you want to delete this entire topic?');">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </a>
+                </div>
                 {% endif %}
             </div>
         </article>
@@ -68,7 +61,7 @@
         <div class="empty-study-state">No accessible flashcards yet.</div>
         {% endfor %}
     </div>
-    
+
     <div id="noTeacherCardsMsg" class="empty-study-state" style="display: none;">
         You haven't created any flashcard topics yet.
     </div>
@@ -78,7 +71,7 @@
 <div class="flashcard-modal" id="flashcard-learn-modal" aria-hidden="true" hidden>
     <div class="flashcard-modal__overlay" data-close-learn-modal></div>
     <div class="flashcard-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="flashcard-learn-title">
-        
+
         <button type="button" class="flashcard-modal__close" data-close-learn-modal aria-label="Close learning popup">&times;</button>
         <div class="flashcard-modal__header">
             <h3 id="flashcard-learn-title">Learn Topic</h3>
@@ -120,7 +113,7 @@
                 <h5 class="modal-title font-weight-bold" id="createFlashcardModalLabel">Create New Flashcard Topic</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            
+
             <form method="POST" action="{% url 'create_topic_global' 'flashcards' %}">
                 {% csrf_token %}
                 <div class="modal-body">
@@ -188,38 +181,41 @@
     </div>
 </div>
 
+<!-- Ensure the data payload uses the correct variable from view context -->
 {{ flashcard_groups|json_script:"flashcards-topic-data" }}
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Modal mode switch
-    const modeExisting = document.getElementById("fcModeExisting");
-    const modeNew = document.getElementById("fcModeNew");
-    const existingSec = document.getElementById("fcExistingClassSec");
-    const newSec = document.getElementById("fcNewClassSec");
+    document.addEventListener("DOMContentLoaded", function() {
 
-    if (modeExisting && modeNew) {
-        modeExisting.addEventListener("change", function() {
-            existingSec.style.display = "block";
-            newSec.style.display = "none";
-        });
-        modeNew.addEventListener("change", function() {
-            existingSec.style.display = "none";
-            newSec.style.display = "block";
-        });
-    }
+        // -------------------------------------------------------------
+        // 1. CREATE MODAL ROW DYNAMICS & MODE SWITCHING
+        // -------------------------------------------------------------
+        const modeExisting = document.getElementById("fcModeExisting");
+        const modeNew = document.getElementById("fcModeNew");
+        const existingSec = document.getElementById("fcExistingClassSec");
+        const newSec = document.getElementById("fcNewClassSec");
 
-    // Dynamic card addition
-    const container = document.getElementById("modalFcContainer");
-    const addBtn = document.getElementById("addFcRowBtn");
-    let cardCount = 1;
+        if (modeExisting && modeNew) {
+            modeExisting.addEventListener("change", function() {
+                if (existingSec) existingSec.style.display = "block";
+                if (newSec) newSec.style.display = "none";
+            });
+            modeNew.addEventListener("change", function() {
+                if (existingSec) existingSec.style.display = "none";
+                if (newSec) newSec.style.display = "block";
+            });
+        }
 
-    if (addBtn && container) {
-        addBtn.addEventListener("click", function() {
-            cardCount++;
-            const cardDiv = document.createElement("div");
-            cardDiv.className = "card p-3 mb-2 bg-light border";
-            cardDiv.innerHTML = `
+        const container = document.getElementById("modalFcContainer");
+        const addBtn = document.getElementById("addFcRowBtn");
+        let cardCount = 1;
+
+        if (addBtn && container) {
+            addBtn.addEventListener("click", function() {
+                cardCount++;
+                const cardDiv = document.createElement("div");
+                cardDiv.className = "card p-3 mb-2 bg-light border";
+                cardDiv.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center mb-1">
                     <h6 class="font-weight-bold text-muted">Card ${cardCount}</h6>
                     <button type="button" class="btn-close remove-card" aria-label="Remove"></button>
@@ -229,259 +225,200 @@ document.addEventListener("DOMContentLoaded", function() {
                 <label class="label-bold">Back</label>
                 <textarea name="back" class="form-control" rows="2" required></textarea>
             `;
-            cardDiv.querySelector(".remove-card").addEventListener("click", function() {
-                cardDiv.remove();
+                cardDiv.querySelector(".remove-card").addEventListener("click", function() {
+                    cardDiv.remove();
+                });
+                container.appendChild(cardDiv);
             });
-            container.appendChild(cardDiv);
-        });
-    }
-});
-
-// Teacher Mode Toggle - Using CSS classes
-document.addEventListener("DOMContentLoaded", function() {
-    const toggle = document.getElementById("teacherModeToggle");
-    const noTeacherCardsMsg = document.getElementById("noTeacherCardsMsg");
-    const topicCards = document.querySelectorAll(".topic-item-card");
-    const currentUser = "{{ request.user.username }}";
-    
-    let teacherCardCount = 0;
-    topicCards.forEach(function(card) {
-        if (card.classList.contains("teacher-owned")) {
-            teacherCardCount++;
         }
-    });
 
-    function applyTeacherMode(isTeacherMode) {
-        if (isTeacherMode) {
-            document.body.classList.add("teacher-mode-active");
-            if (teacherCardCount === 0 && noTeacherCardsMsg) {
-                noTeacherCardsMsg.style.display = "block";
+        // -------------------------------------------------------------
+        // 2. TEACHER MODE TOGGLE
+        // -------------------------------------------------------------
+        const toggle = document.getElementById("teacherModeToggle");
+        const noTeacherCardsMsg = document.getElementById("noTeacherCardsMsg");
+        const topicCards = document.querySelectorAll(".topic-item-card");
+        let teacherCardCount = 0;
+
+        topicCards.forEach(function(card) {
+            if (card.classList.contains("teacher-owned")) {
+                teacherCardCount++;
+            }
+        });
+
+        function applyTeacherMode(isTeacherMode) {
+            if (isTeacherMode) {
+                document.body.classList.add("teacher-mode-active");
+                if (teacherCardCount === 0 && noTeacherCardsMsg) {
+                    noTeacherCardsMsg.style.display = "block";
+                } else if (noTeacherCardsMsg) {
+                    noTeacherCardsMsg.style.display = "none";
+                }
             } else {
+                document.body.classList.remove("teacher-mode-active");
                 if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "none";
             }
-        } else {
-            document.body.classList.remove("teacher-mode-active");
-            if (noTeacherCardsMsg) noTeacherCardsMsg.style.display = "none";
         }
-    }
 
-    const savedMode = localStorage.getItem("teacherMode") === "true";
-    if (toggle) {
-        toggle.checked = savedMode;
-        applyTeacherMode(savedMode);
+        if (toggle) {
+            const savedMode = localStorage.getItem("teacherMode") === "true";
+            toggle.checked = savedMode;
+            applyTeacherMode(savedMode);
 
-        toggle.addEventListener("change", function(e) {
-            const isChecked = e.target.checked;
-            localStorage.setItem("teacherMode", isChecked);
-            applyTeacherMode(isChecked);
-        });
-    }
-});
-// ==========================================
-// SIMPLIFIED FLASHCARD LEARN MODAL
-// ==========================================
-document.addEventListener("DOMContentLoaded", function() {
-    // Get the data
-    const dataElement = document.getElementById("flashcards-topic-data");
-    let flashcardGroups = [];
-    
-    try {
-        if (dataElement) {
-            flashcardGroups = JSON.parse(dataElement.textContent || "[]");
-            console.log("Flashcard groups loaded:", flashcardGroups.length);
+            toggle.addEventListener("change", function(e) {
+                const isChecked = e.target.checked;
+                localStorage.setItem("teacherMode", isChecked);
+                applyTeacherMode(isChecked);
+            });
         }
-    } catch (error) {
-        console.error("Unable to parse flashcard topic data", error);
-        return;
-    }
-    
-    if (!flashcardGroups.length) {
-        console.log("No flashcard topics found");
-        return;
-    }
-    
-    // Create lookup
-    const topicMap = {};
-    flashcardGroups.forEach(function(group) {
-        if (group.modal_key) {
-            topicMap[group.modal_key] = group;
-        }
-    });
-    
-    let activeGroup = null;
-    let activeIndex = 0;
-    
-    function updateModal(group, index) {
-        if (!group || !group.cards || !group.cards.length) {
-            document.getElementById("flashcard-modal-front-text").textContent = "No cards";
-            document.getElementById("flashcard-modal-back-text").textContent = "No cards";
-            document.getElementById("flashcard-modal-counter").textContent = "0 of 0";
+
+        // -------------------------------------------------------------
+        // 3. FLASHCARD LEARN MODAL (EXACT LOGIC FROM CLASS DETAIL)
+        // -------------------------------------------------------------
+        const modal = document.getElementById("flashcard-learn-modal");
+        const modalCard = document.getElementById("flashcard-modal-card");
+        const modalFrontText = document.getElementById("flashcard-modal-front-text");
+        const modalBackText = document.getElementById("flashcard-modal-back-text");
+        const modalCounter = document.getElementById("flashcard-modal-counter");
+        const modalTitle = document.getElementById("flashcard-learn-title");
+
+        const dataElement = document.getElementById("flashcards-topic-data");
+        let topicGroups = [];
+
+        try {
+            if (dataElement) {
+                topicGroups = JSON.parse(dataElement.textContent || "[]");
+            }
+        } catch (error) {
+            console.error("Unable to parse flashcard topic data", error);
             return;
         }
-        
-        const card = group.cards[index];
-        document.getElementById("flashcard-modal-title").textContent = group.topic || "Learn Topic";
-        document.getElementById("flashcard-modal-front-text").textContent = card.front || "No front content";
-        document.getElementById("flashcard-modal-back-text").textContent = card.back || "No back content";
-        document.getElementById("flashcard-modal-counter").textContent = `Card ${index + 1} of ${group.cards.length}`;
-        document.getElementById("flashcard-modal-card").classList.remove("is-flipped");
-    }
-    
-    // Learn Topic buttons
-    document.querySelectorAll(".learn-topic-btn").forEach(function(btn) {
-        btn.addEventListener("click", function(e) {
-            e.preventDefault();
-            const key = this.getAttribute("data-learn-topic");
-            console.log("Learn Topic clicked:", key);
-            
-            if (topicMap[key]) {
-                activeGroup = topicMap[key];
-                activeIndex = 0;
-                updateModal(activeGroup, activeIndex);
-                document.getElementById("flashcard-learn-modal").style.display = "flex";
-                document.getElementById("flashcard-learn-modal").classList.add("is-open");
+
+        if (!topicGroups.length) {
+            console.log("No flashcard topics found");
+            return;
+        }
+
+        // Map lookup handling all key fallbacks
+        const topicMap = new Map();
+        topicGroups.forEach(function(group) {
+            if (group.topic_slug) topicMap.set(String(group.topic_slug).trim(), group);
+            if (group.topic_key) topicMap.set(String(group.topic_key).trim(), group);
+            if (group.modal_key) topicMap.set(String(group.modal_key).trim(), group);
+            if (group.topic) topicMap.set(String(group.topic).trim(), group);
+        });
+
+        let activeGroup = null;
+        let activeIndex = 0;
+
+        function setModalCard() {
+            if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
+
+            const card = activeGroup.cards[activeIndex];
+            if (modalTitle) modalTitle.textContent = activeGroup.topic;
+            if (modalFrontText) modalFrontText.textContent = card.front || card.question || "";
+            if (modalBackText) modalBackText.textContent = card.back || card.answer || "";
+
+            if (modalCard) modalCard.classList.remove("is-flipped");
+
+            if (modalCounter) {
+                modalCounter.textContent = `Card ${activeIndex + 1} of ${activeGroup.cards.length}`;
+            }
+        }
+
+        function openModal(topicKey) {
+            const cleanKey = String(topicKey).trim();
+            const group = topicMap.get(cleanKey);
+            if (!group) {
+                console.log("Topic not found:", cleanKey);
+                return;
+            }
+
+            activeGroup = group;
+            activeIndex = 0;
+            setModalCard();
+
+            if (modal) {
+                modal.removeAttribute("hidden");
+                modal.setAttribute("aria-hidden", "false");
+                modal.classList.add("is-open");
+                modal.style.display = "flex";
                 document.body.style.overflow = "hidden";
-            } else {
-                console.log("Topic not found:", key);
-                console.log("Available keys:", Object.keys(topicMap));
+            }
+        }
+
+        function closeModal() {
+            if (modal) {
+                modal.setAttribute("hidden", "");
+                modal.setAttribute("aria-hidden", "true");
+                modal.classList.remove("is-open");
+                modal.style.display = "none";
+                document.body.style.overflow = "";
+                if (modalCard) modalCard.classList.remove("is-flipped");
+            }
+        }
+
+        // Event listeners via Event Delegation (handles dynamic buttons)
+        document.addEventListener("click", function(e) {
+            const btn = e.target.closest(".learn-topic-btn, [data-learn-topic]");
+            if (btn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const topicKey = btn.getAttribute("data-learn-topic");
+                openModal(topicKey);
+                return;
+            }
+
+            if (e.target.closest("[data-close-learn-modal]") || e.target.closest(".flashcard-modal__close")) {
+                closeModal();
+                return;
+            }
+
+            if (e.target.closest("[data-learn-prev]")) {
+                e.stopPropagation();
+                if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
+                activeIndex = (activeIndex - 1 + activeGroup.cards.length) % activeGroup.cards.length;
+                setModalCard();
+                return;
+            }
+
+            if (e.target.closest("[data-learn-next]")) {
+                e.stopPropagation();
+                if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
+                activeIndex = (activeIndex + 1) % activeGroup.cards.length;
+                setModalCard();
+                return;
+            }
+
+            if (e.target.closest("#flashcard-modal-card")) {
+                if (modalCard) modalCard.classList.toggle("is-flipped");
+                return;
             }
         });
-    });
-    
-    // Close modal
-    document.querySelector("[data-close-learn-modal]").addEventListener("click", function() {
-        document.getElementById("flashcard-learn-modal").style.display = "none";
-        document.getElementById("flashcard-learn-modal").classList.remove("is-open");
-        document.body.style.overflow = "";
-    });
-    
-    // Next/Prev
-    document.querySelector("[data-learn-next]").addEventListener("click", function(e) {
-        e.stopPropagation();
-        if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
-        activeIndex = (activeIndex + 1) % activeGroup.cards.length;
-        updateModal(activeGroup, activeIndex);
-    });
-    
-    document.querySelector("[data-learn-prev]").addEventListener("click", function(e) {
-        e.stopPropagation();
-        if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
-        activeIndex = (activeIndex - 1 + activeGroup.cards.length) % activeGroup.cards.length;
-        updateModal(activeGroup, activeIndex);
-    });
-    
-    // Flip card on click
-    document.getElementById("flashcard-modal-card").addEventListener("click", function() {
-        this.classList.toggle("is-flipped");
-    });
-    
-    // Escape key
-    document.addEventListener("keydown", function(e) {
-        if (e.key === "Escape") {
-            document.getElementById("flashcard-learn-modal").style.display = "none";
-            document.getElementById("flashcard-learn-modal").classList.remove("is-open");
-            document.body.style.overflow = "";
-        }
-    });
-});
 
-// Event listeners for Learn Topic buttons
-    document.querySelectorAll(".learn-topic-btn").forEach(function(btn) {
-        btn.addEventListener("click", function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const topicKey = this.getAttribute("data-learn-topic");
-            console.log("Learn Topic clicked:", topicKey);
-            openModal(topicKey);
-        });
-    });
-    
-    // Close modal on overlay click
-    const overlay = document.querySelector("[data-close-learn-modal]");
-    if (overlay) {
-        overlay.addEventListener("click", closeModal);
-    }
-    
-    // Close modal on close button click
-    const closeBtn = document.querySelector(".flashcard-modal__close");
-    if (closeBtn) {
-        closeBtn.addEventListener("click", closeModal);
-    }
-    
-    // Previous/Next buttons
-    const prevBtn = document.querySelector("[data-learn-prev]");
-    const nextBtn = document.querySelector("[data-learn-next]");
-    
-    if (prevBtn) {
-        prevBtn.addEventListener("click", function(e) {
-            e.stopPropagation();
-            if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
-            activeIndex = (activeIndex - 1 + activeGroup.cards.length) % activeGroup.cards.length;
-            setModalCard();
-        });
-    }
-    
-    if (nextBtn) {
-        nextBtn.addEventListener("click", function(e) {
-            e.stopPropagation();
-            if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
-            activeIndex = (activeIndex + 1) % activeGroup.cards.length;
-            setModalCard();
-        });
-    }
-    
-    // Click on card to flip
-    if (modalCard) {
-        modalCard.addEventListener("click", function() {
-            this.classList.toggle("is-flipped");
-        });
-    }
-    
-    // Keyboard controls
-    document.addEventListener("keydown", function(e) {
-        if (!modal || modal.style.display !== "flex") return;
-        
-        if (e.key === "Escape") {
-            closeModal();
-        } else if (e.key === "ArrowLeft") {
-            if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
-            activeIndex = (activeIndex - 1 + activeGroup.cards.length) % activeGroup.cards.length;
-            setModalCard();
-            e.preventDefault();
-        } else if (e.key === "ArrowRight") {
-            if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
-            activeIndex = (activeIndex + 1) % activeGroup.cards.length;
-            setModalCard();
-            e.preventDefault();
-        } else if (e.key === " " || e.key === "ArrowUp" || e.key === "ArrowDown") {
-            if (modalCard) modalCard.classList.toggle("is-flipped");
-            e.preventDefault();
-        }
-    });
+        // Keyboard controls
+        document.addEventListener("keydown", function(e) {
+            if (!modal || modal.style.display !== "flex") return;
 
-</script>
-<!-- Debug: Show raw data -->
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const dataElement = document.getElementById("flashcards-topic-data");
-    if (dataElement) {
-        try {
-            const data = JSON.parse(dataElement.textContent);
-            console.log("=== FLASHCARD DATA ===");
-            console.log("Total groups:", data.length);
-            data.forEach(function(group, i) {
-                console.log(`Group ${i}:`, {
-                    topic: group.topic,
-                    modal_key: group.modal_key,
-                    total_cards: group.total_cards,
-                    cards: group.cards,
-                    first_card: group.cards && group.cards.length > 0 ? group.cards[0] : 'NO CARDS'
-                });
-            });
-        } catch(e) {
-            console.error("Error parsing data:", e);
-        }
-    }
-});
+            if (e.key === "Escape") {
+                closeModal();
+            } else if (e.key === "ArrowLeft") {
+                if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
+                activeIndex = (activeIndex - 1 + activeGroup.cards.length) % activeGroup.cards.length;
+                setModalCard();
+                e.preventDefault();
+            } else if (e.key === "ArrowRight") {
+                if (!activeGroup || !activeGroup.cards || !activeGroup.cards.length) return;
+                activeIndex = (activeIndex + 1) % activeGroup.cards.length;
+                setModalCard();
+                e.preventDefault();
+            } else if (e.key === " " || e.key === "ArrowUp" || e.key === "ArrowDown") {
+                if (modalCard) modalCard.classList.toggle("is-flipped");
+                e.preventDefault();
+            }
+        });
+
+        console.log("Flashcard modal initialized with", topicGroups.length, "topics");
+    });
 </script>
 {% endblock %}

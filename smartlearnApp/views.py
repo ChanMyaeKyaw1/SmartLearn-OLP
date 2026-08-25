@@ -819,7 +819,6 @@ def all_flashcards_view(request):
     unique_classrooms = []
     classroom_ids = set()
 
-    # First, add ALL accessible classrooms to unique_classrooms
     for classroom in accessible_classrooms:
         if classroom.class_id not in classroom_ids:
             classroom_ids.add(classroom.class_id)
@@ -834,23 +833,23 @@ def all_flashcards_view(request):
 
         if not classroom_flashcards:
             continue
-        # Add classroom to unique list if not already added
-        if classroom.class_id not in classroom_ids:
-            classroom_ids.add(classroom.class_id)
-            unique_classrooms.append(classroom)
 
         classroom_topic_map = OrderedDict()
         for flashcard in classroom_flashcards:
             group_key = flashcard.topic
             group = classroom_topic_map.get(group_key)
             if not group:
+                topic_slug_val = slugify(flashcard.topic) or 'flashcard-topic'
+                modal_key_val = f'{classroom.class_id}-{topic_slug_val}'
+
                 group = {
                     'classroom_id': classroom.class_id,
                     'classroom_title': classroom.title,
                     'class_type': classroom.class_type,
                     'topic': flashcard.topic,
-                    'topic_slug': slugify(flashcard.topic) or 'flashcard-topic',
-                    'modal_key': f'{classroom.class_id}-{slugify(flashcard.topic) or "flashcard-topic"}',
+                    'topic_key': modal_key_val,  # <--- ADDED: Matches {{ group.topic_key }} in template
+                    'topic_slug': topic_slug_val,
+                    'modal_key': modal_key_val,
                     'cards': [],
                     'contributors': [],
                     'primary_creator': flashcard.created_by.username,
@@ -859,7 +858,6 @@ def all_flashcards_view(request):
                 }
                 classroom_topic_map[group_key] = group
 
-            # IMPORTANT: Make sure front and back are included
             group['cards'].append({
                 'flashcard_id': flashcard.flashcard_id,
                 'front': flashcard.front,
@@ -888,7 +886,6 @@ def all_flashcards_view(request):
         'total_topics': len(flashcard_groups),
         'can_create': request.user.is_authenticated,
     })
-
 
 def toggle_flashcard_topic_reaction(request, class_id):
     classroom = get_object_or_404(Classroom, class_id=class_id)
