@@ -2726,7 +2726,7 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     font-size: 12px;
     font-weight: 600;
     border-radius: 8px;
-    background: #4CAF7D;
+    background: #15803D;
     color: white;
     text-decoration: none;
     transition: all 0.25s ease;
@@ -3797,7 +3797,7 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
 }
 
 [data-theme="dark"] .quiz-settings-box .form-control:focus {
-    border-color: #4CAF7D !important;
+    border-color: #15803D !important;
     box-shadow: 0 0 0 4px rgba(76, 175, 125, 0.15) !important;
 }
 
@@ -3831,8 +3831,8 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
 }
 
 [data-theme="dark"] .mb-3.p-3.rounded-3[style*="background: #f8faf9"] .btn-primary {
-    background-color: #4CAF7D !important;
-    border-color: #4CAF7D !important;
+    background-color: #15803D !important;
+    border-color: #15803D !important;
 }
 
 [data-theme="dark"] .mb-3.p-3.rounded-3[style*="background: #f8faf9"] .btn-primary:hover {
@@ -3856,18 +3856,20 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     color: #e0ece7 !important;
 }
 
+
 /* ==========================================
    NAVBAR RESPONSIVE FIXES (CSS Only)
    ========================================== */
 
+
 /* Tablet & Mobile Devices */
+
 @media (max-width: 991px) {
     /* Fix navbar container */
     .navbar .container {
         padding: 0 16px;
         flex-wrap: wrap;
     }
-    
     /* Navbar collapse menu - REMOVE height restriction */
     .navbar-collapse {
         background: #ffffff;
@@ -3880,29 +3882,24 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
         order: 3;
         /* REMOVED: max-height and overflow-y */
     }
-    
     /* Nav links - stack vertically */
     .navbar-nav {
         width: 100%;
         margin-bottom: 10px !important;
         gap: 0 !important;
     }
-    
     .navbar-nav .nav-item {
         width: 100%;
         border-bottom: 1px solid #f0f0f0;
     }
-    
     .navbar-nav .nav-item:last-child {
         border-bottom: none;
     }
-    
     .navbar-nav .nav-link {
         padding: 10px 0;
         font-size: 15px;
         display: block;
     }
-    
     /* Right side items - Teacher Toggle + Profile + Theme Button */
     .navbar .d-flex.align-items-center.gap-3 {
         flex-wrap: wrap;
@@ -3912,23 +3909,19 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
         gap: 8px !important;
         width: 100%;
     }
-    
     /* Teacher toggle box - keep text visible */
     .teacher-toggle-box {
         padding: 4px 10px;
         white-space: nowrap;
     }
-    
     .teacher-toggle-box .fw-bold {
         font-size: 11px !important;
         display: inline-block !important;
     }
-    
     .teacher-toggle-box .form-check-input {
         width: 30px;
         height: 16px;
     }
-    
     /* Profile image - smaller on mobile */
     .dropdown .rounded-circle,
     .dropdown img {
@@ -3937,11 +3930,9 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
         font-size: 11px !important;
         border-width: 1.5px !important;
     }
-    
     .dropdown-toggle::after {
         font-size: 10px;
     }
-    
     /* Theme toggle button - keep in row */
     .nav-theme-toggle {
         width: 34px !important;
@@ -3950,23 +3941,19 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
         margin-left: 0 !important;
         border-width: 1.5px !important;
     }
-    
     /* Logo size */
     .logo {
         font-size: 20px;
     }
-    
     /* Hamburger button */
     .navbar-toggler {
         padding: 4px 8px;
         border-color: #d9dfc5 !important;
     }
-    
     .navbar-toggler-icon {
         width: 22px;
         height: 22px;
     }
-    
     /* Sign In / Get Started buttons */
     .btn-matcha-outline,
     .btn-matcha-primary {
@@ -3977,50 +3964,43 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
     }
 }
 
+
 /* Small Mobile (max-width: 576px) */
+
 @media (max-width: 576px) {
     .logo {
         font-size: 17px;
     }
-    
     .logo i {
         font-size: 17px;
     }
-    
     .navbar-toggler {
         padding: 3px 6px;
     }
-    
     .navbar-toggler-icon {
         width: 18px;
         height: 18px;
     }
-    
     .navbar-collapse {
         padding: 12px 14px;
         margin-top: 8px;
         /* REMOVED: max-height and overflow-y */
     }
-    
     .navbar-nav .nav-link {
         font-size: 14px;
         padding: 8px 0;
     }
-    
     /* Teacher toggle - smaller on very small screens */
     .teacher-toggle-box {
         padding: 2px 8px;
     }
-    
     .teacher-toggle-box .fw-bold {
         font-size: 10px !important;
     }
-    
     .teacher-toggle-box .form-check-input {
         width: 26px;
         height: 14px;
     }
-    
     /* Profile - smaller */
     .dropdown .rounded-circle,
     .dropdown img {
@@ -4028,21 +4008,18 @@ body.teacher-mode-active .topic-item-card:not(.teacher-owned) {
         height: 28px !important;
         font-size: 10px !important;
     }
-    
     /* Theme button - smaller */
     .nav-theme-toggle {
         width: 30px !important;
         height: 30px !important;
         font-size: 12px !important;
     }
-    
     /* Auth buttons - smaller */
     .btn-matcha-outline,
     .btn-matcha-primary {
         font-size: 11px !important;
         padding: 4px 10px !important;
     }
-    
     .navbar .d-flex.align-items-center.gap-3 {
         gap: 5px !important;
         padding-top: 10px;

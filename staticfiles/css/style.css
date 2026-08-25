@@ -4,6 +4,7 @@
 
 
 /* MAIN AREA */
+
 .main-container {
     width: 100%;
     max-width: 1200px;
@@ -13,14 +14,15 @@
 
 
 /* CREATE CLASS WRAPPER */
+
 .centered-form-wrapper {
     max-width: 750px;
     margin: 50px auto;
 }
 
 
-
 /* Back Arrow Icon Button Styling */
+
 .back-btn-icon {
     display: inline-flex;
     align-items: center;
@@ -47,6 +49,7 @@
 
 
 /* PAGE TITLE */
+
 .page-heading-large {
     font-family: "Raleway", sans-serif;
     font-size: 38px;
@@ -55,7 +58,6 @@
     margin-bottom: 12px;
 }
 
-
 .subtext-muted {
     color: #6b756f;
     font-size: 17px;
@@ -63,134 +65,111 @@
 }
 
 
-
 /* FORM CARD */
+
 .styled-card {
     background: white;
     border-radius: 22px;
     padding: 45px;
-    border: 1px solid rgba(228,235,198,0.6);
-    box-shadow: 0 15px 40px rgba(43,76,63,0.08);
+    border: 1px solid rgba(228, 235, 198, 0.6);
+    box-shadow: 0 15px 40px rgba(43, 76, 63, 0.08);
 }
 
 
-
 /* LABELS */
+
 .label-bold {
     display: block;
     color: #2b4c3f;
     font-weight: 700;
     font-size: 15px;
-
     margin-top: 25px;
     margin-bottom: 10px;
 }
 
 
-
 /* INPUT BOX */
+
 .form-control {
-    width:100%;
-    padding:15px 18px;
-
-    border-radius:14px;
-    border:1px solid #d9dfc5;
-
-    font-size:15px;
-
-    transition:0.3s;
+    width: 100%;
+    padding: 15px 18px;
+    border-radius: 14px;
+    border: 1px solid #d9dfc5;
+    font-size: 15px;
+    transition: 0.3s;
 }
-
 
 .form-control:focus {
-    border-color:#4CAF7D;
-    outline:none;
-    box-shadow:0 0 0 4px rgba(76,175,125,0.15);
+    border-color: #15803D;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(76, 175, 125, 0.15);
 }
-
 
 
 /* SUBJECT AREA */
-select.form-control {
-    height:52px;
-}
 
+select.form-control {
+    height: 52px;
+}
 
 
 /* DESCRIPTION BOX */
-textarea.form-control {
-    resize:none;
-}
 
+textarea.form-control {
+    resize: none;
+}
 
 
 /* BUTTON AREA */
+
 .form-actions-row {
-    margin-top:40px;
-
-    display:flex;
-    gap:20px;
-
-    justify-content:flex-end;
+    margin-top: 40px;
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
 }
-
 
 
 /* PRIMARY BUTTON */
+
 .btn-primary {
-    background:#4CAF7D;
-    color:white;
-    text-decoration:none;
-    padding:14px 30px;
-
-    border:none;
-    border-radius:12px;
-
-    font-weight:700;
-
-    cursor:pointer;
-
-    transition:0.3s;
+    background: #15803D;
+    color: white;
+    text-decoration: none;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
 }
-
 
 .btn-primary:hover {
-    background:#3f9d70;
-    transform:translateY(-2px);
+    background: #3f9d70;
+    transform: translateY(-2px);
 }
-
 
 
 /* CANCEL BUTTON */
+
 .btn-secondary {
-
-    padding:12px 30px;
-
-    border:2px solid #4CAF7D;
-
-    color:#4CAF7D;
-
-    border-radius:12px;
-
-    text-decoration:none;
-
-    font-weight:700;
-
-    transition:0.3s;
+    padding: 12px 30px;
+    border: 2px solid #15803D;
+    color: #15803D;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.3s;
 }
-
 
 .btn-secondary:hover {
-
-    background:#4CAF7D;
-
-    color:white;
-
+    background: #15803D;
+    color: white;
 }
-
 
 
 /* NAVBAR SPACING FIX */
+
 .site-header {
     position: sticky;
     top: 0;
@@ -198,7 +177,7 @@ textarea.form-control {
     width: 100%;
     background-color: #ffffff;
     border-bottom: 1px solid #e4ebc6;
-    box-shadow: 0 2px 15px rgba(43,76,63,0.08);
+    box-shadow: 0 2px 15px rgba(43, 76, 63, 0.08);
 }
 
 .site-nav {
@@ -226,7 +205,7 @@ textarea.form-control {
 }
 
 .site-nav__links a:hover {
-    color: #4CAF7D;
+    color: #15803D;
 }
 
 .site-nav__brand {
@@ -234,7 +213,7 @@ textarea.form-control {
     font-family: "Raleway", sans-serif;
     font-size: 26px;
     font-weight: 900;
-    color: #4CAF7D;
+    color: #15803D;
 }
 
 .site-nav__brand span {
@@ -249,8 +228,8 @@ textarea.form-control {
 
 .btn-secondary {
     padding: 10px 18px;
-    border: 2px solid #4CAF7D;
-    color: #4CAF7D;
+    border: 2px solid #15803D;
+    color: #15803D;
     border-radius: 12px;
     text-decoration: none;
     font-weight: 700;
@@ -258,34 +237,26 @@ textarea.form-control {
 }
 
 .btn-secondary:hover {
-    background: #4CAF7D;
+    background: #15803D;
     color: white;
 }
 
 
-
 /* RESPONSIVE */
-@media(max-width:768px){
 
-    .main-container{
-        padding:40px 20px;
+@media(max-width:768px) {
+    .main-container {
+        padding: 40px 20px;
     }
-
-
-    .styled-card{
-        padding:25px;
+    .styled-card {
+        padding: 25px;
     }
-
-
-    .page-heading-large{
-        font-size:30px;
+    .page-heading-large {
+        font-size: 30px;
     }
-
-
-    .form-actions-row{
-        flex-direction:column;
+    .form-actions-row {
+        flex-direction: column;
     }
-
 }
 
 
@@ -297,7 +268,7 @@ textarea.form-control {
     width: 100%;
     background-color: #ffffff;
     border-bottom: 1px solid #e4ebc6;
-    box-shadow: 0 2px 15px rgba(43,76,63,0.08);
+    box-shadow: 0 2px 15px rgba(43, 76, 63, 0.08);
 }
 
 .site-nav {
@@ -311,22 +282,24 @@ textarea.form-control {
 
 
 /* SmartLearn Logo */
+
 .site-nav__brand {
-    text-decoration: none;   /* remove underline */
+    text-decoration: none;
+    /* remove underline */
     font-family: "Raleway", sans-serif;
     font-size: 26px;
     font-weight: 900;
-    color: #4CAF7D;
+    color: #15803D;
 }
 
 
 /* Middle navigation */
+
 .site-nav__links {
     display: flex;
     align-items: center;
     gap: 35px;
 }
-
 
 .site-nav__links a {
     text-decoration: none;
@@ -336,19 +309,18 @@ textarea.form-control {
     transition: 0.3s;
 }
 
-
 .site-nav__links a:hover {
-    color: #4CAF7D;
+    color: #15803D;
 }
 
 
 /* Right side Teacher + Profile */
+
 .nav-right {
     display: flex;
     align-items: center;
     gap: 20px;
 }
-
 
 .teacher-toggle {
     display: flex;
@@ -360,33 +332,47 @@ textarea.form-control {
 
 
 /* Profile circle */
+
 .profile-placeholder {
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    background-color: #4CAF7D;
+    background-color: #15803D;
 }
+
+
 /* Ensure the form takes full width of the card */
+
 .filter-form {
     width: 100%;
 }
 
+
 /* Force the filter row to align horizontally */
+
 .filter-row {
-    display: flex !important; /* Forces flexbox */
-    flex-direction: row;      /* Keeps items in a line */
-    gap: 15px;                /* Adds spacing between inputs */
-    align-items: center;      /* Vertically centers them */
+    display: flex !important;
+    /* Forces flexbox */
+    flex-direction: row;
+    /* Keeps items in a line */
+    gap: 15px;
+    /* Adds spacing between inputs */
+    align-items: center;
+    /* Vertically centers them */
     width: 100%;
 }
 
+
 /* Explicit widths for your inputs */
+
 .search-input-width {
-    flex: 2; /* Takes more space */
+    flex: 2;
+    /* Takes more space */
 }
 
 .select-input-width {
-    flex: 1; /* Takes equal, smaller space */
+    flex: 1;
+    /* Takes equal, smaller space */
 }
 
 .page-title-row {
@@ -415,9 +401,9 @@ textarea.form-control {
 }
 
 .access-choice:has(input:checked) {
-    border-color: #4CAF7D;
+    border-color: #15803D;
     background: #eef8f2;
-    box-shadow: 0 0 0 4px rgba(76,175,125,0.12);
+    box-shadow: 0 0 0 4px rgba(76, 175, 125, 0.12);
 }
 
 .access-choice input {
@@ -631,7 +617,7 @@ textarea.form-control {
 .teacher-tool-card:hover {
     transform: translateX(4px);
     border-color: var(--matcha);
-    box-shadow: 0 12px 24px rgba(63,157,112,.12);
+    box-shadow: 0 12px 24px rgba(63, 157, 112, .12);
 }
 
 .teacher-tool-card:hover i {
@@ -669,7 +655,7 @@ textarea.form-control {
 
 .teacher-result-row:hover {
     border-color: var(--matcha);
-    box-shadow: 0 12px 24px rgba(63,157,112,.10);
+    box-shadow: 0 12px 24px rgba(63, 157, 112, .10);
     transform: translateY(-2px);
 }
 
@@ -723,14 +709,20 @@ textarea.form-control {
     font-weight: 800;
     padding: 7px 12px;
 }
+
+
 /* Hide creation elements by default */
+
 .teacher-only {
     display: none !important;
 }
 
+
 /* Show creation elements when Teacher Mode is active */
+
 body.teacher-mode-active .teacher-only {
-    display: inline-block !important; /* or 'flex' / 'block' depending on element layout */
+    display: inline-block !important;
+    /* or 'flex' / 'block' depending on element layout */
 }
 
 .view-result-link {
@@ -806,7 +798,6 @@ body.teacher-mode-active .teacher-only {
     .teacher-tools__grid {
         grid-template-columns: 1fr;
     }
-
     .teacher-tools--inline {
         padding: 16px;
     }
@@ -836,26 +827,23 @@ body.teacher-mode-active .teacher-only {
     text-align: center;
 }
 
-@media(max-width:768px){
+@media(max-width:768px) {
     .page-title-row,
     .filter-row,
     .class-card-footer {
         align-items: stretch;
         flex-direction: column;
     }
-
     .card-actions {
         justify-content: flex-start;
         margin-left: 0;
         text-align: left;
     }
-
     .search-input-width,
     .select-input-width {
         flex: 1 1 auto;
         width: 100%;
     }
-
     .access-choice-row {
         grid-template-columns: 1fr;
     }
@@ -962,7 +950,7 @@ body.teacher-mode-active .teacher-only {
     background: linear-gradient(180deg, #ffffff 0%, #f6faf7 100%);
     border: 1px solid #dcebdc;
     border-radius: 24px;
-    box-shadow: 0 14px 30px rgba(43,76,63,0.08);
+    box-shadow: 0 14px 30px rgba(43, 76, 63, 0.08);
     display: grid;
     gap: 14px;
     padding: 24px;
@@ -1033,7 +1021,7 @@ body.teacher-mode-active .teacher-only {
 .reaction-button:hover,
 .reaction-button.is-active {
     background: #eef8f2;
-    border-color: #4CAF7D;
+    border-color: #15803D;
     color: #2b4c3f;
 }
 
@@ -1072,7 +1060,7 @@ body.teacher-mode-active .teacher-only {
     background: #ffffff;
     border: 1px solid #dcebdc;
     border-radius: 16px;
-    box-shadow: 0 10px 24px rgba(43,76,63,0.06);
+    box-shadow: 0 10px 24px rgba(43, 76, 63, 0.06);
     inset: 0;
     padding: 20px;
     position: absolute;
@@ -1097,7 +1085,7 @@ body.teacher-mode-active .teacher-only {
 }
 
 .study-flip-back .topic-label {
-    background: rgba(255,255,255,0.14);
+    background: rgba(255, 255, 255, 0.14);
     color: #ffffff;
 }
 
@@ -1267,7 +1255,7 @@ body.teacher-mode-active .teacher-only {
 
 .quiz-option:has(input:checked) {
     background: #eef8f2;
-    border-color: #4CAF7D;
+    border-color: #15803D;
 }
 
 .result-hero {
@@ -1281,7 +1269,7 @@ body.teacher-mode-active .teacher-only {
 .score-ring {
     align-items: center;
     background: #eef8f2;
-    border: 8px solid #4CAF7D;
+    border: 8px solid #15803D;
     border-radius: 50%;
     color: #2b4c3f;
     display: flex;
@@ -1339,31 +1327,27 @@ body.teacher-mode-active .teacher-only {
     padding: 14px;
 }
 
-@media(max-width:900px){
+@media(max-width:900px) {
     .learning-layout {
         grid-template-columns: 1fr;
     }
-
     .learning-section-head {
         flex-direction: column;
     }
-
     .create-panel {
         position: static;
     }
-
     .learning-title-row,
     .result-hero {
         align-items: flex-start;
         flex-direction: column;
     }
-
     .flashcard-modal__dialog {
         padding: 20px;
     }
 }
 
-@media(max-width:720px){
+@media(max-width:720px) {
     .create-panel__header,
     .learning-section-head,
     .topic-collection-topline,
@@ -1372,21 +1356,21 @@ body.teacher-mode-active .teacher-only {
         flex-direction: column;
         align-items: stretch;
     }
-
     .topic-collection-card {
         padding: 20px;
     }
-
     .flashcard-modal__header {
         padding-right: 0;
     }
-
     .flashcard-modal__close {
         right: 14px;
         top: 14px;
     }
 }
+
+
 /* Card micro-interactions */
+
 .custom-hover-card {
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     cursor: pointer;
@@ -1394,10 +1378,12 @@ body.teacher-mode-active .teacher-only {
 
 .custom-hover-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
+
 /* Button animation */
+
 .custom-btn-hover {
     transition: transform 0.2s ease;
 }
@@ -1405,11 +1391,15 @@ body.teacher-mode-active .teacher-only {
 .custom-btn-hover:hover {
     transform: scale(1.05);
 }
+
+
 /* ====================================
    HORIZONTAL CLASS CAROUSEL STYLING
 ==================================== */
 
+
 /* Scrollable Container Track */
+
 .class-carousel-container {
     display: flex;
     gap: 20px;
@@ -1420,7 +1410,9 @@ body.teacher-mode-active .teacher-only {
     -webkit-overflow-scrolling: touch;
 }
 
+
 /* Hide scrollbars across browsers */
+
 .class-carousel-container::-webkit-scrollbar {
     display: none;
 }
@@ -1430,9 +1422,12 @@ body.teacher-mode-active .teacher-only {
     scrollbar-width: none;
 }
 
+
 /* Individual Carousel Card Item */
+
 .carousel-card-item {
-    flex: 0 0 320px; /* Uniform width per card */
+    flex: 0 0 320px;
+    /* Uniform width per card */
     scroll-snap-align: start;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
@@ -1442,7 +1437,9 @@ body.teacher-mode-active .teacher-only {
     box-shadow: 0 12px 28px rgba(43, 76, 63, 0.12);
 }
 
+
 /* Carousel Control Buttons */
+
 .carousel-nav-btn {
     width: 38px;
     height: 38px;
@@ -1459,9 +1456,9 @@ body.teacher-mode-active .teacher-only {
 }
 
 .carousel-nav-btn:hover {
-    background-color: #4CAF7D;
+    background-color: #15803D;
     color: #ffffff;
-    border-color: #4CAF7D;
+    border-color: #15803D;
     transform: scale(1.05);
 }
 
@@ -1471,9 +1468,11 @@ body.teacher-mode-active .teacher-only {
 
 @media (max-width: 576px) {
     .carousel-card-item {
-        flex: 0 0 85vw; /* Responsive card size for mobile viewports */
+        flex: 0 0 85vw;
+        /* Responsive card size for mobile viewports */
     }
 }
+
 
 /* ====================================
    FLOATING OVERLAY CAROUSEL STYLING
@@ -1484,7 +1483,9 @@ body.teacher-mode-active .teacher-only {
     width: 100%;
 }
 
+
 /* Scrollable Track */
+
 .class-carousel-container {
     display: flex;
     gap: 20px;
@@ -1495,16 +1496,21 @@ body.teacher-mode-active .teacher-only {
     -webkit-overflow-scrolling: touch;
 }
 
+
 /* Hide scrollbars */
+
 .class-carousel-container::-webkit-scrollbar {
     display: none;
 }
+
 .class-carousel-container {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
 
+
 /* Individual Card */
+
 .carousel-card-item {
     flex: 0 0 320px;
     scroll-snap-align: start;
@@ -1516,7 +1522,9 @@ body.teacher-mode-active .teacher-only {
     box-shadow: 0 12px 28px rgba(43, 76, 63, 0.12);
 }
 
+
 /* Floating Overlay Action Buttons */
+
 .carousel-floating-btn {
     position: absolute;
     top: 50%;
@@ -1546,9 +1554,9 @@ body.teacher-mode-active .teacher-only {
 }
 
 .carousel-floating-btn:hover {
-    background-color: #4CAF7D;
+    background-color: #15803D;
     color: #ffffff;
-    border-color: #4CAF7D;
+    border-color: #15803D;
     transform: translateY(-50%) scale(1.1);
     box-shadow: 0 8px 20px rgba(76, 175, 125, 0.35);
 }
@@ -1566,7 +1574,9 @@ body.teacher-mode-active .teacher-only {
     }
 }
 
+
 /* Container Box */
+
 .explore-section-card {
     padding: 24px;
     background: #ffffff;
@@ -1574,7 +1584,9 @@ body.teacher-mode-active .teacher-only {
     border: 1px solid rgba(43, 76, 63, 0.08);
 }
 
+
 /* Scroll Track Inside Container */
+
 .class-carousel-container {
     display: flex;
     gap: 16px;
@@ -1588,12 +1600,15 @@ body.teacher-mode-active .teacher-only {
 .class-carousel-container::-webkit-scrollbar {
     display: none;
 }
+
 .class-carousel-container {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
 
+
 /* Inner Class Card Adjustments */
+
 .explore-section-card .carousel-card-item {
     flex: 0 0 310px;
     background: #fdfdfd;
@@ -1604,12 +1619,14 @@ body.teacher-mode-active .teacher-only {
 
 .explore-section-card .carousel-card-item:hover {
     background: #ffffff;
-    border-color: #4CAF7D;
+    border-color: #15803D;
     transform: translateY(-3px);
     box-shadow: 0 10px 24px rgba(43, 76, 63, 0.1);
 }
 
+
 /* Floating Arrows Resting Comfortably Inside/On Edge */
+
 .carousel-floating-btn {
     position: absolute;
     top: 50%;
@@ -1638,11 +1655,12 @@ body.teacher-mode-active .teacher-only {
 }
 
 .carousel-floating-btn:hover {
-    background-color: #4CAF7D;
+    background-color: #15803D;
     color: #ffffff;
-    border-color: #4CAF7D;
+    border-color: #15803D;
     transform: translateY(-50%) scale(1.08);
 }
+
 
 /* ====================================
    SEARCH INPUT STYLING
@@ -1675,14 +1693,16 @@ body.teacher-mode-active .teacher-only {
 
 .class-search-field:focus {
     background-color: #ffffff;
-    border-color: #4CAF7D;
+    border-color: #15803D;
     box-shadow: 0 0 0 3px rgba(76, 175, 125, 0.15);
     outline: none;
 }
 
+
 /* Theme-Matched Hero Banner */
+
 .hero-greeting-card {
-    background: linear-gradient(135deg, #2b4c3f 0%, #3e6b59 60%, #4CAF7d 100%);
+    background: linear-gradient(135deg, #2b4c3f 0%, #3e6b59 60%, #15803D 100%);
     border-radius: 18px;
     padding: 28px 32px;
     color: #ffffff;
@@ -1721,7 +1741,9 @@ body.teacher-mode-active .teacher-only {
     max-width: 580px;
 }
 
+
 /* Glass Search Box inside Hero */
+
 .hero-search-container {
     min-width: 280px;
     flex: 1;
@@ -1755,7 +1777,9 @@ body.teacher-mode-active .teacher-only {
     color: rgba(255, 255, 255, 0.7);
 }
 
+
 /* HORIZONTAL METRICS GRID (4 Columns Side-by-Side) */
+
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1793,10 +1817,25 @@ body.teacher-mode-active .teacher-only {
     flex-shrink: 0;
 }
 
-.metric-icon-green  { background: #e8f5e9; color: #2e7d32; }
-.metric-icon-teal   { background: #e0f2f1; color: #00695c; }
-.metric-icon-purple { background: #f3e5f5; color: #6a1b9a; }
-.metric-icon-amber  { background: #fff8e1; color: #f57f17; }
+.metric-icon-green {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.metric-icon-teal {
+    background: #e0f2f1;
+    color: #00695c;
+}
+
+.metric-icon-purple {
+    background: #f3e5f5;
+    color: #6a1b9a;
+}
+
+.metric-icon-amber {
+    background: #fff8e1;
+    color: #f57f17;
+}
 
 .metric-value {
     font-size: 1.4rem;
@@ -1811,6 +1850,7 @@ body.teacher-mode-active .teacher-only {
     color: #6b756f;
     font-weight: 600;
 }
+
 .metric-card-link {
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -1821,7 +1861,9 @@ body.teacher-mode-active .teacher-only {
     box-shadow: 0 10px 22px rgba(43, 76, 63, 0.12);
 }
 
+
 /* Carousel Card Fixes */
+
 .carousel-card-item {
     width: 310px;
 }
@@ -1841,18 +1883,22 @@ body.teacher-mode-active .teacher-only {
 }
 
 .carousel-nav-btn:hover {
-    background: #4CAF7d;
+    background: #15803D;
     color: #ffffff;
-    border-color: #4CAF7d;
+    border-color: #15803D;
 }
 
+
 /* Badge for Pending Card */
+
 .badge-pending {
     background: #fff3c4;
     color: #7a4e00;
 }
 
+
 /* Inline Section Title Styling (No outer Card Container) */
+
 .dashboard-section-title {
     font-size: 1.25rem;
     font-weight: 700;
@@ -1861,7 +1907,9 @@ body.teacher-mode-active .teacher-only {
     align-items: center;
 }
 
+
 /* Floating Overlay Carousel Nav Arrows */
+
 .carousel-relative-container {
     position: relative;
 }
@@ -1902,13 +1950,21 @@ body.teacher-mode-active .teacher-only {
     right: -14px;
 }
 
+
 /* Hide arrows smoothly if screen is mobile size */
+
 @media (max-width: 576px) {
-    .btn-overlay-left { left: 2px; }
-    .btn-overlay-right { right: 2px; }
+    .btn-overlay-left {
+        left: 2px;
+    }
+    .btn-overlay-right {
+        right: 2px;
+    }
 }
 
+
 /* Hide Horizontal Scrollbars Cleanly */
+
 .class-carousel-container {
     scroll-behavior: smooth;
     scrollbar-width: none;
@@ -1918,19 +1974,25 @@ body.teacher-mode-active .teacher-only {
     display: none;
 }
 
+
 /* Wrapper Padding */
+
 .dashboard-wrapper {
     padding-top: 15px;
     padding-bottom: 40px;
 }
 
+
 /* Hero Card Extra Breathing Room */
+
 .hero-greeting-card {
     padding: 36px 40px !important;
     border-radius: 20px;
 }
 
+
 /* Metric Cards Spacing */
+
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1942,7 +2004,9 @@ body.teacher-mode-active .teacher-only {
     border-radius: 16px;
 }
 
+
 /* Section Titles Spacing */
+
 .dashboard-section-header {
     margin-top: 28px;
     margin-bottom: 18px;
@@ -1954,13 +2018,16 @@ body.teacher-mode-active .teacher-only {
     color: #2b4c3f;
 }
 
+
 /* Carousel Outer Frame & Un-crammed Arrow Controls */
+
 .carousel-outer-frame {
     padding: 0 12px;
 }
 
 .carousel-card-item {
-    width: 340px; /* Slightly wider cards for cleaner text flow */
+    width: 340px;
+    /* Slightly wider cards for cleaner text flow */
     min-height: 220px;
     padding: 24px !important;
 }
@@ -1970,7 +2037,9 @@ body.teacher-mode-active .teacher-only {
     line-height: 1.5;
 }
 
+
 /* Floating Navigation Arrows - Placed Outside Cards Clear of Text */
+
 .carousel-nav-arrow {
     position: absolute;
     top: 50%;
@@ -1992,21 +2061,25 @@ body.teacher-mode-active .teacher-only {
 }
 
 .carousel-nav-arrow:hover {
-    background: #4CAF7d;
+    background: #15803D;
     color: #ffffff;
-    border-color: #4CAF7d;
+    border-color: #15803D;
     transform: translateY(-50%) scale(1.1);
 }
 
 .arrow-left {
-    left: -20px; /* Positioned safely outside the left card edge */
+    left: -20px;
+    /* Positioned safely outside the left card edge */
 }
 
 .arrow-right {
-    right: -20px; /* Positioned safely outside the right card edge */
+    right: -20px;
+    /* Positioned safely outside the right card edge */
 }
 
+
 /* Layout wrapper placing side arrows next to the card */
+
 .flashcard-interactive-wrapper {
     display: flex;
     align-items: center;
@@ -2016,7 +2089,9 @@ body.teacher-mode-active .teacher-only {
     position: relative;
 }
 
+
 /* Modal Flip Card Container */
+
 .study-flip-card--modal {
     flex: 1;
     min-height: 320px;
@@ -2030,7 +2105,9 @@ body.teacher-mode-active .teacher-only {
     transform-style: preserve-3d;
 }
 
+
 /* Flip Badge Indicator */
+
 .flip-hint-badge {
     font-size: 12px;
     font-weight: 700;
@@ -2049,7 +2126,9 @@ body.teacher-mode-active .teacher-only {
     background: rgba(255, 255, 255, 0.15);
 }
 
+
 /* Arrow Navigation Buttons */
+
 .flashcard-nav-arrow {
     width: 48px;
     height: 48px;
@@ -2068,9 +2147,9 @@ body.teacher-mode-active .teacher-only {
 }
 
 .flashcard-nav-arrow:hover {
-    background: #4CAF7D;
+    background: #15803D;
     color: #ffffff;
-    border-color: #4CAF7D;
+    border-color: #15803D;
     transform: scale(1.1);
     box-shadow: 0 8px 20px rgba(76, 175, 125, 0.3);
 }
@@ -2092,14 +2171,15 @@ body.teacher-mode-active .teacher-only {
     color: #6b756f;
 }
 
+
 /* Mobile responsiveness */
+
 @media (max-width: 576px) {
     .flashcard-nav-arrow {
         width: 40px;
         height: 40px;
         font-size: 15px;
     }
-
     .study-flip-card--modal,
     .study-flip-card--modal .study-flip-card-inner {
         height: 280px;
@@ -2113,22 +2193,26 @@ body.teacher-mode-active .teacher-only {
     border-radius: 20px;
     display: flex;
     flex-direction: column;
-    
     /* --- CENTER TEXT HORIZONTALLY & VERTICALLY --- */
-    justify-content: center; /* Centers content vertically */
-    align-items: center;     /* Centers content horizontally */
-    text-align: center;      /* Ensures multi-line text is centered */
-    
+    justify-content: center;
+    /* Centers content vertically */
+    align-items: center;
+    /* Centers content horizontally */
+    text-align: center;
+    /* Ensures multi-line text is centered */
     backface-visibility: hidden;
     box-shadow: 0 12px 30px rgba(43, 76, 63, 0.08);
     transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
+
 /* ================================
    SCROLL REVEAL ANIMATIONS
    ================================ */
 
+
 /* Initial hidden state for custom reveal elements */
+
 .reveal {
     opacity: 0;
     transform: translateY(30px);
@@ -2140,7 +2224,9 @@ body.teacher-mode-active .teacher-only {
     transform: translateY(0);
 }
 
+
 /* Stagger & Direction Variants */
+
 .reveal-left {
     transform: translateX(-40px);
 }
@@ -2159,14 +2245,16 @@ body.teacher-mode-active .teacher-only {
     transform: translate(0) scale(1);
 }
 
+
 /* =========================================
    NAVIGATION THEME TOGGLE BUTTON
 ========================================= */
+
 .nav-theme-toggle {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: 1.5px solid #4CAF7D;
+    border: 1.5px solid #15803D;
     background-color: transparent;
     color: #2f5d50;
     display: inline-flex;
@@ -2180,17 +2268,23 @@ body.teacher-mode-active .teacher-only {
     vertical-align: middle;
 }
 
+
 /* Light Mode Hover */
+
 .nav-theme-toggle:hover {
-    background-color: #4CAF7D;
+    background-color: #15803D;
     color: #ffffff;
     transform: scale(1.05);
 }
+
+
 /* ==========================================================================
    THEME SWITCHING FIXES FOR FLASHCARDS, MCQS, CLASSROOM, & HOME PAGES
    ========================================================================== */
 
+
 /* 1. Global Variable Overrides for Dark Mode */
+
 [data-theme="dark"] {
     --bg-color: #121816;
     --text-color: #e0ece7;
@@ -2201,13 +2295,17 @@ body.teacher-mode-active .teacher-only {
     --text-muted: #9ba8a2;
 }
 
+
 /* Force body and generic text color in Dark Mode */
+
 [data-theme="dark"] body {
     background-color: var(--bg-color) !important;
     color: var(--text-color) !important;
 }
 
+
 /* 2. Modals and Bootstrap Dynamic Components */
+
 [data-theme="dark"] .modal-content,
 [data-theme="dark"] .modal-header,
 [data-theme="dark"] .modal-body,
@@ -2221,7 +2319,9 @@ body.teacher-mode-active .teacher-only {
     filter: invert(1) grayscale(100%) brightness(200%);
 }
 
+
 /* 3. Dynamic Card Hardcoded Overrides (Fixes `.bg-light`, `.card`, `.bg-white`)[cite: 32, 33, 35] */
+
 [data-theme="dark"] .bg-light,
 [data-theme="dark"] .bg-white,
 [data-theme="dark"] .card,
@@ -2233,7 +2333,9 @@ body.teacher-mode-active .teacher-only {
     border-color: var(--border-color) !important;
 }
 
+
 /* 4. Classroom Page (.classroom-container) Overrides[cite: 34] */
+
 [data-theme="dark"] .learning-panel,
 [data-theme="dark"] .course-header,
 [data-theme="dark"] .module-card,
@@ -2262,7 +2364,9 @@ body.teacher-mode-active .teacher-only {
     color: var(--forest) !important;
 }
 
+
 /* 5. Home Page (.hero-section & callout rows) Overrides */
+
 [data-theme="dark"] .hero-section {
     background-color: #161e1b !important;
 }
@@ -2273,9 +2377,13 @@ body.teacher-mode-active .teacher-only {
 }
 
 [data-theme="dark"] .hero-title,
+
 /* [data-theme="dark"] .text-dark, */
-[data-theme="dark"] h1, [data-theme="dark"] h2, 
-[data-theme="dark"] h3, [data-theme="dark"] h4, 
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
 [data-theme="dark"] h6 {
     color: var(--text-color) !important;
 }
@@ -2287,7 +2395,9 @@ body.teacher-mode-active .teacher-only {
     color: var(--text-muted) !important;
 }
 
+
 /* 6. Form Inputs & Select Elements inside Modals */
+
 [data-theme="dark"] .form-control,
 [data-theme="dark"] .form-select,
 [data-theme="dark"] select {
@@ -2305,20 +2415,25 @@ body.teacher-mode-active .teacher-only {
    FLOATING CHATBOT WIDGET
    ========================================================================== */
 
+
 /* Floating Container (Bottom Right Stack) */
+
 .chatbot-wrapper {
     position: fixed;
-    bottom: 80px; /* Positions it directly above typical back-to-top arrow at bottom: 20px */
+    bottom: 80px;
+    /* Positions it directly above typical back-to-top arrow at bottom: 20px */
     right: 20px;
     z-index: 1050;
 }
 
+
 /* Floating Action Button */
+
 .chatbot-toggle-btn {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: #4CAF7D;
+    background-color: #15803D;
     color: #ffffff;
     border: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
@@ -2335,7 +2450,9 @@ body.teacher-mode-active .teacher-only {
     background-color: #3e9167;
 }
 
+
 /* Chat Popup Window */
+
 .chatbot-modal {
     position: absolute;
     bottom: 60px;
@@ -2356,9 +2473,11 @@ body.teacher-mode-active .teacher-only {
     display: none;
 }
 
+
 /* Header */
+
 .chatbot-header {
-    background-color: #4CAF7D;
+    background-color: #15803D;
     color: #ffffff;
     padding: 12px 16px;
     display: flex;
@@ -2375,7 +2494,9 @@ body.teacher-mode-active .teacher-only {
     line-height: 1;
 }
 
+
 /* Message Area */
+
 .chatbot-messages {
     flex: 1;
     padding: 12px;
@@ -2402,13 +2523,15 @@ body.teacher-mode-active .teacher-only {
 }
 
 .chat-bubble.user {
-    background-color: #4CAF7D;
+    background-color: #15803D;
     color: #ffffff;
     align-self: flex-end;
     border-bottom-right-radius: 2px;
 }
 
+
 /* Input Form */
+
 .chatbot-input-area {
     display: flex;
     padding: 8px;
@@ -2428,16 +2551,19 @@ body.teacher-mode-active .teacher-only {
 .chatbot-input-area .btn-send {
     background: none;
     border: none;
-    color: #4CAF7D;
+    color: #15803D;
     font-size: 1.1rem;
     padding: 0 8px;
     cursor: pointer;
 }
 
+
 /* Stacked Floating Position */
+
 .chatbot-wrapper {
     position: fixed !important;
-    bottom: 85px !important; /* Stacked right above back-to-top arrow (20px + 50px height + gap) */
+    bottom: 85px !important;
+    /* Stacked right above back-to-top arrow (20px + 50px height + gap) */
     right: 30px !important;
     z-index: 9999 !important;
 }
@@ -2450,7 +2576,10 @@ body.teacher-mode-active .teacher-only {
     height: 400px;
     z-index: 10000;
 }
+
+
 /* Dark Theme Support */
+
 html[data-theme="dark"] .chatbot-modal {
     background-color: #1a231f !important;
     border-color: #2b3a34 !important;
@@ -2476,47 +2605,55 @@ html[data-theme="dark"] .chatbot-input-area input {
     border-color: #2b3a34 !important;
 }
 
+
 /* Quick Replies Horizontal Container */
+
 .quick-replies {
-  display: flex;
-  gap: 8px;
-  padding: 8px 12px;
-  overflow-x: auto;
-  white-space: nowrap;
-  background-color: #f8f9fa;
-  border-top: 1px solid #e9ecef;
-  scrollbar-width: thin; /* For Firefox */
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px;
+    overflow-x: auto;
+    white-space: nowrap;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    scrollbar-width: thin;
+    /* For Firefox */
 }
+
 
 /* Hide scrollbar for Webkit browsers */
+
 .quick-replies::-webkit-scrollbar {
-  height: 4px;
-}
-.quick-replies::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
+    height: 4px;
 }
 
+.quick-replies::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+
 /* Individual Chip Style */
+
 .chip {
-  background-color: #ffffff;
-  color: #2b6cb0;
-  border: 1px solid #cbd5e0;
-  border-radius: 16px;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  flex-shrink: 0;
+    background-color: #ffffff;
+    color: #2b6cb0;
+    border: 1px solid #cbd5e0;
+    border-radius: 16px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    flex-shrink: 0;
 }
 
 .chip:hover {
-  background-color: #ebf8ff;
-  border-color: #3182ce;
-  transform: translateY(-1px);
+    background-color: #ebf8ff;
+    border-color: #3182ce;
+    transform: translateY(-1px);
 }
 
 .chip:active {
-  transform: translateY(0);
+    transform: translateY(0);
 }
